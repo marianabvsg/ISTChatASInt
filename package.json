@@ -1,0 +1,25 @@
+{
+  "name": "istchatasint",
+  "version": "1.0.0",
+  "description": "Internet Based Systems Architecture Project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marianabvsg/ISTChatASint.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marianabvsg/ISTChatASint/issues"
+  },
+  "homepage": "https://github.com/marianabvsg/ISTChatASint#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "nodemon": "^1.18.6"
+  }
+}
