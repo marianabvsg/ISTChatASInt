@@ -29,27 +29,46 @@ router.get('/login', function(req, res) {
     }
 })
 
+// receive a JSON file with buildings
+// TODO
 router.post('/building', function(req, res) {
-    
+
+    // receive JSON file
+
+    // check if it's a valid JSON file
+
+    // get the array of buildings
+
+    // Convert them in order to insert in the Building's database
+
 })
 
+// returns a list with all logged in users
+// TODO
 router.get('/list/users', function(req, res) {
     
-    res.download('./app.js');
 })
 
+// returns a list with all the users in a certain building
+// TODO
 router.get('/list/users/building/:building', function(req, res) {
     
 })
 
+// returns a list with all the messages in a certain building
+// TODO
 router.get('/list/logs/messages/:building', function(req, res) {
     
 })
 
+// returns a list with all the messages of a certain user
+// TODO
 router.get('/list/logs/messages/:user', function(req, res) {
     
 })
 
+// returns a list with all the movements of a certain user
+// TODO
 router.get('/list/logs/movements/:user', function(req, res) {
     
 })
@@ -81,6 +100,8 @@ router.get('/bot', function(req, res) {
         // save the key into the DB with the correspondent building
         // TODO
 
+        
+
         // return the key to the admin
         // mandar status 200????
         res.send({
@@ -88,6 +109,5 @@ router.get('/bot', function(req, res) {
         })
     }
 })
-
 
 module.exports = router;
