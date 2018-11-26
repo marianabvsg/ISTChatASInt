@@ -8,6 +8,7 @@ const adminkey = "secretkey";
 router.get('/login', function(req, res) {
     
     // ADD SECURITY LATER
+    // TODO
 
     if(req.body.username == 'admin' &&  req.body.password == '123') {
         // the user is the admin
@@ -26,7 +27,6 @@ router.get('/login', function(req, res) {
             'adminkey': null
         })
     }
-
 })
 
 router.post('/building', function(req, res) {
@@ -35,6 +35,7 @@ router.post('/building', function(req, res) {
 
 router.get('/list/users', function(req, res) {
     
+    res.download('./app.js');
 })
 
 router.get('/list/users/building/:building', function(req, res) {

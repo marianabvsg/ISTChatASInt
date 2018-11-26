@@ -1,0 +1,15 @@
+{
+  "type" : "CAMPUS",
+  "id" : "2448131360898",
+  "name" : "Taguspark",
+  "containedSpaces" : [ {
+    "type" : "BUILDING",
+    "id" : "2448131365084",
+    "name" : "Edifício principal",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360898",
+      "name" : "Taguspark"
+    }
+  } ]
+}

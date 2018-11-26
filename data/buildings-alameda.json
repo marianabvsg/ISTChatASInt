@@ -1,0 +1,94 @@
+{
+  "type" : "CAMPUS",
+  "id" : "2448131360897",
+  "name" : "Alameda",
+  "containedSpaces" : [ {
+    "type" : "BUILDING",
+    "id" : "2448131361042",
+    "name" : "Pavilhão de Civil",
+    "lat": 38.7368263,
+    "long" : -9.139276,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  }, {
+    "type" : "BUILDING",
+    "id" : "2448131361155",
+    "name" : "Pavilhão de Mecânica III",
+    "lat":38.7368263,
+    "long": -9.139276,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  },{
+    "type" : "BUILDING",
+    "id" : "2448131384238",
+    "name" : "Pavilhão da Associação dos Estudantes",
+    "lat": 38.7368942,
+    "long": -9.1378801,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  }, {
+    "type" : "BUILDING",
+    "id" : "2448131361129",
+    "name" : "Pavilhão de Informática III",
+    "lat": 38.7374625,
+    "long": -9.1378465,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  }, {
+    "type" : "BUILDING",
+    "id" : "2448131361074",
+    "name" : "Torre Sul",
+    "lat": 38.7363775,
+    "long": -9.138574,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  },{
+    "type" : "BUILDING",
+    "id" : "2448131361091",
+    "name" : "Torre Norte",
+    "lat" : 38.7375584,
+    "long" : -9.1387255,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  },{
+    "type" : "BUILDING",
+    "id" : "2448131361119",
+    "name" : "Pavilhão de Matemática",
+    "lat": 38.7358895,
+    "long": -9.1399463,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  },{
+    "type" : "BUILDING",
+    "id" : "2448131361060",
+    "name" : "Pavilhão Central",
+    "lat": 38.7368098,
+    "long": -9.1397191,
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131360897",
+      "name" : "Alameda"
+    }
+  }]
+}

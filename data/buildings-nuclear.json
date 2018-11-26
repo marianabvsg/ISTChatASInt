@@ -1,0 +1,69 @@
+{
+  "type" : "CAMPUS",
+  "id" : "2448131392438",
+  "name" : "Tecnológico e Nuclear",
+  "containedSpaces" : [ {
+    "type" : "ROOM",
+    "id" : "283923108069473",
+    "name" : "DPRSN - Proteção e Segurança Radiológica",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "ROOM",
+    "id" : "1691297991622851",
+    "name" : "DPRSN_dosimetria",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "ROOM",
+    "id" : "283923108069461",
+    "name" : "DPRSN Armazém",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "BUILDING",
+    "id" : "1691297991622660",
+    "name" : "Liq. Hélio / LETAL",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "ROOM",
+    "id" : "846873061490709",
+    "name" : "Física",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "ROOM",
+    "id" : "1691297991622710",
+    "name" : "Biblioteca",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  }, {
+    "type" : "ROOM",
+    "id" : "1691297991622663",
+    "name" : "Administração",
+    "topLevelSpace" : {
+      "type" : "CAMPUS",
+      "id" : "2448131392438",
+      "name" : "Tecnológico e Nuclear"
+    }
+  } ]
+}
