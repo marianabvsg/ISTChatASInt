@@ -12,11 +12,13 @@ const indexRoutes = require('./routes/indexRoutes.js')
 // Get environment defined variables
 const http_port = process.env.PORT || 3000
 
-const app = express()
+const app = express();
 
 app.use(bodyParser.urlencoded({
     extended: true
 }))
+
+//var userdb = new userDB("db.tecnico.ulisboa.pt");
 
 app.use(bodyParser.json())
 
