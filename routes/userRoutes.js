@@ -9,7 +9,6 @@ router.get('/', function(req, res) {
 
 router.post('/:user/location', function(req, res) {
 
-    userDB.insertLocation("user","location");
 
 })
 
@@ -19,9 +18,11 @@ router.post('/:user/auth', function(req, res) {
 
 router.post('/:user/message', function(req, res) {
 
+    
 })
 
 router.post('/:user/range', function(req, res) {
+
 
 })
 

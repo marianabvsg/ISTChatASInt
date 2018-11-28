@@ -5,7 +5,7 @@ router.post('/', function(req, res) {
     
     res.send({
         'apikey': 'aaa-aaa',
-        'message': 'curto xota'
+        'message': 'ayoooo'
     })
 
 })

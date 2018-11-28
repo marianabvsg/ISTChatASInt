@@ -11,6 +11,8 @@ module.exports = class buildingDB {
 
     getCoordinates(lat, long) {
 
+
+
         return name
     }
 
@@ -21,12 +23,8 @@ module.exports = class buildingDB {
 
     insert(building) {
 
+
         //return true if OK false otherwise
-    }
-
-
-    isInBuilding(bulding,coordUser) {
-
     }
 
 }

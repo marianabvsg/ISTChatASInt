@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "start auto": "nodemon app.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +21,7 @@
     "apikeygen": "^1.1.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "mysql": "^2.16.0",
     "nodemon": "^1.18.6"
   }
 }
