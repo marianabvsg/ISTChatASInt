@@ -89,7 +89,6 @@ router.post('/building/range', function(req, res) {
 })
 
 // returns a list with all logged in users
-// TODO
 router.get('/list/users', function(req, res) {
     
     // check if the secret is correct
@@ -103,17 +102,10 @@ router.get('/list/users', function(req, res) {
     }
 
     // get the list of users from the database
-    let users = new userDB();
+    // assuming we have available the object users from the userDB class
+    // assuming we receive the list in json format
+    res.send(users.listUsers()); //assuming it returns empty if there are no users
 
-    
-
-    res.send([{
-        "name": "renato"
-    },{
-        "name": "paulo"
-    },{
-        "name": "marianadestruidoradeclips"
-    }])
 })
 
 // returns a list with all the users in a certain building
@@ -129,11 +121,69 @@ router.get('/list/users/building/:building', function(req, res) {
         res.sendStatus(403);
         return;
     }
+
+    // get the list of users in the requested building from the database
+    var building = req.params.building;
+    res.send(users.listUsersByBuilding(building)); //assuming it returns empty if there are no users
+    
+    // else if (typeof building == 'object') {
+    //     buildingName=buildings.getName(building.lat, building.long)
+    //     res.send(users.listUsersByBuilding(buildingName));
+    // }    
+})
+
+// returns a list with all the logs
+router.get('/list/logs', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+
+    res.send(logs.listAll()); //assuming it returns empty if there are no logs
+    
+})
+
+// returns a list with all the messages
+router.get('/list/logs/messages', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+
+    res.send(logs.listAllMessages()); //assuming it returns empty if there are no logs
+    
+})
+
+// returns a list with all the movements
+router.get('/list/logs/movements', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+
+    res.send(logs.listAllMoves()); //assuming it returns empty if there are no logs
     
 })
 
 // returns a list with all the messages in a certain building
-// TODO
 router.get('/list/logs/messages/:building', function(req, res) {
 
     // check if the secret is correct
@@ -145,11 +195,11 @@ router.get('/list/logs/messages/:building', function(req, res) {
         res.sendStatus(403);
         return;
     }
-    
+
+    res.send(logs.listMessagesByBuilding(req.params.building)); //assuming it returns empty if there are no logs
 })
 
 // returns a list with all the messages of a certain user
-// TODO
 router.get('/list/logs/messages/:user', function(req, res) {
 
     // check if the secret is correct
@@ -161,11 +211,11 @@ router.get('/list/logs/messages/:user', function(req, res) {
         res.sendStatus(403);
         return;
     }
-    
+  
+  res.send(logs.listMessagesByUser(req.params.user)); //assuming it returns empty if there are no logs
 })
 
 // returns a list with all the movements of a certain user
-// TODO
 router.get('/list/logs/movements/:user', function(req, res) {
 
     // check if the secret is correct
@@ -177,7 +227,44 @@ router.get('/list/logs/movements/:user', function(req, res) {
         res.sendStatus(403);
         return;
     }
-    
+  
+  res.send(logs.listMovesByUser(req.params.user)); //assuming it returns empty if there are no logs
+})
+
+
+
+// returns a list with all the logs of a certain user
+router.get('/list/logs/:user', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+  
+  res.send(logs.listByUser(req.params.user)); //assuming it returns empty if there are no logs
+})
+
+
+
+// returns a list with all the logs of a certain building
+router.get('/list/logs/:building', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+  
+  res.send(logs.listByBuilding(req.params.building)); //assuming it returns empty if there are no logs
 })
 
 // Generate an api key for a new bot
@@ -200,7 +287,7 @@ router.get('/bot', function(req, res) {
     // generate unique api key
     // save the key into the DB with the correspondent building
     // return the key
-
+    //MUDAR ISTO, POR NOS PARAMS - TODO
     const building = req.body.building;
 
     // check authentication of admin
