@@ -9,7 +9,7 @@ module.exports = class buildingDB {
         return {coordinates}
     }
 
-    getCoordinates(lat, long) {
+    getName(lat, long) {
 
 
 
