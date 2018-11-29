@@ -27,26 +27,24 @@ class botDB {
 
     
     // return building if key valid, not permited otherwise
-    checkBot(key) {
+    checkBot(key, callback) {
 
         let db = database.getDB();
 
         // checks if the key is in the bots database
         db.collection("bots").findOne({
             "key": key
-        }, function(err, docs) {
-            console.log(docs)
+        }).then(function(doc) {
 
-            if(err) {
-                throw err;
-            // didn't find the key in the db
-            } else if(docs)  {
-                return false;
-            // found the key in the db
+            console.log(!doc)
+
+            if(!doc) {
+                return callback(false);
             } else {
-                return true;
+                return callback(true);
             }
-        })
+
+        });
     }
 
 }

@@ -7,16 +7,22 @@ router.post('/', function(req, res) {
 
     var key = req.body.key;
 
-    if(botDB.checkBot(key)) {
+    botDB.checkBot(key, function(result) {
 
-        // Send message
-        var message = req.body.message;
-        // TODO
+        // there were results in the db
+        if(result == true) {
 
-        res.sendStatus(200);
-    } else {
-        res.sendStatus(403);
-    }
+            // Send message
+            //     var message = req.body.message;
+            //     // TODO
+
+            res.sendStatus(200);
+
+        // no bot in the db with that key
+        } else {
+            res.sendStatus(403);
+        }
+    })
 })
 
 module.exports = router;
