@@ -6,6 +6,7 @@ const fs = require('fs');
 // my requirements
 var filename = __dirname + "/../vars/constants.json";
 var userDB = require('../services/userDB.js');
+var botDB = require('../services/botDB.js');
 
 // temporary variable
 const adminkey = "secretkey";
@@ -293,8 +294,6 @@ router.get('/bot', function(req, res) {
     //MUDAR ISTO, POR NOS PARAMS - TODO
     const building = req.body.building;
 
-    // check authentication of admin
-    // TODO
 
     // if the building exists
     if(building == null /* or doesn't belong to the DB of buildings */) {
@@ -306,10 +305,8 @@ router.get('/bot', function(req, res) {
         var key = apikey();  // generates 40 char base64 encoded key
 
         // save the key into the DB with the correspondent building
-        // TODO
-
-        
-
+        botDB.insert(key, building);
+    
         // return the key to the admin
         // mandar status 200????
         res.send({

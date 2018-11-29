@@ -4,16 +4,19 @@ const router = express.Router()
 var botDB = require('../services/botDB.js');
 
 router.post('/', function(req, res) {
-    
-    var bot = new botDB();
-    
-    bot.insert("afs","asdf");
 
-    res.send({
-        'apikey': 'aaa-aaa',
-        'message': 'ayoooo'
-    })
+    var key = req.body.key;
 
+    if(botDB.checkBot(key)) {
+
+        // Send message
+        var message = req.body.message;
+        // TODO
+
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(403);
+    }
 })
 
 module.exports = router;

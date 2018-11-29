@@ -1,33 +1,21 @@
 // File with the database connection
+var MongoClient = require( 'mongodb' ).MongoClient;
 
-// ALGO DESTE GÉNERO MAS PARA O NOSSO CASO
-// var mysql = require('mysql');
-// var connection = mysql.createConnection({
-// host     : '127.0.0.1',
-// user     : 'root',
-// password : '',
-// database : 'chat'
-// });
+var database_name = "mongodb://localhost:27017";
+var _db;
 
-// connection.connect(function(err) {
-// if (err) throw err;
-// });
+module.exports = {
 
-// module.exports = connection;
+  connectToServer: function( callback ) {
+    MongoClient.connect(database_name, function( err, db ) {
+      _db = db.db("asint");
+      return callback( err );
+    } );
+  },
 
-const MongoClient = require('mongodb').MongoClient;
-const url = "mongodb://localhost:27017";
-
-let _db;
-
-//conecta ao servidor
-MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
-	if (err) throw 'Error connecting do db';
-	//dentro do servidor escolhe a db com nome asint
-	_db = db.db("asint");
-	console.log('Successfully connected to db');
-});
-
-module.exports = _db;
+  getDB: function() {
+    return _db;
+  }
+};
 
 
