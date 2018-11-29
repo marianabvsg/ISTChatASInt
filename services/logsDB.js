@@ -22,6 +22,14 @@ module.exports = class logsDB {
         
     }
 
+    listAllMessages(){
+
+    }
+
+    listAllMoves(){
+        
+    }
+
     listByUser() {
 
     }
