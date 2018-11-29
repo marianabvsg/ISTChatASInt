@@ -1,11 +1,18 @@
+// uses the database connection created in database.js
+var db = require('./database.js');
+
 module.exports = class userDB {
 
-    constructor(db) {
-        this.db = db
+    constructor() {
+
     }
 
     insert() {
+        
+    }
 
+    print() {
+        return this.db;
     }
 
     listUsers() {

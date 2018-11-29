@@ -105,7 +105,7 @@ router.get('/list/users', function(req, res) {
     // get the list of users from the database
     let users = new userDB();
 
-    
+
 
     res.send([{
         "name": "renato"
@@ -210,7 +210,7 @@ router.get('/bot', function(req, res) {
     if(building == null /* or doesn't belong to the DB of buildings */) {
 
         // not found
-        res.sendStatus(404);
+        res.sendStatus(403);
     } else {
 
         var key = apikey();  // generates 40 char base64 encoded key

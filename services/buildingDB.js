@@ -1,7 +1,10 @@
+// uses the database connection created in database.js
+var db = require('./database.js');
+
 module.exports = class buildingDB {
 
-    constructor(db) {
-        this.db = db
+    constructor() {
+
     }
 
     getCoordinates(name) {

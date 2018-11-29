@@ -1,7 +1,10 @@
+// uses the database connection created in database.js
+var db = require('./database.js');
+
 module.exports = class logsDB {
 
-    constructor(db) {
-        this.db = db
+    constructor() {
+
     }
 
     insertMessage(user_id, message) {
