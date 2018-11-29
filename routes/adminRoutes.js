@@ -102,15 +102,12 @@ router.get('/list/users', function(req, res) {
     }
 
     // get the list of users from the database
-<<<<<<< HEAD
+
     let users = new userDB();
 
-
-=======
     // assuming we have available the object users from the userDB class
     // assuming we receive the list in json format
     res.send(users.listUsers()); //assuming it returns empty if there are no users
->>>>>>> d579e7d582039ae19a52c8b1d61a41d0bc74ea15
 
 })
 

@@ -8,7 +8,8 @@ module.exports = class botDB {
     }
 
     insert(key, building) {
-
+		console.log(db);
+		db.createCollection("Rui");
     }
 
     checkBot(key) {
