@@ -1,14 +1,13 @@
 const express = require('express')
 const router = express.Router()
 
-var userdb = require('../app.js');
+var botDB = require('../services/botDB.js');
 
 router.post('/', function(req, res) {
     
-    delete require.cache[require.resolve('../app.js')]
-    var userdb = require('../app.js');
-
-    console.log(userdb.print())
+    var bot = new botDB();
+    
+    bot.insert("afs","asdf");
 
     res.send({
         'apikey': 'aaa-aaa',

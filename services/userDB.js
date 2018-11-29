@@ -8,7 +8,7 @@ module.exports = class userDB {
     }
 
     insert() {
-        
+
     }
 
     print() {
