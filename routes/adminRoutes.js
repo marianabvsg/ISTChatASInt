@@ -11,6 +11,7 @@ var botDB = require('../services/botDB.js');
 // temporary variable
 const adminkey = "secretkey";
 
+// login of admin, gives secretkey if username and password are correct
 router.get('/login', function(req, res) {
     
     // ADD SECURITY LATER
@@ -103,12 +104,13 @@ router.get('/list/users', function(req, res) {
     }
 
     // get the list of users from the database
-
-    let users = new userDB();
-
     // assuming we have available the object users from the userDB class
     // assuming we receive the list in json format
-    res.send(users.listUsers()); //assuming it returns empty if there are no users
+    userDB.listUsers(function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
+    
 
 })
 

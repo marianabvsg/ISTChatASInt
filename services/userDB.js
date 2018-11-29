@@ -1,7 +1,7 @@
 // uses the database connection created in database.js
-var db = require('./database.js');
+var database = require('./database.js');
 
-module.exports = class userDB {
+class userDB {
 
     constructor() {
 
@@ -11,13 +11,21 @@ module.exports = class userDB {
 
     }
 
-    print() {
-        return this.db;
-    }
+    // returns all the users in the database
+    listUsers(callback) {
 
-    listUsers() {
-        
-        //returns all users
+        let db = database.getDB();
+
+        // checks if the key is in the bots database
+        db.collection("users").find().toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
     }
 
     listUsersByBuilding(building) {
@@ -51,3 +59,5 @@ module.exports = class userDB {
     }
 
 }
+
+module.exports = new userDB();

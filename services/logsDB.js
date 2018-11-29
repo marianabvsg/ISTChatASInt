@@ -1,7 +1,7 @@
 // uses the database connection created in database.js
-var db = require('./database.js');
+var database = require('./database.js');
 
-module.exports = class logsDB {
+class logsDB {
 
     constructor() {
 
@@ -51,3 +51,5 @@ module.exports = class logsDB {
     }
 
 }
+
+module.exports = new logsDB();

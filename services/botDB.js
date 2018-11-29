@@ -7,6 +7,7 @@ class botDB {
 
     }
 
+    // insert new bot in the bot's database
     insert(key, building) {
 
         let db = database.getDB();
