@@ -35,7 +35,7 @@ class botDB {
         // checks if the key is in the bots database
         db.collection("bots").findOne({
             "key": key
-        }).then(function(doc) {
+        }, function(doc) {
 
             if(!doc) {
                 return callback(false);
