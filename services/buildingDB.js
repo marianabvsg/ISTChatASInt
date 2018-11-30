@@ -41,7 +41,7 @@ class buildingDB {
             "long": long
         }).then(function(doc) {
 
-            // if doc not found, return an empty object
+            // if doc not found, return an empty objectç
             if(!doc) {
                 return callback({});
             // else return an object with lat and long
@@ -53,11 +53,18 @@ class buildingDB {
         });
     }
 
-    insertFromFile(jsonfile) {
+    // insert from jsonfile of buildings into the database
+    insertFromFile(jsonfile, callback) {
 
-        //return true if OK false otherwise
+        let db = database.getDB();
+        
+        // insert bulk data from jsonfile of buildings
+		db.collection("buildings").insert(jsonfile, function(err, res) {
+            callback(err, res);
+         });
     }
 
+    // insert one building into the database
     insert(id, name, lat, long) {
 
         let db = database.getDB();

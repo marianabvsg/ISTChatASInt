@@ -37,8 +37,6 @@ class botDB {
             "key": key
         }).then(function(doc) {
 
-            console.log(!doc)
-
             if(!doc) {
                 return callback(false);
             } else {

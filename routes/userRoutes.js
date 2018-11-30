@@ -3,6 +3,11 @@ const router = express.Router()
 
 // NOTA: users é a instancia da classe userDB
 
+// APP data:
+// client id: 1414440104755246
+// client secret: LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==
+// 
+
 router.get('/', function(req, res) {
     
     res.send('Hello User! ')
@@ -14,8 +19,16 @@ router.post('/:user/location', function(req, res) {
 
 })
 
-router.post('/:user/auth', function(req, res) {
+// Login of the user
+router.post('/:user/login', function(req, res) {
     // TODO
+
+})
+
+// Logout of the user
+router.post('/:user/logout', function(req, res) {
+    // TODO
+
 })
 
 router.post('/:user/message', function(req, res) {
@@ -31,7 +44,7 @@ router.post('/:user/message', function(req, res) {
     for(var receiver in nearbyUsers) {
     	//NAO TENHO BEM A CERTEZA SE ISTO É ASSIM, DEPOIS VER CONSOANTE O QUE FOR MANDADO
     	//send message to receiver
-    	TODO
+    	//TODO
 	}
 })
 
@@ -54,7 +67,6 @@ router.post('/:user/range', function(req, res) {
     }
 
     return;
-
 })
 
 //see who is nearby: on the range of the messages and on the same buiding.
@@ -68,7 +80,10 @@ router.get('/:user/nearby', function(req, res) {
 })
 
 router.get('/:user/receive', function(req, res) {
+
     // TODO
+
+
 })
 
 module.exports = router;

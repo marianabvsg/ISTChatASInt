@@ -7,6 +7,7 @@ const fs = require('fs');
 var filename = __dirname + "/../vars/constants.json";
 var userDB = require('../services/userDB.js');
 var botDB = require('../services/botDB.js');
+var buildingDB = require('../services/buildingDB.js');
 
 // temporary variable
 const adminkey = "secretkey";
@@ -53,14 +54,19 @@ router.post('/building', function(req, res) {
     const building_file = req.body.building;
 
     // check if it's a valid JSON file
+    // TODO
 
     // get the array of buildings
-    res.send(building_file)
+    buildingDB.insertFromFile(req.body.building, function(err, result) {
 
-    // Convert them in order to insert in the Building's database
-    // https://www.opentechguides.com/how-to/article/nodejs/124/express-mysql-json.html
-    // https://stackoverflow.com/questions/15367477/fastest-way-to-get-json-object-into-mysql-using-node
+        if(err) {
+            console.log(err)
+            res.sendStatus(500);
+            return;
+        }
 
+        res.sendStatus(200);
+    })
 })
 
 // updates the default range of the buildings
@@ -151,6 +157,8 @@ router.get('/list/logs', function(req, res) {
         return;
     }
 
+
+
     res.send(logs.listAll()); //assuming it returns empty if there are no logs
     
 })
@@ -205,6 +213,7 @@ router.get('/list/logs/messages/:building', function(req, res) {
     res.send(logs.listMessagesByBuilding(req.params.building)); //assuming it returns empty if there are no logs
 })
 
+
 // returns a list with all the messages of a certain user
 router.get('/list/logs/messages/:user', function(req, res) {
 
@@ -220,6 +229,7 @@ router.get('/list/logs/messages/:user', function(req, res) {
   
   res.send(logs.listMessagesByUser(req.params.user)); //assuming it returns empty if there are no logs
 })
+
 
 // returns a list with all the movements of a certain user
 router.get('/list/logs/movements/:user', function(req, res) {
@@ -254,7 +264,6 @@ router.get('/list/logs/:user', function(req, res) {
   
   res.send(logs.listByUser(req.params.user)); //assuming it returns empty if there are no logs
 })
-
 
 
 // returns a list with all the logs of a certain building
