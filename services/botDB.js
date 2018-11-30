@@ -20,7 +20,7 @@ class botDB {
                  throw err;
              }
 
-             console.log("1 doc inserted")
+             console.log("1 doc inserted in bots DB")
          });
 
         return;

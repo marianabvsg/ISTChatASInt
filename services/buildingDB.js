@@ -7,16 +7,50 @@ class buildingDB {
 
     }
 
+    // receives a building name and returns its coordinates 
     getCoordinates(name) {
 
-        return {coordinates}
+        let db = database.getDB();
+
+        // checks if the key is in the bots database
+        db.collection("buildings").findOne({
+            "name": name
+        }).then(function(doc) {
+
+            // if doc not found, return an empty object
+            if(!doc) {
+                return callback({});
+            // else return an object with lat and long
+            } else {
+                return callback({
+                    "lat": doc.lat,
+                    "long": doc.long
+                });
+            }
+        });
     }
 
+    // receives a building coordinates and returns its name
     getName(lat, long) {
 
+        let db = database.getDB();
 
+        // checks if the key is in the bots database
+        db.collection("buildings").findOne({
+            "lat": lat,
+            "long": long
+        }).then(function(doc) {
 
-        return name
+            // if doc not found, return an empty object
+            if(!doc) {
+                return callback({});
+            // else return an object with lat and long
+            } else {
+                return callback({
+                    "name": doc.name
+                });
+            }
+        });
     }
 
     insertFromFile(jsonfile) {
@@ -24,10 +58,24 @@ class buildingDB {
         //return true if OK false otherwise
     }
 
-    insert(building) {
+    insert(id, name, lat, long) {
 
+        let db = database.getDB();
+        
+		db.collection("buildings").insertOne({
+            "id": id,
+            "name": name,
+            "lat": lat,
+            "long": long
+         }, function(err, res) {
+             if(err) {
+                throw err;
+             }
 
-        //return true if OK false otherwise
+            callback(err, res);
+         });
+
+        return;
     }
 
 }
