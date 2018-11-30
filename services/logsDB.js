@@ -7,8 +7,8 @@ class logsDB {
 
     }
 
-    insertMessage(user_id, message) {
-        
+    insertMessage(user_id, message,callback) {
+
         //return
     }
 
@@ -17,28 +17,108 @@ class logsDB {
         //return
     }
 
-    listAll() {
+    listAll(callback) {
+        
+        var self=this;
 
+        this.listAllMoves(function(results_moves) {
+
+            self.listAllMessages(function(results_msgs) {
+
+            // let db = database.getDB();
+
+            // let results_moves= db.collection("logs_movements").find().toArray();
+
+            let logs= results_msgs.concat(results_moves);
+            callback(logs)
+        })
+        
+        })
+    }
+
+    listAllMessages(callback){
+
+        let db = database.getDB();
+
+        db.collection("logs_messages").find().toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+
+    }
+
+    listAllMoves(callback){
+
+        let db = database.getDB();
+
+        db.collection("logs_moves").find().toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
         
     }
 
-    listAllMessages(){
+    listByUser(user,callback) {
 
-    }
+        var self=this;
 
-    listAllMoves(){
+        this.listMovesByUser(user,function(results_moves) {
+
+            self.listMessagesByUser(user,function(results_msgs) {
+
+            // let db = database.getDB();
+
+            // let results_moves= db.collection("logs_movements").find().toArray();
+
+            let logs= results_msgs.concat(results_moves);
+            callback(logs)
+        })
         
-    }
-
-    listByUser() {
+        })
 
     }
 
-    listMovesByUser() {
+    listMovesByUser(user,callback) {
+
+        let db = database.getDB();
+        let query = { user_id: user };
+
+        db.collection("logs_moves").find(query).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
 
     }
 
-    listMessagesByUser() {
+    listMessagesByUser(user,callback) {
+
+        let db = database.getDB();
+        let query = { user_id: user };
+
+        db.collection("logs_messages").find(query).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
 
     }
 

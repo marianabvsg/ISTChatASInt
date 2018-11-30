@@ -7,6 +7,7 @@ const fs = require('fs');
 var filename = __dirname + "/../vars/constants.json";
 var userDB = require('../services/userDB.js');
 var botDB = require('../services/botDB.js');
+var logsDB = require('../services/logsDB.js');
 
 // temporary variable
 const adminkey = "secretkey";
@@ -151,8 +152,11 @@ router.get('/list/logs', function(req, res) {
         return;
     }
 
-    res.send(logs.listAll()); //assuming it returns empty if there are no logs
-    
+	logsDB.listAll(function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
+
 })
 
 // returns a list with all the messages
@@ -168,8 +172,10 @@ router.get('/list/logs/messages', function(req, res) {
         return;
     }
 
-    res.send(logs.listAllMessages()); //assuming it returns empty if there are no logs
-    
+   	logsDB.listAllMessages(function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    }) 
 })
 
 // returns a list with all the movements
@@ -185,7 +191,10 @@ router.get('/list/logs/movements', function(req, res) {
         return;
     }
 
-    res.send(logs.listAllMoves()); //assuming it returns empty if there are no logs
+	logsDB.listAllMoves(function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
     
 })
 
@@ -218,7 +227,11 @@ router.get('/list/logs/messages/:user', function(req, res) {
         return;
     }
   
-  res.send(logs.listMessagesByUser(req.params.user)); //assuming it returns empty if there are no logs
+	logsDB.listMessagesByUser(req.params.user,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
+
 })
 
 // returns a list with all the movements of a certain user
@@ -234,7 +247,11 @@ router.get('/list/logs/movements/:user', function(req, res) {
         return;
     }
   
-  res.send(logs.listMovesByUser(req.params.user)); //assuming it returns empty if there are no logs
+    logsDB.listMovesByUser(req.params.user,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
+
 })
 
 
@@ -251,8 +268,12 @@ router.get('/list/logs/:user', function(req, res) {
         res.sendStatus(403);
         return;
     }
+
+    logsDB.listByUser(req.params.user,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
   
-  res.send(logs.listByUser(req.params.user)); //assuming it returns empty if there are no logs
 })
 
 
@@ -298,7 +319,7 @@ router.get('/bot', function(req, res) {
 
 
     // if the building exists
-    if(building == null /* or doesn't belong to the DB of buildings */) {
+    if(building == null /* or doesn't belong to the DB of buildings TODO */) {
 
         // not found
         res.sendStatus(403);
