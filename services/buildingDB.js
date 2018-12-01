@@ -8,7 +8,7 @@ class buildingDB {
     }
 
     // receives a building name and returns its coordinates 
-    getCoordinates(name) {
+    getCoordinates(name,callback) {
 
         let db = database.getDB();
 
@@ -19,10 +19,10 @@ class buildingDB {
 
             // if doc not found, return an empty object
             if(!doc) {
-                return callback({});
+                callback({});
             // else return an object with lat and long
             } else {
-                return callback({
+                callback({
                     "lat": doc.lat,
                     "long": doc.long
                 });
@@ -31,7 +31,7 @@ class buildingDB {
     }
 
     // receives a building coordinates and returns its name
-    getName(lat, long) {
+    getName(lat, long,callback) {
 
         let db = database.getDB();
 
@@ -43,10 +43,10 @@ class buildingDB {
 
             // if doc not found, return an empty objectç
             if(!doc) {
-                return callback({});
+                callback({});
             // else return an object with lat and long
             } else {
-                return callback({
+                callback({
                     "name": doc.name
                 });
             }
@@ -83,6 +83,37 @@ class buildingDB {
          });
 
         return;
+    }
+
+    listAll(callback){
+
+        let db = database.getDB();
+
+        db.collection("buildings").find().toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+    }
+
+    findNearestBuilding(lat,long,range,callback){
+
+        this.listAll(function(buildings){
+
+            var building_name = new Array();
+
+            for(var building of buildings)           
+                //check if user's coordinates are within the specified range given the building coordinates
+                if (cenas){
+                    building_name.push(building.name);
+                }
+
+            callback(building_name)
+        })        
     }
 
 }
