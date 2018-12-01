@@ -8,6 +8,7 @@ var filename = __dirname + "/../vars/constants.json";
 var userDB = require('../services/userDB.js');
 var botDB = require('../services/botDB.js');
 var logsDB = require('../services/logsDB.js');
+var buildingDB = require('../services/buildingDB.js');
 
 // temporary variable
 const adminkey = "secretkey";
@@ -116,7 +117,6 @@ router.get('/list/users', function(req, res) {
 })
 
 // returns a list with all the users in a certain building
-// TODO
 router.get('/list/users/building/:building', function(req, res) {
 
     // check if the secret is correct
@@ -129,15 +129,21 @@ router.get('/list/users/building/:building', function(req, res) {
         return;
     }
 
-    // get the list of users in the requested building from the database
-    var building = req.params.building;
-    res.send(users.listUsersByBuilding(building)); //assuming it returns empty if there are no users
-    
-    // else if (typeof building == 'object') {
-    //     buildingName=buildings.getName(building.lat, building.long)
-    //     res.send(users.listUsersByBuilding(buildingName));
-    // }    
+	//check if building exists in the database
+    buildingDB.getCoordinates(req.params.building, function(results){
+    	
+    	if(!Object.keys(results).length){
+    		res.sendStatus(404);
+    	}
+    })
+
+
+	//find users 
+	userDB.listUsersByBuilding(req.params.building,function(results){
+		res.send(results);
+	})
 })
+
 
 // returns a list with all the logs
 router.get('/list/logs', function(req, res) {
@@ -159,6 +165,7 @@ router.get('/list/logs', function(req, res) {
 
 })
 
+
 // returns a list with all the messages
 router.get('/list/logs/messages', function(req, res) {
 
@@ -178,6 +185,7 @@ router.get('/list/logs/messages', function(req, res) {
     }) 
 })
 
+
 // returns a list with all the movements
 router.get('/list/logs/movements', function(req, res) {
 
@@ -194,12 +202,12 @@ router.get('/list/logs/movements', function(req, res) {
 	logsDB.listAllMoves(function(results) {
 
         res.send(results); //assuming it returns empty if there are no users
-    })
-    
+    })   
 })
 
+
 // returns a list with all the messages in a certain building
-router.get('/list/logs/messages/:building', function(req, res) {
+router.get('/list/logs/messages/building/:building', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
@@ -211,11 +219,24 @@ router.get('/list/logs/messages/:building', function(req, res) {
         return;
     }
 
-    res.send(logs.listMessagesByBuilding(req.params.building)); //assuming it returns empty if there are no logs
+    //check if building exists in the database
+    buildingDB.getCoordinates(req.params.building, function(results){
+    	
+    	if(!Object.keys(results).length){
+    		res.sendStatus(404);
+    	}
+    })
+
+    // find logs for the requested building
+	logsDB.listMessagesByBuilding(req.params.building,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
 })
 
-// returns a list with all the messages of a certain user
-router.get('/list/logs/messages/:user', function(req, res) {
+
+// returns a list with all the movements of a certain building
+router.get('/list/logs/movements/building/:building', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
@@ -227,15 +248,50 @@ router.get('/list/logs/messages/:user', function(req, res) {
         return;
     }
   
-	logsDB.listMessagesByUser(req.params.user,function(results) {
+    //check if building exists in the database
+    buildingDB.getCoordinates(req.params.building, function(results){
+    	
+    	if(!Object.keys(results).length){
+    		res.sendStatus(404);
+    	}
+    })
+
+    logsDB.listMovesByBuilding(req.params.building,function(results) {
 
         res.send(results); //assuming it returns empty if there are no users
     })
-
 })
 
+
+// returns a list with all the messages of a certain user
+router.get('/list/logs/messages/user/:user', function(req, res) {
+
+    // check if the secret is correct
+    const secret = req.body.adminkey;
+
+    // validate secret
+    if(secret == null || secret == {} || secret != adminkey) {
+        
+        res.sendStatus(403);
+        return;
+    }
+
+ //    //check if user exists in the database
+	// userDB.getCoordinates(req.params.user, function(results){
+    	
+ //    	if(!Object.keys(results).length){
+ //    		res.sendStatus(404);
+ //    	}
+ //    })
+    logsDB.listMessagesByUser(req.params.user,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
+})
+
+
 // returns a list with all the movements of a certain user
-router.get('/list/logs/movements/:user', function(req, res) {
+router.get('/list/logs/movements/user/:user', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
@@ -251,13 +307,11 @@ router.get('/list/logs/movements/:user', function(req, res) {
 
         res.send(results); //assuming it returns empty if there are no users
     })
-
 })
 
 
-
 // returns a list with all the logs of a certain user
-router.get('/list/logs/:user', function(req, res) {
+router.get('/list/logs/user/:user', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
@@ -273,13 +327,11 @@ router.get('/list/logs/:user', function(req, res) {
 
         res.send(results); //assuming it returns empty if there are no users
     })
-  
 })
 
 
-
 // returns a list with all the logs of a certain building
-router.get('/list/logs/:building', function(req, res) {
+router.get('/list/logs/building/:building', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
@@ -290,9 +342,21 @@ router.get('/list/logs/:building', function(req, res) {
         res.sendStatus(403);
         return;
     }
+
+	//check if building exists in the database
+    buildingDB.getCoordinates(req.params.building, function(results){
+    	
+    	if(!Object.keys(results).length){
+    		res.sendStatus(404);
+    	}
+    })
   
-  res.send(logs.listByBuilding(req.params.building)); //assuming it returns empty if there are no logs
+ 	logsDB.listByBuilding(req.params.building,function(results) {
+
+        res.send(results); //assuming it returns empty if there are no users
+    })
 })
+
 
 // Generate an api key for a new bot
 router.get('/bot', function(req, res) {

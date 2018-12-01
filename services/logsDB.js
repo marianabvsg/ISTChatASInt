@@ -91,7 +91,7 @@ class logsDB {
     listMovesByUser(user,callback) {
 
         let db = database.getDB();
-        let query = { user_id: user };
+        let query = { ist_id: user };
 
         db.collection("logs_moves").find(query).toArray(function(err, docs) {
             
@@ -108,7 +108,7 @@ class logsDB {
     listMessagesByUser(user,callback) {
 
         let db = database.getDB();
-        let query = { user_id: user };
+        let query = { ist_id: user };
 
         db.collection("logs_messages").find(query).toArray(function(err, docs) {
             
@@ -122,11 +122,57 @@ class logsDB {
 
     }
 
-    listByBuilding() {
+    listByBuilding(room,callback) {
+
+        var self=this;
+
+        this.listMovesByBuilding(room,function(results_moves) {
+
+            self.listMessagesByBuilding(room,function(results_msgs) {
+
+            // let db = database.getDB();
+
+            // let results_moves= db.collection("logs_movements").find().toArray();
+
+            let logs= results_msgs.concat(results_moves);
+            callback(logs)
+        })
+        
+        })
 
     }
 
-    listMessagesByBuilding() {
+    listMessagesByBuilding(room,callback) {
+
+        let db = database.getDB();
+        let query = { building: room };
+
+        db.collection("logs_messages").find(query).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+
+    }
+
+    listMovesByBuilding(room,callback) {
+
+        let db = database.getDB();
+        let query = { building: room };
+
+        db.collection("logs_moves").find(query).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
 
     }
 

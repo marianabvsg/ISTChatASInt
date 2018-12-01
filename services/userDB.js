@@ -28,13 +28,22 @@ class userDB {
         });
     }
 
-    listUsersByBuilding(building) {
+    //returns all users by building
+    listUsersByBuilding(room,callback) {
 
-        // get building coords
+        let db = database.getDB();
+        let query = { building: room };
 
-        // 
-        
-        //returns all users by building
+        db.collection("users").find(query).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+
     }
 
     listUsersInRange(user){
@@ -57,6 +66,28 @@ class userDB {
     setRange(user, range) {
         //returns true if range set successfuly
     }
+
+    // getName(id,callback){
+
+    //     let db = database.getDB();
+
+    //     // checks if the key is in the bots database
+    //     db.collection("users").findOne({
+    //         "ist_id": id,
+    //     }).then(function(doc) {
+
+    //         // if doc not found, return an empty object
+    //         if(!doc) {
+    //             callback({});
+    //         // else return an object with lat and long
+    //         } else {
+    //             callback({
+    //                 "name": doc.name
+    //             });
+    //         }
+    //     });
+
+    // }
 
 }
 
