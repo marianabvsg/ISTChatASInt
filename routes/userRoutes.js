@@ -22,20 +22,40 @@ router.get('/', function(req, res) {
 router.post('/:user/location', function(req, res) {
  
     var user=req.params.user;
-    //find in which building the user is // TODO
-    var building_name= ;
+    var latitude = parseInt(req.body.coords.latitude);
+    var longitude = parseInt(req.body.coords.longitude);
+    // nao sei se aqui é preciso checkar alguma coisa // TODO
 
-    //update user's location
-    userDB.updateLocation(user,parseInt(req.body.coords.latitude),parseInt(req.body.coords.longitude))
+    //CHECKAR SE ELE O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
+
+    //update user's location in the database
+    userDB.updateLocation(user,latitude,longitude)
     
-    //update user's building //só se for diferente?? // TODO
-    userDB.updateBuilding(user, building_name);
+    //UPDATE BROWSER'S DATA // TODO  
 
-    //insert new movement log
-    logsDB.insertMove(user,building_name);
-
-    res.sendStatus(200);
+    buildingDB.findNearestBuilding(latitude,longitude,filename.building_range,function(building_name){
     
+        //checking if user is in one of the registered buildings
+        if(!Object.keys(building_name).length){
+     
+            //update user's building in the database//só se for diferente?? // TODO
+            userDB.updateBuilding(user, building_name);
+
+            //insert new movement log
+            logsDB.insertMove(user,building_name);
+
+        }
+        else{
+            
+            //update user's building in the database//só se for diferente?? // TODO
+            userDB.updateBuilding(user, []);
+
+            //insert new movement log
+            //logsDB.insertMove(user,building_name);
+        }
+
+        res.sendStatus(200);
+    })
 })
 
 // Login of the user
@@ -50,6 +70,7 @@ router.post('/:user/logout', function(req, res) {
 
 })
 
+// TODO
 router.post('/:user/message', function(req, res) {
 
     //get message to send from req body

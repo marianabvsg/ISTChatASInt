@@ -85,6 +85,37 @@ class buildingDB {
         return;
     }
 
+    listAll(callback){
+
+        let db = database.getDB();
+
+        db.collection("buildings").find().toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+    }
+
+    findNearestBuilding(lat,long,range,callback){
+
+        this.listAll(function(buildings){
+
+            var building_name = new Array();
+
+            for(var building of buildings)           
+                //check if user's coordinates are within the specified range given the building coordinates
+                if (cenas){
+                    building_name.push(building.name);
+                }
+
+            callback(building_name)
+        })        
+    }
+
 }
 
 module.exports = new buildingDB();
