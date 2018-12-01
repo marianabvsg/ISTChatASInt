@@ -33,35 +33,58 @@ router.get('/auth', function(req, res) {
 
     if(req.query.error == "access_denied") {
 
-        console.log(req.query.error);
+        //console.log(req.query.error);
 
         // send the error back to the user
         res.status(401).send('Forbidden: ' + req.query.error_description);
     }
 
-    console.log(req.query.code);
-
-    let code = req.query.code;
+    // uncomment if you want to see the code
+    //console.log(req.query.code);
 
     //let auth_path = "/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + code + "&grant_type=authorization_code";
 
-    request.post("https://fenix.tecnico.ulisboa.pt/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + code + "&grant_type=authorization_code", (err, response, body) => {
+    request.post("https://fenix.tecnico.ulisboa.pt/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + req.query.code + "&grant_type=authorization_code", (err, response, body) => {
 
         if (err) { 
+            console.log("Error in second phase");
             return console.log(err); 
         }
 
         if(res.statusCode == 200) {
 
-            console.log(body);
-            res.send(response.body);
+            var token = JSON.parse(response.body).access_token
+
+            // uncomment if you want to see the authorization token
+            //console.log(token)
 
             //https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person
+            request.get('https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person', {
+                'auth': {
+                    'bearer' : token
+                }
+            }, (error, resp, body) => {
+
+                if (error) { 
+                    return console.log(error); 
+                }
+        
+                if(resp.statusCode == 200) {
+        
+                    res.send(JSON.parse(resp.body));
+
+                    // get the istID and name
+
+                    // insert it in the database
+        
+                } else {
+                    res.status(401).send("Last get: Not authorized to access user");
+                }
+            });
 
         } else {
-            res.send(401, "Not authorized to access user");
+            res.status(401).send("Not authorized to access user");
         }
- 
     });
 })
 
@@ -129,3 +152,13 @@ router.get('/:user/receive', function(req, res) {
 })
 
 module.exports = router;
+
+// access_token_request_url = 'https://fenix.tecnico.ulisboa.pt/oauth/access_token'
+//     request_data = {'client_id': int(APP['clientID']), 'client_secret': APP['clientSecret'],
+//             'redirect_uri': APP['redirectURI'], 'code': session['code'], 'grant_type': 'authorization_code'}
+
+//     reqAccessToken = requests.post(access_token_request_url, data=request_data)
+
+
+//     params = {'access_token': session['access_token']}
+//     request_info = requests.get('https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person', params=params)
