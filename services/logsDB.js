@@ -7,12 +7,29 @@ class logsDB {
 
     }
 
+    //insert new message in the logs_movements db
     insertMessage(user_id, message,callback) {
 
         //return
     }
 
+    //insert new movement in the logs_movements db
     insertMove(user_id, building) {
+
+        let db = database.getDB();
+        
+        db.collection("logs_movements").insertOne({
+            "ist_id": user_id,
+            "building": building
+         }, function(err, res) {
+             if(err) {
+                 throw err;
+             }
+
+             console.log("1 movement inserted in logs_movement DB")
+         });
+
+        return;
         
         //return
     }

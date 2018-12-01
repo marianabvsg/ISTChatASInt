@@ -1,5 +1,8 @@
 const express = require('express')
 const router = express.Router()
+var userDB = require('../services/userDB.js');
+var logsDB = require('../services/logsDB.js');
+
 
 // NOTA: users é a instancia da classe userDB
 
@@ -14,9 +17,25 @@ router.get('/', function(req, res) {
 
 })
 
+
+
 router.post('/:user/location', function(req, res) {
+ 
+    var user=req.params.user;
+    //find in which building the user is // TODO
+    var building_name= ;
 
+    //update user's location
+    userDB.updateLocation(user,parseInt(req.body.coords.latitude),parseInt(req.body.coords.longitude))
+    
+    //update user's building //só se for diferente?? // TODO
+    userDB.updateBuilding(user, building_name);
 
+    //insert new movement log
+    logsDB.insertMove(user,building_name);
+
+    res.sendStatus(200);
+    
 })
 
 // Login of the user

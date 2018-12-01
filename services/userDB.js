@@ -46,6 +46,44 @@ class userDB {
 
     }
 
+    //updates user location 
+    updateLocation(user,latitude,longitude){
+
+        let db = database.getDB();
+        var myquery = { ist_id: user };
+        var newvalues = { $set: { lat: latitude, long: longitude} };
+    
+        db.collection("users").updateOne(myquery, newvalues, function(err, docs) {
+            
+            if(err) {
+                 throw err;
+             }
+
+             console.log("1 location updated in users DB")
+        });
+
+        return;
+    }
+
+    //updates user's building 
+    updateBuilding(user,room){
+
+        let db = database.getDB();
+        var myquery = { ist_id: user };
+        var newvalues = { $set: { building: room} };
+    
+        db.collection("users").updateOne(myquery, newvalues, function(err, docs) {
+            
+            if(err) {
+                 throw err;
+             }
+
+             console.log("1 building updated in users DB")
+        });
+
+        return;
+    }
+
     listUsersInRange(user){
         // returns all users which are within the defined range for the input user
     }
