@@ -7,7 +7,24 @@ class userDB {
 
     }
 
-    insert() {
+    // insert logged in user in database
+    insert(id, name, callback) {
+
+        let db = database.getDB();
+
+        // Check first if user is already in the database and only if not it inserts
+        db.collection("users").updateOne({
+             "ist_id": id
+            }, {
+             $set:{ 
+                 "name": name
+                }
+            }, { 
+                upsert:true
+            }, function(err, res) {
+             
+                return callback(err, res);
+            });
 
     }
 

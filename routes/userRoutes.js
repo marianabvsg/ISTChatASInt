@@ -28,16 +28,19 @@ router.post('/:user/location', function(req, res) {
     var user=req.params.user;
     var latitude = parseInt(req.body.coords.latitude);
     var longitude = parseInt(req.body.coords.longitude);
+
     // nao sei se aqui é preciso checkar alguma coisa // TODO
 
     //CHECKAR SE ELE O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
+
+    // CHECKAR SE O USER JÁ TEM BUILDING OU NÃO
 
     //update user's location in the database
     userDB.updateLocation(user,latitude,longitude)
     
     //UPDATE BROWSER'S DATA // TODO  
 
-    buildingDB.findNearestBuilding(latitude,longitude,filename.building_range,function(building_name){
+    buildingDB.findNearestBuilding(latitude,longitude, filename.building_range, function(building_name){
     
         //checking if user is in one of the registered buildings
         if(!Object.keys(building_name).length){
@@ -64,8 +67,7 @@ router.post('/:user/location', function(req, res) {
 
 // Login of the user
 router.get('/login', function(req, res) {
-    // TODO
-
+    
     res.redirect('https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri)
 })
 
@@ -83,8 +85,6 @@ router.get('/auth', function(req, res) {
     // uncomment if you want to see the code
     //console.log(req.query.code);
 
-    //let auth_path = "/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + code + "&grant_type=authorization_code";
-
     request.post("https://fenix.tecnico.ulisboa.pt/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + req.query.code + "&grant_type=authorization_code", (err, response, body) => {
 
         if (err) { 
@@ -99,7 +99,6 @@ router.get('/auth', function(req, res) {
             // uncomment if you want to see the authorization token
             //console.log(token)
 
-            //https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person
             request.get('https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person', {
                 'auth': {
                     'bearer' : token
@@ -111,12 +110,26 @@ router.get('/auth', function(req, res) {
                 }
         
                 if(resp.statusCode == 200) {
-        
-                    res.send(JSON.parse(resp.body));
+
+                    var user = JSON.parse(resp.body)
+                    
+                    // just for debug
+                    //res.send(JSON.parse(resp.body));
 
                     // get the istID and name
-
                     // insert it in the database
+                    userDB.insert(user.username, user.name, function(err, result) {
+
+                        if(err) {
+                            res.status(500).send("Error inserting user in the database");
+                            return;
+                        }
+
+                        res.sendStatus(200);
+
+                        // possibly redirect to another page
+                        // TODO
+                    })
         
                 } else {
                     res.status(401).send("Last get: Not authorized to access user");
