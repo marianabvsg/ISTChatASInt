@@ -5,9 +5,10 @@ const request = require('request');
 // our modules
 var userDB = require('../services/userDB.js');
 var logsDB = require('../services/logsDB.js');
+var buildingDB = require('../services/buildingDB.js');
+var filename = __dirname + "/../vars/constants.json";
 
 
-// NOTA: users é a instancia da classe userDB
 
 // APP data:
 var client_id = "1414440104755246";
@@ -26,39 +27,45 @@ router.get('/', function(req, res) {
 router.post('/:user/location', function(req, res) {
  
     var user=req.params.user;
-    var latitude = parseInt(req.body.coords.latitude);
-    var longitude = parseInt(req.body.coords.longitude);
+    var latitude = parseFloat(req.body.coords.latitude);
+    var longitude = parseFloat(req.body.coords.longitude);
 
     // nao sei se aqui é preciso checkar alguma coisa // TODO
-
     //CHECKAR SE ELE O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
-
-    // CHECKAR SE O USER JÁ TEM BUILDING OU NÃO
+    // ou aquilo retorna alguma cena se não encontrar a lat e long?
 
     //update user's location in the database
-    userDB.updateLocation(user,latitude,longitude)
-    
+    userDB.updateLocation(user,latitude,longitude) 
+
     //UPDATE BROWSER'S DATA // TODO  
 
-    buildingDB.findNearestBuilding(latitude,longitude, filename.building_range, function(building_name){
     
+    var file = require(filename)
+    let range= file.building_range;
+
+    buildingDB.findNearestBuilding(latitude,longitude,range, function(building_name){
+    
+
         //checking if user is in one of the registered buildings
-        if(!Object.keys(building_name).length){
-     
-            //update user's building in the database//só se for diferente?? // TODO
-            userDB.updateBuilding(user, building_name);
+        if(building_name.length){
+            
+            // TODO <- checkar se é a melhor forma
+            var names = new Array();
+            for(var building of building_name){
+                names.push(building.name);
+            }          
+    
+
+            //update user's building in the database//
+            userDB.updateBuilding(user, names);
 
             //insert new movement log
-            logsDB.insertMove(user,building_name);
+            logsDB.insertMove(user,names);
 
         }
         else{
-            
-            //update user's building in the database//só se for diferente?? // TODO
-            userDB.updateBuilding(user, []);
-
-            //insert new movement log
-            //logsDB.insertMove(user,building_name);
+            //update user's building in the database//
+            userDB.updateBuilding(user, null);
         }
 
         res.sendStatus(200);

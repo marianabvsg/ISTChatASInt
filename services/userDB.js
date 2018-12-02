@@ -70,7 +70,7 @@ class userDB {
         var myquery = { ist_id: user };
         var newvalues = { $set: { lat: latitude, long: longitude} };
     
-        db.collection("users").updateOne(myquery, newvalues, function(err, docs) {
+        db.collection("users").updateOne(myquery, newvalues,{upsert:true},function(err, docs) {
             
             if(err) {
                  throw err;
@@ -89,7 +89,7 @@ class userDB {
         var myquery = { ist_id: user };
         var newvalues = { $set: { building: room} };
     
-        db.collection("users").updateOne(myquery, newvalues, function(err, docs) {
+        db.collection("users").updateOne(myquery, newvalues,{upsert:true},function(err, docs) {
             
             if(err) {
                  throw err;
