@@ -1,5 +1,6 @@
 // uses the database connection created in database.js
 var database = require('./database.js');
+const geolib = require('geolib');
 
 class buildingDB {
 
@@ -102,19 +103,55 @@ class buildingDB {
 
     findNearestBuilding(lat,long,range,callback){
 
-        this.listAll(function(buildings){
+        // dist = geolib.getDistance(
+        //     {latitude: lat, longitude: long},
+        //     {latitude: , longitude: }
+        // );
 
-            var building_name = new Array();
+        //POR ISTO NO INSERT!
 
-            for(var building of buildings)           
-                //check if user's coordinates are within the specified range given the building coordinates
-                if (cenas){
-                    building_name.push(building.name);
-                }
+        let db = database.getDB();
+        // db.collection("buildings").createIndex( { location : "2dsphere" } );
+        //db.collection("buildings").ensureIndex({ location: '2dsphere' })
 
-            callback(building_name)
-        })        
-    }
+        let query = {location:  {
+            $near: {
+                $geometry: {
+                    "type": "Point" ,
+                    "coordinates": [ long , lat ]
+                },
+                $maxDistance: range
+            }
+        }};
+
+        //{'location':{ $near: [ lat, long ], $maxDistance: 10}};
+        let proj= { name: 1};
+
+        db.collection("buildings").find(query,{ projection: proj }).toArray(function(err, docs) {
+            
+            if(err) {
+                throw err;
+            }
+
+            //returns all users
+            callback(docs);
+        });
+
+
+    //     this.listAll(function(buildings){
+
+    //         var building_name = new Array();
+
+    //         for(var building of buildings)           
+    //             //check if user's coordinates are within the specified range given the building coordinates
+    //             if (cenas){
+    //                 building_name.push(building.name);
+    //             }
+
+    //         callback(building_name)
+    //     })        
+    // }
+    }  
 
 }
 

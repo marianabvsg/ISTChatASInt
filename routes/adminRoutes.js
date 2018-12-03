@@ -15,7 +15,7 @@ var buildingDB = require('../services/buildingDB.js');
 const adminkey = "secretkey";
 
 // login of admin, gives secretkey if username and password are correct
-router.get('/login', function(req, res) {
+router.post('/login', function(req, res) {
     
     // ADD SECURITY LATER
     // TODO
@@ -152,7 +152,7 @@ router.get('/list/users/building/:building', function(req, res) {
 
 // returns a list with all the logs
 router.get('/list/logs', function(req, res) {
-
+	
     // check if the secret is correct
     const secret = req.body.adminkey;
 
