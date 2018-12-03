@@ -40,7 +40,6 @@ router.get('/login', function(req, res) {
 })
 
 // receive a JSON file with buildings
-// TODO
 router.post('/building', function(req, res) {
 
     const secret = req.body.adminkey;
