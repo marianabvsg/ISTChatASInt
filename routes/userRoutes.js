@@ -9,7 +9,6 @@ var buildingDB = require('../services/buildingDB.js');
 var filename = __dirname + "/../vars/constants.json";
 
 
-
 // APP data:
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
@@ -19,7 +18,6 @@ var redirect_uri = 'http://127.0.0.1:3000/user/auth';
 router.get('/', function(req, res) {
     
     res.send('Hello User! ')
-
 })
 
 
@@ -214,13 +212,3 @@ router.get('/:user/receive', function(req, res) {
 })
 
 module.exports = router;
-
-// access_token_request_url = 'https://fenix.tecnico.ulisboa.pt/oauth/access_token'
-//     request_data = {'client_id': int(APP['clientID']), 'client_secret': APP['clientSecret'],
-//             'redirect_uri': APP['redirectURI'], 'code': session['code'], 'grant_type': 'authorization_code'}
-
-//     reqAccessToken = requests.post(access_token_request_url, data=request_data)
-
-
-//     params = {'access_token': session['access_token']}
-//     request_info = requests.get('https://fenix.tecnico.ulisboa.pt/api/fenix/v1/person', params=params)
