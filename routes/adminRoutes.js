@@ -100,7 +100,7 @@ router.post('/building/range', function(req, res) {
 
 // returns a list with all logged in users
 router.get('/list/users', function(req, res) {
-    
+
     // check if the secret is correct
     const secret = req.body.adminkey;
 

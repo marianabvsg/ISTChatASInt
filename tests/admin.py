@@ -18,25 +18,38 @@ def login():
 	return key["adminkey"] #retrieve key
 
 
-def menu(key):
+def menu(secretKey):
 	url = "http://127.0.0.1:3000/admin/"
 	
 	print (30 * "-" , "Menu" , 30 * "-")
 	print ("Complete the URI below:")
 	uri = input(url)
-	method = input("Choose method [POST] [GET] [DELETE]: ")
+	method = input("Choose option:\n1 - To Post buildings file\n2 - To Post\n3 - To Get\n4 - To Delete\n$")
 	
 	url = url + uri
-
-	if (method == "POST"):
+	
+	params = {}
+	payload = {}
+	#(se for preciso mais que uma chave pôr um ciclo)
+	if (method == "1"): # Post buildings file
 		with open("../data/buildings-alameda.json") as data:
-			payload = json.load(data)
-		payload['adminkey'] = key #adds secret key to payload
+			payload["building"] = json.load(data)
+		payload['adminkey'] = secretKey #adds secret key to payload
 		r = requests.post(url, data = payload)
-	else:
-		params = input("Insert url params in the: {'key':'value'} format") #params to go in the url
-		payload = {'adminkey':key} #secret key
+	elif (method == "2"): #Post
+		key = input("Insert key: ") #body post
+		value = input("Insert value: ")
+		payload[key] = value
+		payload['adminkey'] = secretKey
+		r = requests.post(url, data = payload)
+	elif (method == "3"): #Get
+		key = input("Insert key: ") #params to go in the url
+		value = input("Insert value: ")
+		params[key] = value
+		payload['adminkey'] = secretKey
 		r = requests.get(url, data = payload, params = params)
+	#elif (method == "4")
+		
 	print (r) #response
 		
 	
