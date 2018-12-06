@@ -30,12 +30,15 @@ def menu(secretKey):
 	
 	params = {}
 	payload = {}
+	headers = {'Content-type': 'application/json'}
+	
 	#(se for preciso mais que uma chave pôr um ciclo)
 	if (method == "1"): # Post buildings file
-		with open("../data/buildings-alameda.json") as data:
-			payload["building"] = json.load(data)
 		payload['adminkey'] = secretKey #adds secret key to payload
-		r = requests.post(url, data = payload)
+		with open("../data/buildings-alameda.json") as data:
+			payload['building'] = json.load(data)
+		print(payload)
+		r = requests.post(url, headers = headers, data = json.dumps(payload))
 	elif (method == "2"): #Post
 		key = input("Insert key: ") #body post
 		value = input("Insert value: ")

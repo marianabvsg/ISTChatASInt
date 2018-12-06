@@ -44,7 +44,6 @@ router.post('/login', function(req, res) {
 router.post('/building', function(req, res) {
 
     const secret = req.body.adminkey;
-
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
         
@@ -54,7 +53,6 @@ router.post('/building', function(req, res) {
 
     // receive JSON file
     const building_file = req.body.building;
-
     // check if it's a valid JSON file
     // TODO
 
