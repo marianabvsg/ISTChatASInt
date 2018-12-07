@@ -254,7 +254,7 @@ router.get('/list/logs/movements/building/:building', function(req, res) {
   
     //check if building exists in the database
     buildingDB.getCoordinates(req.params.building, function(results){
-    	
+
     	if(!Object.keys(results).length){
     		res.sendStatus(404);
     	}

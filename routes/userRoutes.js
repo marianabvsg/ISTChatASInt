@@ -34,14 +34,15 @@ router.post('/:user/location', function(req, res) {
     //CHECKAR SE ELE O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
     // ou aquilo retorna alguma cena se não encontrar a lat e long?
 
+    //chekcar se user existe? // TODO
+
     //update user's location in the database
     userDB.updateLocation(user,latitude,longitude) 
-
-    //UPDATE BROWSER'S DATA // TODO  
-
     
     var file = require(filename)
-    let range= file.building_range;
+    let range= Number(file.building_range);
+    console.log(range)
+    console.log(typeof range)
 
     buildingDB.findNearestBuilding(latitude,longitude,range, function(building_name){
     
@@ -49,23 +50,25 @@ router.post('/:user/location', function(req, res) {
         //checking if user is in one of the registered buildings
         if(building_name.length){
             
-            // TODO <- checkar se é a melhor forma
-            var names = new Array();
-            for(var building of building_name){
-                names.push(building.name);
-            }          
+            // var names = new Array();
+            // for(var building of building_name){
+            //     names.push(building.name);
+            // }          
     
-
-            //update user's building in the database//
-            userDB.updateBuilding(user, names);
+            //update user's building in the database
+            // we choose the nearest building
+            userDB.updateBuilding(user,building_name[0].name);
 
             //insert new movement log
-            logsDB.insertMove(user,names);
+            logsDB.insertMove(user,latitude,longitude,building_name[0].name);
 
         }
         else{
             //update user's building in the database//
             userDB.updateBuilding(user, null);
+
+            //insert new movement log
+            logsDB.insertMove(user,latitude,longitude,null);
         }
 
         res.sendStatus(200);

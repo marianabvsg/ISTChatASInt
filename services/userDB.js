@@ -68,14 +68,18 @@ class userDB {
 
         let db = database.getDB();
         var myquery = { ist_id: user };
-        var newvalues = { $set: { lat: latitude, long: longitude} };
+        var newvalues = { $set: { "location": {
+                                    "type":"Point",
+                                    "coordinates": [longitude,latitude]
+                                }
+                        } };
     
         db.collection("users").updateOne(myquery, newvalues,{upsert:true},function(err, docs) {
             
             if(err) {
                  throw err;
              }
-
+             db.collection("users").createIndex( { location : "2dsphere" } );
              console.log("1 location updated in users DB")
         });
 

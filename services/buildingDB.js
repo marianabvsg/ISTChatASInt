@@ -24,8 +24,8 @@ class buildingDB {
             // else return an object with lat and long
             } else {
                 callback({
-                    "lat": doc.lat,
-                    "long": doc.long
+                    "lat": doc.location.coordinates[1],
+                    "long": doc.location.coordinates[0]
                 });
             }
         });
@@ -38,11 +38,13 @@ class buildingDB {
 
         // checks if the key is in the bots database
         db.collection("buildings").findOne({
-            "lat": lat,
-            "long": long
+            "location":{
+                type: "Point",
+                "coordinates": [long,lat]
+            }
         }).then(function(doc) {
 
-            // if doc not found, return an empty objectç
+            // if doc not found, return an empty object
             if(!doc) {
                 callback({});
             // else return an object with lat and long
@@ -58,9 +60,20 @@ class buildingDB {
     insertFromFile(jsonfile, callback) {
 
         let db = database.getDB();
-        
+
+        for(let room of jsonfile){
+            room.location={
+                "type": "Point",
+                "coordinates": [room.long, room.lat]
+            }
+            delete room.long;
+            delete room.lat;
+        }
+
         // insert bulk data from jsonfile of buildings
-		db.collection("buildings").insert(jsonfile, function(err, res) {
+		db.collection("buildings").insert( jsonfile,function(err, res) {
+            // db.collection("buildings").createIndex( { "id": 1 } , { unique: true } )
+            db.collection("buildings").createIndex( { location : "2dsphere" } );
             callback(err, res);
          });
     }
@@ -70,16 +83,22 @@ class buildingDB {
 
         let db = database.getDB();
         
-		db.collection("buildings").insertOne({
-            "id": id,
+		db.collection("buildings").updateOne(
+            { "id" : id }
+            ,
+            {$set: {
             "name": name,
-            "lat": lat,
-            "long": long
-         }, function(err, res) {
+            "location":{
+                "type": "Point",
+                "coordinates": [long,lat]
+            }
+
+         }}, {upsert:true},
+          function(err, res) {
              if(err) {
                 throw err;
              }
-
+            db.collection("buildings").createIndex( { location : "2dsphere" } );
             callback(err, res);
          });
 
@@ -107,8 +126,6 @@ class buildingDB {
         //     {latitude: lat, longitude: long},
         //     {latitude: , longitude: }
         // );
-
-        //POR ISTO NO INSERT!
 
         let db = database.getDB();
         // db.collection("buildings").createIndex( { location : "2dsphere" } );

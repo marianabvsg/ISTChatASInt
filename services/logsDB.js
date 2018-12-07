@@ -30,12 +30,16 @@ class logsDB {
     }
 
     //insert new movement in the logs_movements db
-    insertMove(user_id, building) {
+    insertMove(user_id, latitude, longitude, building) {
 
         let db = database.getDB();
         
         db.collection("logs_moves").insertOne({
             "ist_id": user_id,
+            "coordinates" : {
+                "longitude": longitude,
+                "latitude":  latitude
+            },
             "building": building
          }, function(err, res) {
              if(err) {
