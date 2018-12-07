@@ -10,7 +10,6 @@ const adminRoutes = require('./routes/adminRoutes.js')
 const indexRoutes = require('./routes/indexRoutes.js')
 
 // classes
-// var userDB = require('./services/userDB.js')
 var database = require( './services/database.js' );
 
 // Get environment defined variables
@@ -26,6 +25,7 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
+// Create a connection to the database
 database.connectToServer( function( err ) {
     if(err) {
         console.log("Error in database connection: " + err);
@@ -33,11 +33,10 @@ database.connectToServer( function( err ) {
 
         // Launch API server
         app.listen(http_port, function() {
-            
             console.log('Waiting for requests on port: ' + http_port)
         })
     }
-} );
+});
 
 // define routes
 app.use('/', indexRoutes);

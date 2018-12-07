@@ -12,15 +12,13 @@ var filename = __dirname + "/../vars/constants.json";
 // APP data:
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
-var redirect_uri = 'http://127.0.0.1:3000/user/auth';
+var redirect_uri = 'http://localhost:3000/user/auth';
 // 
 
 router.get('/', function(req, res) {
     
     res.send('Hello User! ')
 })
-
-
 
 router.post('/:user/location', function(req, res) {
  
@@ -37,7 +35,6 @@ router.post('/:user/location', function(req, res) {
 
     //UPDATE BROWSER'S DATA // TODO  
 
-    
     var file = require(filename)
     let range= file.building_range;
 
@@ -51,8 +48,7 @@ router.post('/:user/location', function(req, res) {
             var names = new Array();
             for(var building of building_name){
                 names.push(building.name);
-            }          
-    
+            }              
 
             //update user's building in the database//
             userDB.updateBuilding(user, names);

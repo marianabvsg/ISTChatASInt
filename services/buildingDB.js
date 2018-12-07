@@ -58,6 +58,9 @@ class buildingDB {
     insertFromFile(jsonfile, callback) {
 
         let db = database.getDB();
+
+        // CHANGE BODY OF RECEIVED FILE
+        // TODO
         
         // insert bulk data from jsonfile of buildings
 		db.collection("buildings").insert(jsonfile, function(err, res) {
