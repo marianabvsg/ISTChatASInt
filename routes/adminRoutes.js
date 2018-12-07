@@ -43,7 +43,6 @@ router.post('/login', function(req, res) {
 router.post('/building', function(req, res) {
 
     const secret = req.body.adminkey;
-
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
         
@@ -53,7 +52,6 @@ router.post('/building', function(req, res) {
 
     // receive JSON file
     const building_file = req.body.building;
-
     // check if it's a valid JSON file
     // TODO
 
@@ -99,7 +97,7 @@ router.post('/building/range', function(req, res) {
 
 // returns a list with all logged in users
 router.get('/list/users', function(req, res) {
-    
+
     // check if the secret is correct
     const secret = req.body.adminkey;
 
