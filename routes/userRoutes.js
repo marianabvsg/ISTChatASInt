@@ -163,49 +163,67 @@ router.post('/:user/logout', function(req, res) {
 // TODO
 router.post('/:user/message', function(req, res) {
 
-    //get message to send from req body
-    var message = req.body.message;
+ //    //get message to send from req body
+ //    var message = req.body.message;
 
-    // get all users in my range:
-    var nearbyUsers= users.listUsersInRange(req.params.user);
+ //    // get all users in my range:
+ //    var nearbyUsers= users.listUsersInRange(req.params.user);
 
-    //checkar se a lista é empty
-	// percorrer a lista e para cada user na lista enviar a mensagem pretendida 
-    for(var receiver in nearbyUsers) {
-    	//NAO TENHO BEM A CERTEZA SE ISTO É ASSIM, DEPOIS VER CONSOANTE O QUE FOR MANDADO
-    	//send message to receiver
-    	//TODO
-	}
+ //    //checkar se a lista é empty
+	// // percorrer a lista e para cada user na lista enviar a mensagem pretendida 
+ //    for(var receiver in nearbyUsers) {
+ //    	//NAO TENHO BEM A CERTEZA SE ISTO É ASSIM, DEPOIS VER CONSOANTE O QUE FOR MANDADO
+ //    	//send message to receiver
+ //    	//TODO
+	// }
 })
 
+// TODO
 router.post('/:user/range', function(req, res) {
 
 	//get range to send from req body
-    var range = req.body.range;
+    // var range = req.body.range;
 
-    //checking if range is a number ? TODO
+    // //checking if range is a number ? TODO
 
-    //set new range for the specified user
-    var user= req.params.user;
-    var success = users.setRange(user, range);
+    // //set new range for the specified user
+    // var user= req.params.user;
+    // var success = users.setRange(user, range);
 
-    if (success) {
-    	res.sendStatus(200);
-    }
-    else{
-    	res.sendStatus(400); //TODO: 400? ou 404 se o user não for found? snot sure
-    }
+    // if (success) {
+    // 	res.sendStatus(200);
+    // }
+    // else{
+    // 	res.sendStatus(400); //TODO: 400? ou 404 se o user não for found? snot sure
+    // }
 
-    return;
+    // return;
 })
 
-//see who is nearby: on the range of the messages and on the same buiding.
-router.get('/:user/nearby', function(req, res) {
+//see who is nearby: within the range 
+router.get('/:user/nearby/range', function(req, res) {
 
-	//check user? TODO
-	var user = req.params.user;
-	var usersNearby = users.listUsersNearby(user);
-	res.send(usersNearby);
+    //check user?? // TODO
+
+    // get user's range // TODO
+    range=10;
+
+    userDB.listNearbyUsersByRange(req.params.user,range,function(results) {
+        // VER COMO MANDAR RESULTADOS // TODO
+        res.send(results); //assuming it returns empty if there are no users
+    })
+
+})
+
+//see who is nearby: on the same building 
+router.get('/:user/nearby/building', function(req, res) {
+
+    //check user?? // TODO
+
+    userDB.listNearbyUsersByBuilding(req.params.user,function(results) {
+        // VER COMO MANDAR RESULTADOS // TODO
+        res.send(results); //assuming it returns empty if there are no users
+    })
 
 })
 
