@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const request = require('request');
+const path = require('path');
 
 // our modules
 var userDB = require('../services/userDB.js');
@@ -8,16 +9,21 @@ var logsDB = require('../services/logsDB.js');
 var buildingDB = require('../services/buildingDB.js');
 var filename = __dirname + "/../vars/constants.json";
 
-
 // APP data:
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
 var redirect_uri = 'http://localhost:3000/user/auth';
+var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
 // 
 
 router.get('/', function(req, res) {
     
     res.send('Hello User! ')
+})
+
+router.get('/:user', function(req, res) {
+
+    res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
 router.post('/:user/location', function(req, res) {
@@ -27,7 +33,7 @@ router.post('/:user/location', function(req, res) {
     var longitude = parseFloat(req.body.coords.longitude);
 
     // nao sei se aqui é preciso checkar alguma coisa // TODO
-    //CHECKAR SE ELE O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
+    //CHECKAR SE ELE     O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
     // ou aquilo retorna alguma cena se não encontrar a lat e long?
 
     //chekcar se user existe? // TODO
@@ -71,7 +77,9 @@ router.post('/:user/location', function(req, res) {
 // Login of the user
 router.get('/login', function(req, res) {
     
-    res.redirect('https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri)
+    res.send({
+        redirect: redirect_page
+    })
 })
 
 // Auth
@@ -128,10 +136,15 @@ router.get('/auth', function(req, res) {
                             return;
                         }
 
-                        res.sendStatus(200);
+                        // res.status(200).send({
+                        //     user: user.username,
+                        //     name: user.name
+                        // });
 
                         // possibly redirect to another page
                         // TODO
+                        res.redirect("http://localhost:3000/user/" + user.username);
+                        //res.sendFile(path.join(__dirname + '/../public/user.html'));
                     })
         
                 } else {

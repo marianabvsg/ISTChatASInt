@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>IST Chat ASInt</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+
+    <!-- Vuejs import-->
+    <script src="https://unpkg.com/vue"></script>
+
+    <!-- Axios import -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>User Page:</h1>
+        <p>{{message}}</p>
+
+        <h2>Messages:</h2>
+
+        <!-- <ul v-for="msg in messages">
+            <li>{{msg.user}} --- {{msg.message}}</li>
+        </ul> -->
+
+        <h2>Range:</h2>
+        <input v-model="range" placeholder="Set Range"><button @click="setRange(range)">Set</button>
+
+        <h2>Nearby:</h2>
+
+        <h2>Logout:</h2>
+        <button @click="logout">Logout</button>
+    </div>
+
+    <script>
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'User',
+                range: null
+            },
+            methods: {
+
+                setRange: function(range) {
+
+                    axios.post('/user/range')
+                        .then(function (response) {
+
+                            this.message = response.data.redirect;
+                            console.log(response.data.redirect);
+                            window.location = response.data.redirect;
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });  
+
+                }             
+            }
+        })
+    </script>
+</body>
+</html>
