@@ -213,7 +213,6 @@ router.get('/:user/nearby/range', function(req, res) {
 
     // get user's range // TODO
     range=10;
-
     userDB.listNearbyUsersByRange(req.params.user,range,function(results) {
         // VER COMO MANDAR RESULTADOS // TODO
         res.send(results); //assuming it returns empty if there are no users

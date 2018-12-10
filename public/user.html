@@ -6,7 +6,7 @@
     <title>IST Chat ASInt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <!-- <script src="main.js"></script> -->
 
     <!-- Vuejs import-->
     <script src="https://unpkg.com/vue"></script>
@@ -29,9 +29,11 @@
         <input v-model="range" placeholder="Set Range"><button @click="setRange(range)">Set</button>
 
         <h2>Nearby:</h2>
+        <button @click = "getNearby()">Get</button>
+        <p>{{nearby}}</p>
 
         <h2>Logout:</h2>
-        <button @click="logout">Logout</button>
+       <!-- <button @click="logout">Logout</button> -->
     </div>
 
     <script>
@@ -39,24 +41,20 @@
             el: '#app',
             data: {
                 message: 'User',
-                range: null
+                range: null,
+                nearby:''
             },
             methods: {
-
-                setRange: function(range) {
-
-                    axios.post('/user/range')
-                        .then(function (response) {
-
-                            this.message = response.data.redirect;
-                            console.log(response.data.redirect);
-                            window.location = response.data.redirect;
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });  
-
-                }             
+                getNearby: function() {
+					axios.get('http://127.0.0.1:3000/user/paulo/nearby/range')
+						.then(function (response) {
+							this.nearby = response.data;
+							console.log(this.nearby);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				}             
             }
         })
     </script>
