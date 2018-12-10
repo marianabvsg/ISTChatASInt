@@ -29,8 +29,8 @@ router.get('/:user', function(req, res) {
 router.post('/:user/location', function(req, res) {
  
     var user=req.params.user;
-    var latitude = parseFloat(req.body.coords.latitude);
-    var longitude = parseFloat(req.body.coords.longitude);
+    var latitude = Number(req.body.coords.latitude);
+    var longitude = Number(req.body.coords.longitude);
 
     // nao sei se aqui é preciso checkar alguma coisa // TODO
     //CHECKAR SE ELE     O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
@@ -46,8 +46,6 @@ router.post('/:user/location', function(req, res) {
     	}
 		console.log("1 location updated in users DB")
     });
-
-    //UPDATE BROWSER'S DATA // TODO  
 
     var file = require(filename)
     let range= Number(file.building_range);
@@ -218,13 +216,12 @@ router.post('/:user/message', function(req, res) {
 	// }
 })
 
-// TODO
 router.post('/:user/range', function(req, res) {
 
 	//get range to send from req body
     var range = Number(req.body.range);
     var user= req.params.user;
-
+    
     //check if user exists in our database?? // TODO
 
     // checking if range is a number 
@@ -232,7 +229,6 @@ router.post('/:user/range', function(req, res) {
 
 	    // //set new range for the specified user
 	    userDB.setRange(user, range, function(err, result) {
-
 			if(err) {
 				res.status(500).send("Error updating user range in the database");
 				return;
@@ -255,13 +251,13 @@ router.get('/:user/nearby/range', function(req, res) {
     var user=req.params.user;
     // get user's range 
     userDB.getRange(user, function(results_user){
-    	
+    	console.log(results_user)
     	if(!Object.keys(results_user).length){
     		res.sendStatus(404);
     	}
 
 	    userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
-	        
+
 			if(err) {
 				res.status(500).send("Error getting users from the database");
 				return;
