@@ -111,7 +111,12 @@ router.get('/list/users', function(req, res) {
     // get the list of users from the database
     // assuming we have available the object users from the userDB class
     // assuming we receive the list in json format
-    userDB.listUsers(function(results) {
+    userDB.listAll(function(err,results) {
+
+        if(err) {
+            res.status(500).send("Error getting all users from the database");
+            return;
+        }
 
         res.send(results); //assuming it returns empty if there are no users
     })
@@ -142,7 +147,13 @@ router.get('/list/users/building/:building', function(req, res) {
 
 
 	//find users 
-	userDB.listUsersByBuilding(req.params.building,function(results){
+	userDB.listByBuilding(req.params.building,function(err,results){
+
+        if(err) {
+            res.status(500).send("Error getting all users from the database");
+            return;
+        }
+
 		res.send(results);
 	})
 })

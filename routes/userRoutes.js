@@ -39,35 +39,67 @@ router.post('/:user/location', function(req, res) {
     //chekcar se user existe? // TODO
 
     //update user's location in the database
-    userDB.updateLocation(user,latitude,longitude) 
+    userDB.updateLocation(user,latitude,longitude,function(err){
+    	if(err){
+    		res.status(500).send("Error updating user location in users database");
+            return;
+    	}
+		console.log("1 location updated in users DB")
+    });
 
     //UPDATE BROWSER'S DATA // TODO  
 
     var file = require(filename)
     let range= Number(file.building_range);
-    console.log(range)
-    console.log(typeof range)
 
-    buildingDB.findNearestBuilding(latitude,longitude,range, function(building_name){
+    buildingDB.findNearestBuilding(latitude,longitude,range, function(errbuilding,building_name){
     
+    	if(errbuilding){
+    		res.status(500).send("Error getting user's building from the database");
+			return;
+    	}
 
         //checking if user is in one of the registered buildings
         if(building_name.length){       
     
             //update user's building in the database
             // we choose the nearest building
-            userDB.updateBuilding(user,building_name[0].name);
+            userDB.updateBuilding(user,building_name[0].name,function(err){
+    			if(err){
+    				res.status(500).send("Error while updating user's building in users database");
+            		return;
+    			}
+				console.log("1 building updated in users DB")
+    		});
 
             //insert new movement log
-            logsDB.insertMove(user,latitude,longitude,building_name[0].name);
+            logsDB.insertMove(user,latitude,longitude,building_name[0].name,function(err){
+				if(err){
+    				res.status(500).send("Error while inserting move in logs database");
+            		return;
+    			}
+				console.log("1 move inserted in logs DB")
+            });
 
         }
         else{
             //update user's building in the database//
-            userDB.updateBuilding(user, null);
+            userDB.updateBuilding(user, null,function(err){
+    			if(err){
+    				res.status(500).send("Error while updating user's building in users database");
+            		return;
+    			}
+				console.log("1 building updated in users DB")
+    		});
 
             //insert new movement log
-            logsDB.insertMove(user,latitude,longitude,null);
+            logsDB.insertMove(user,latitude,longitude,null,function(err){
+				if(err){
+    				res.status(500).send("Error while inserting move in logs database");
+            		return;
+    			}
+				console.log("1 move inserted in logs DB")
+            });
         }
 
         res.sendStatus(200);
@@ -129,7 +161,9 @@ router.get('/auth', function(req, res) {
 
                     // get the istID and name
                     // insert it in the database
-                    userDB.insert(user.username, user.name, function(err, result) {
+					let consts_file = require(filename);
+    				let range= Number(consts_file.default_user_range);
+                    userDB.insert(user.username, user.name, range,function(err, result) {
 
                         if(err) {
                             res.status(500).send("Error inserting user in the database");
@@ -143,7 +177,7 @@ router.get('/auth', function(req, res) {
 
                         // possibly redirect to another page
                         // TODO
-                        res.redirect("http://localhost:3000/user/" + user.username);
+                        res.redirect("/user/");
                         //res.sendFile(path.join(__dirname + '/../public/user.html'));
                     })
         
@@ -188,35 +222,54 @@ router.post('/:user/message', function(req, res) {
 router.post('/:user/range', function(req, res) {
 
 	//get range to send from req body
-    // var range = req.body.range;
+    var range = Number(req.body.range);
+    var user= req.params.user;
 
-    // //checking if range is a number ? TODO
+    //check if user exists in our database?? // TODO
 
-    // //set new range for the specified user
-    // var user= req.params.user;
-    // var success = users.setRange(user, range);
+    // checking if range is a number 
+    if (!isNaN(range)){
 
-    // if (success) {
-    // 	res.sendStatus(200);
-    // }
-    // else{
-    // 	res.sendStatus(400); //TODO: 400? ou 404 se o user não for found? snot sure
-    // }
+	    // //set new range for the specified user
+	    userDB.setRange(user, range, function(err, result) {
 
-    // return;
+			if(err) {
+				res.status(500).send("Error updating user range in the database");
+				return;
+			}
+
+			//DO STUFF // TODO
+			res.sendStatus(200);
+		})
+	}else{
+		res.sendStatus(400);
+	}
+
 })
 
 //see who is nearby: within the range 
 router.get('/:user/nearby/range', function(req, res) {
 
     //check user?? // TODO
+	
+    var user=req.params.user;
+    // get user's range 
+    userDB.getRange(user, function(results_user){
+    	if(!Object.keys(results_user).length){
+    		res.sendStatus(404);
+    	}
+		
+	    userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
+	        
+			if(err) {
+				res.status(500).send("Error getting users from the database");
+				return;
+			}
 
-    // get user's range // TODO
-    range=10;
-    userDB.listNearbyUsersByRange(req.params.user,range,function(results) {
-        // VER COMO MANDAR RESULTADOS // TODO
-        res.send(results); //assuming it returns empty if there are no users
-    })
+	        // VER COMO MANDAR RESULTADOS // TODO
+	        res.send(results); //assuming it returns empty if there are no users
+	    });
+	})
 
 })
 
@@ -225,7 +278,13 @@ router.get('/:user/nearby/building', function(req, res) {
 
     //check user?? // TODO
 
-    userDB.listNearbyUsersByBuilding(req.params.user,function(results) {
+    userDB.listNearbyUsersByBuilding(req.params.user,function(err,results) {
+
+		if(err) {
+			res.status(500).send("Error getting users from the database");
+			return;
+		}
+
         // VER COMO MANDAR RESULTADOS // TODO
         res.send(results); //assuming it returns empty if there are no users
     })
@@ -235,8 +294,10 @@ router.get('/:user/nearby/building', function(req, res) {
 router.get('/:user/receive', function(req, res) {
 
     // TODO
-
+  
 
 })
 
+	
+	
 module.exports = router;

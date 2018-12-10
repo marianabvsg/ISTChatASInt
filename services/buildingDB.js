@@ -32,7 +32,7 @@ class buildingDB {
     }
 
     // receives a building coordinates and returns its name
-    getName(lat, long,callback) {
+    getName(lat,long,callback) {
 
         let db = database.getDB();
 
@@ -79,7 +79,7 @@ class buildingDB {
     }
 
     // insert one building into the database
-    insert(id, name, lat, long) {
+    insert(id, name, lat, long , callback) {
 
         let db = database.getDB();
         
@@ -111,25 +111,14 @@ class buildingDB {
 
         db.collection("buildings").find().toArray(function(err, docs) {
             
-            if(err) {
-                throw err;
-            }
-
             //returns all users
-            callback(docs);
+            callback(err,docs);
         });
     }
 
     findNearestBuilding(lat,long,range,callback){
 
-        // dist = geolib.getDistance(
-        //     {latitude: lat, longitude: long},
-        //     {latitude: , longitude: }
-        // );
-
         let db = database.getDB();
-        // db.collection("buildings").createIndex( { location : "2dsphere" } );
-        //db.collection("buildings").ensureIndex({ location: '2dsphere' })
 
         let query = {location:  {
             $near: {
@@ -146,12 +135,8 @@ class buildingDB {
 
         db.collection("buildings").find(query,{ projection: proj }).toArray(function(err, docs) {
             
-            if(err) {
-                throw err;
-            }
-
             //returns all users
-            callback(docs);
+            callback(err,docs);
         });
 
 

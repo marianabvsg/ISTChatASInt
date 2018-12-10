@@ -20,18 +20,21 @@
         <p>{{message}}</p>
 
         <h2>Messages:</h2>
-
-        <!-- <ul v-for="msg in messages">
-            <li>{{msg.user}} --- {{msg.message}}</li>
-        </ul> -->
+        
 
         <h2>Range:</h2>
         <input v-model="range" placeholder="Set Range"><button @click="setRange(range)">Set</button>
 
         <h2>Nearby:</h2>
-        <button @click = "getNearby()">Get</button>
-        <p>{{nearby}}</p>
-
+        <button @click = "nearbyBuilding()">building</button>
+		<button @click = "nearbyRange()">range</button>
+        <ul v-for="body in nearRange">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+        <ul v-for="body in nearBuilding">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+		
         <h2>Logout:</h2>
        <!-- <button @click="logout">Logout</button> -->
     </div>
@@ -42,19 +45,36 @@
             data: {
                 message: 'User',
                 range: null,
-                nearby:''
+                nearBuilding:'',
+                nearRange: '',
+                nearAll:'',
+                user_id: 'ist181669'
             },
             methods: {
-                getNearby: function() {
-					axios.get('http://127.0.0.1:3000/user/paulo/nearby/range')
+                nearbyBuilding: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/building')
 						.then(function (response) {
-							this.nearby = response.data;
-							console.log(this.nearby);
+							self.nearBuilding =  response.data;
+							console.log(self.nearBuilding);
 						})
 						.catch(function(error) {
 							console.log(error);
 						});
-				}             
+				},
+				nearbyRange: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/range')
+						.then(function (response) {
+							self.nearRange =  response.data;
+							console.log(self.nearRange);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				}         
             }
         })
     </script>
