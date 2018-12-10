@@ -18,19 +18,25 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
     
-    res.send('Hello User! ')
+    console.log(req.session.user)
+
+    // user not authenticated
+    if(req.session.user == null) {
+        res.status(400).send("gtfo");
+    } else {
+        res.status(400).send("hello " + req.session.user);
+    }
+
+    //res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
-router.get('/:user', function(req, res) {
 
-    res.sendFile(path.join(__dirname + '/../public/user.html'));
-})
 
 router.post('/:user/location', function(req, res) {
  
     var user=req.params.user;
-    var latitude = parseFloat(req.body.coords.latitude);
-    var longitude = parseFloat(req.body.coords.longitude);
+    var latitude = Number(req.body.coords.latitude);
+    var longitude = Number(req.body.coords.longitude);
 
     // nao sei se aqui é preciso checkar alguma coisa // TODO
     //CHECKAR SE ELE     O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
@@ -46,8 +52,6 @@ router.post('/:user/location', function(req, res) {
     	}
 		console.log("1 location updated in users DB")
     });
-
-    //UPDATE BROWSER'S DATA // TODO  
 
     var file = require(filename)
     let range= Number(file.building_range);
@@ -108,7 +112,7 @@ router.post('/:user/location', function(req, res) {
 
 // Login of the user
 router.get('/login', function(req, res) {
-    
+
     res.send({
         redirect: redirect_page
     })
@@ -175,9 +179,16 @@ router.get('/auth', function(req, res) {
                         //     name: user.name
                         // });
 
+                        console.log(req.session.user == undefined)
+
+                        req.session.user = user.username;
+
+                        console.log(req.session.user)
+
                         // possibly redirect to another page
                         // TODO
-                        res.redirect("/user/");
+                        res.redirect(301, "/user")
+                        //res.status(3011).redirect("/user");
                         //res.sendFile(path.join(__dirname + '/../public/user.html'));
                     })
         
@@ -218,13 +229,12 @@ router.post('/:user/message', function(req, res) {
 	// }
 })
 
-// TODO
 router.post('/:user/range', function(req, res) {
 
 	//get range to send from req body
     var range = Number(req.body.range);
     var user= req.params.user;
-
+    
     //check if user exists in our database?? // TODO
 
     // checking if range is a number 
@@ -232,7 +242,6 @@ router.post('/:user/range', function(req, res) {
 
 	    // //set new range for the specified user
 	    userDB.setRange(user, range, function(err, result) {
-
 			if(err) {
 				res.status(500).send("Error updating user range in the database");
 				return;
@@ -260,7 +269,7 @@ router.get('/:user/nearby/range', function(req, res) {
     	}
 		
 	    userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
-	        
+
 			if(err) {
 				res.status(500).send("Error getting users from the database");
 				return;
@@ -296,6 +305,13 @@ router.get('/:user/receive', function(req, res) {
     // TODO
   
 
+})
+
+router.get('/:user', function(req, res) {
+
+//     res.status(400).send("hello")
+
+	res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
 	

@@ -110,7 +110,7 @@ class userDB {
 
         db.collection("users").find(query,{ projection: proj }).toArray(function(err, docs) {
             //returns all users
-            callback(err,docs);
+            return callback(err,docs);
         });
     }
 
