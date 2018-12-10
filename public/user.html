@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src localhost:3000; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com/vue https://unpkg.com/axios/dist/axios.min.js;"> -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>IST Chat ASInt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <!-- <script src="main.js"></script> -->
 
     <!-- Vuejs import-->
     <script src="https://unpkg.com/vue"></script>
@@ -26,12 +27,12 @@
         </ul> -->
 
         <h2>Range:</h2>
-        <input v-model="range" placeholder="Set Range"><button @click="setRange(range)">Set</button>
+        <input v-model="range" placeholder="Set Range"><button v-on:click="setRange(range)">Set</button>
 
         <h2>Nearby:</h2>
 
         <h2>Logout:</h2>
-        <button @click="logout">Logout</button>
+        
     </div>
 
     <script>
@@ -55,7 +56,6 @@
                         .catch(function (error) {
                             console.log(error);
                         });  
-
                 }             
             }
         })

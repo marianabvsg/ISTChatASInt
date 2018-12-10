@@ -18,13 +18,19 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
     
-    res.send('Hello User! ')
+    console.log(req.session.user)
+
+    res.status(400).send("hello " + req.session.user);
+
+    //res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
-router.get('/:user', function(req, res) {
+// router.get('/:user', function(req, res) {
 
-    res.sendFile(path.join(__dirname + '/../public/user.html'));
-})
+//     res.status(400).send("hello")
+
+//     //res.sendFile(path.join(__dirname + '/../public/user.html'));
+// })
 
 router.post('/:user/location', function(req, res) {
  
@@ -50,7 +56,6 @@ router.post('/:user/location', function(req, res) {
 
     buildingDB.findNearestBuilding(latitude,longitude,range, function(building_name){
     
-
         //checking if user is in one of the registered buildings
         if(building_name.length){       
     
@@ -76,7 +81,7 @@ router.post('/:user/location', function(req, res) {
 
 // Login of the user
 router.get('/login', function(req, res) {
-    
+
     res.send({
         redirect: redirect_page
     })
@@ -141,9 +146,14 @@ router.get('/auth', function(req, res) {
                         //     name: user.name
                         // });
 
+                        req.session.user = user.username;
+
+                        console.log(req.session.user)
+
                         // possibly redirect to another page
                         // TODO
-                        res.redirect("http://localhost:3000/user/" + user.username);
+                        res.redirect(301, "/user")
+                        //res.status(3011).redirect("/user");
                         //res.sendFile(path.join(__dirname + '/../public/user.html'));
                     })
         
