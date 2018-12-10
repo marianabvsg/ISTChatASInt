@@ -17,20 +17,14 @@ class logsDB {
             "msg": message,
             "building": building
          }, function(err, res) {
-             if(err) {
-                 throw err;
-             }
-
-             console.log("1 movement inserted in logs_movement DB")
+             
+            return callback(err)
          });
 
-        return;
-
-        //return
     }
 
     //insert new movement in the logs_movements db
-    insertMove(user_id, latitude, longitude, building) {
+    insertMove(user_id, latitude, longitude, building,callback) {
 
         let db = database.getDB();
         
@@ -42,16 +36,9 @@ class logsDB {
             },
             "building": building
          }, function(err, res) {
-             if(err) {
-                 throw err;
-             }
-
-             console.log("1 movement inserted in logs_movement DB")
+            return callback(err);
          });
 
-        return;
-        
-        //return
     }
 
     listAll(callback) {
@@ -59,6 +46,7 @@ class logsDB {
         var self=this;
 
         this.listAllMoves(function(results_moves) {
+
 
             self.listAllMessages(function(results_msgs) {
 
