@@ -44,7 +44,7 @@ router.get('/', function(req, res) {
 router.post('/location', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -126,7 +126,7 @@ router.post('/location', function(req, res) {
 router.get('/logout', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -217,11 +217,9 @@ router.get('/auth', function(req, res) {
                         // req.session.user = user.username;
                         // 
                         // set cookies
-                        res.cookie('user', {
-                            'id': user.username,
-                            'token': token
-                        });
 
+                        res.cookie('user', token);
+						
                         cache.setValue(token, user.username, function(err,success) {
                             if(success){
                                 res.redirect(301, "/user/");
@@ -251,7 +249,7 @@ router.get('/auth', function(req, res) {
 router.post('/message', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -279,7 +277,7 @@ router.post('/message', function(req, res) {
 router.post('/range', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -335,7 +333,7 @@ router.post('/range', function(req, res) {
 router.get('/nearby/range', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
 
         if (id==undefined){
             // redirect to the login page
@@ -384,7 +382,7 @@ router.get('/nearby/range', function(req, res) {
 router.get('/nearby/building', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user.token, function(err,id) {
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -428,16 +426,14 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    console.log("HEREEEEEE");
-    console.log(req.cookies.user.token);
-    cache.getValue(req.cookies.user.token, function(err,id) {
-        console.log("ID:")
-        console.log(id);
+    //console.log("HEREEEEEE");
+    cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
+			console.log("Mega here");
             // redirect to the login page
             res.redirect(301, '/');
         }
-        else{
+        else{ 
             res.send(id);
         }
     });
