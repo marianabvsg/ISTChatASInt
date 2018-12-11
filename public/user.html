@@ -20,18 +20,24 @@
 </head>
 <body>
     <div id="app">
+
         <h1>User Page:</h1>
+
+        <!-- Identification-->
         <p> user: {{user_id}} </p>
         <p> location: {{user_location}} </p>
 
+        <!-- Section to send and check the messages -->
         <h2>Messages:</h2>
 
         <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
         
-
+        <!-- Section to define the range -->
         <h2>Range:</h2>
         <p>Current range is: {{ user_range }}</p>
         <input v-model=range placeholder="Range"><button @click="setRange(range)">Set</button>
+
+        <!-- Section of the nearby users-->
         <h2>Nearby:</h2>
         <button @click = "nearbyBuilding()">building</button>
 		<button @click = "nearbyRange()">range</button>
@@ -41,10 +47,11 @@
         <ul v-for="body in nearBuilding">
             <li>{{body.ist_id}} --- {{body.name}}</li>
         </ul>
-		
+        
+        <!-- Section of the logout-->
         <h2>Logout:</h2>
-
         <button @click="Logout">Logout</button>
+
 	</div>
 
 
@@ -199,24 +206,24 @@
 
                     socket.emit('message', message);
                 },
-                getUserID: function(){
+                getUserID: async function(){
                     var self = this;
-                    console.log('here');
-                    axios.get('http://localhost:3000/user/id')
+                    await axios.get('http://localhost:3000/user/id')
                         .then(function (response) {
-                            console.log(response.data)
+
+                            //console.log(response.data)
                             self.user_id =  response.data;
+
                             self.refreshLocation();
                             // console.log(self.user_id);
                         })
                         .catch(function(error) {
                             console.log(error);
                         });
-                    //callback();
                 },
 
                 refreshLocation: function(){
-                     this.getLocation();
+                    this.getLocation();
 
                     setInterval(function () {
                         this.getLocation();
@@ -232,9 +239,10 @@
 
 
             // //mounted? created? ready?? 
-            mounted(){
+            created(){
                 // this.init();
                 this.getUserID();
+
                 // this.refreshLocation());   
             }
         })

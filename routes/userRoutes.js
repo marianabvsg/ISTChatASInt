@@ -216,17 +216,17 @@ router.get('/auth', function(req, res) {
                         // console.log(req.session.user == undefined)
                         // req.session.user = user.username;
                         // 
-                        // set cookies
-                        res.cookie('user', token);
+                        // set cookies with expiration time of 1h
+                        res.cookie('user', token, { expires: new Date(Date.now() + 3600000)});
 
                         cache.setValue(token, user.username, function(err,success) {
-                            if(success){
-                                res.redirect(301, "/user/");
-                            }
-                            else{
+
+                            if(err && !success) {
                                 res.status(500).send("Error saving users token");
-                                return;  
+                                return;
                             }
+                        
+                            res.redirect(301, "/user/");
                         });
                         //res.cookie('token', token);
                         // possibly redirect to another page
@@ -427,9 +427,11 @@ router.get('/id', function(req, res) {
     //check token
     //console.log("HEREEEEEE");
     //console.log(req.cookies.user.token);
-    cache.getValue(req.cookies.user.token, function(err,id) {
-        // console.log("ID:")
-        // console.log(id);
+    cache.getValue(req.cookies.user, function(err,id) {
+
+        console.log(err)
+        console.log("ID:")
+        console.log(id);
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
