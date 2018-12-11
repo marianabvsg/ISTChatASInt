@@ -1,0 +1,10 @@
+{
+<<<<<<< HEAD
+  "building_range": "20",
+  "default_user_range": "5"
+}
+=======
+  "building_range": 50,
+  "default_user_range": 5
+}
+>>>>>>> c3940332773794201dc0055745ca01aa6671700a
