@@ -18,23 +18,23 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
     
-    console.log(req.session.user)
+    //console.log("Cookies :  ", req.cookies);
 
     // user not authenticated
-    if(req.session.user == null) {
-        res.status(400).send("gtfo");
-    } else {
-        res.status(400).send("hello " + req.session.user);
-    }
+    // TO DELETE
+    // if(req.session.user == null) {
+    //     res.status(400).send("gtfo");
+    // } else {
+    //     res.status(400).send("hello " + req.session.user);
+    // }
 
-    //res.sendFile(path.join(__dirname + '/../public/user.html'));
+    res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
-router.post('/:user/location', function(req, res) {
+router.post('/location', function(req, res) {
  
-    var user=req.params.user;
-    var latitude = parseFloat(req.body.coords.latitude);
-    var longitude = parseFloat(req.body.coords.longitude);
+    var latitude = Number(req.body.coords.latitude);
+    var longitude = Number(req.body.coords.longitude);
 
     // nao sei se aqui é preciso checkar alguma coisa // TODO
     //CHECKAR SE ELE     O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
@@ -50,8 +50,6 @@ router.post('/:user/location', function(req, res) {
     	}
 		console.log("1 location updated in users DB")
     });
-
-    //UPDATE BROWSER'S DATA // TODO  
 
     var file = require(filename)
     let range= Number(file.building_range);
@@ -110,6 +108,23 @@ router.post('/:user/location', function(req, res) {
     })
 })
 
+// Logout of the user
+// TODO
+router.get('/logout', function(req, res) {
+
+    // clean the user from the database 
+    // TODO
+
+    // clear the cookie 
+    res.clearCookie('user');
+    
+    // clean cache
+    // TODO
+
+    // redirect to the login page
+    res.redirect(301, '/');
+})
+
 // Login of the user
 router.get('/login', function(req, res) {
 
@@ -150,7 +165,7 @@ router.get('/auth', function(req, res) {
                 'auth': {
                     'bearer' : token
                 }
-            }, (error, resp, body) => {
+            }, (error, resp) => {
 
                 if (error) { 
                     return console.log(error); 
@@ -166,7 +181,8 @@ router.get('/auth', function(req, res) {
                     // get the istID and name
                     // insert it in the database
 					let consts_file = require(filename);
-    				let range= Number(consts_file.default_user_range);
+                    let range= Number(consts_file.default_user_range);
+                    
                     userDB.insert(user.username, user.name, range,function(err, result) {
 
                         if(err) {
@@ -174,23 +190,21 @@ router.get('/auth', function(req, res) {
                             return;
                         }
 
-                        // res.status(200).send({
-                        //     user: user.username,
-                        //     name: user.name
-                        // });
+                        // TO DELETE
+                        // console.log(req.session.user == undefined)
+                        // req.session.user = user.username;
+                        // 
 
-                        console.log(req.session.user == undefined)
-
-                        req.session.user = user.username;
-
-                        console.log(req.session.user)
+                        // set cookies
+                        res.cookie('user', {
+                            'id': user.username,
+                            'token': token
+                        });
+                        //res.cookie('token', token);
 
                         // possibly redirect to another page
-                        // TODO
-                        res.redirect(301, "/user/" + user.username)
-                        //res.status(3011).redirect("/user");
-                        //res.sendFile(path.join(__dirname + '/../public/user.html'));
-                    })
+                        res.redirect(301, "/user")
+                    });
         
                 } else {
                     res.status(401).send("Last get: Not authorized to access user");
@@ -203,16 +217,9 @@ router.get('/auth', function(req, res) {
     });
 })
 
-// Logout of the user
-router.post('/:user/logout', function(req, res) {
-    // TODO
-
-    // clean the user from the database 
-
-})
 
 // TODO
-router.post('/:user/message', function(req, res) {
+router.post('/message', function(req, res) {
 
  //    //get message to send from req body
  //    var message = req.body.message;
@@ -229,13 +236,12 @@ router.post('/:user/message', function(req, res) {
 	// }
 })
 
-// TODO
-router.post('/:user/range', function(req, res) {
+router.post('/range', function(req, res) {
 
 	//get range to send from req body
     var range = Number(req.body.range);
     var user= req.params.user;
-
+    
     //check if user exists in our database?? // TODO
 
     // checking if range is a number 
@@ -243,7 +249,6 @@ router.post('/:user/range', function(req, res) {
 
 	    // //set new range for the specified user
 	    userDB.setRange(user, range, function(err, result) {
-
 			if(err) {
 				res.status(500).send("Error updating user range in the database");
 				return;
@@ -259,20 +264,19 @@ router.post('/:user/range', function(req, res) {
 })
 
 //see who is nearby: within the range 
-router.get('/:user/nearby/range', function(req, res) {
+router.get('/nearby/range', function(req, res) {
 
     //check user?? // TODO
-
+	
     var user=req.params.user;
     // get user's range 
     userDB.getRange(user, function(results_user){
-    	
     	if(!Object.keys(results_user).length){
     		res.sendStatus(404);
     	}
-
+		
 	    userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
-	        
+
 			if(err) {
 				res.status(500).send("Error getting users from the database");
 				return;
@@ -286,7 +290,7 @@ router.get('/:user/nearby/range', function(req, res) {
 })
 
 //see who is nearby: on the same building 
-router.get('/:user/nearby/building', function(req, res) {
+router.get('/nearby/building', function(req, res) {
 
     //check user?? // TODO
 
@@ -303,18 +307,11 @@ router.get('/:user/nearby/building', function(req, res) {
 
 })
 
-router.get('/:user/receive', function(req, res) {
+// TO DELETE PROBABLY
+router.get('/receive', function(req, res) {
 
     // TODO
-
-
-})
-
-router.get('/:user', function(req, res) {
-
-    res.send("hello")
-
-    //res.sendFile(path.join(__dirname + '/../public/user.html'));
+  
 })
 
 module.exports = router;

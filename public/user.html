@@ -7,7 +7,7 @@
     <title>IST Chat ASInt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <!-- <script src="main.js"></script> -->
+    <!-- <script src="main.js"></script> -->    
 
     <!-- Vuejs import-->
     <script src="https://unpkg.com/vue"></script>
@@ -18,45 +18,179 @@
 <body>
     <div id="app">
         <h1>User Page:</h1>
-        <p>{{message}}</p>
+        <p> user: {{user_id}} </p>
+        <p> location: {{user_location}} </p>
 
         <h2>Messages:</h2>
-
-        <!-- <ul v-for="msg in messages">
-            <li>{{msg.user}} --- {{msg.message}}</li>
-        </ul> -->
+        
 
         <h2>Range:</h2>
-        <input v-model="range" placeholder="Set Range"><button v-on:click="setRange(range)">Set</button>
-
+        <p>Current range is: {{ user_range }}</p>
+        <input v-model=range placeholder="Range"><button @click="setRange(range)">Set</button>
         <h2>Nearby:</h2>
-
+        <button @click = "nearbyBuilding()">building</button>
+		<button @click = "nearbyRange()">range</button>
+        <ul v-for="body in nearRange">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+        <ul v-for="body in nearBuilding">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+		
         <h2>Logout:</h2>
-        
-    </div>
+
+        <button @click="Logout">Logout</button>
+	</div>
+
+
+<!-- 
+      <div v-if="!serverOk">
+        <strong>Warning!</strong> Server returned error, probably due to an incorrect request
+        </div> -->
 
     <script>
+
+
         var vm = new Vue({
             el: '#app',
             data: {
                 message: 'User',
-                range: null
+                nearBuilding:'',
+                nearRange: '',
+                nearAll:'',
+                user_range: null, // get default range value  // TODO
+                user_id: 'ist181669',
+                range: null,
+                user_location : ''
             },
+
+
             methods: {
-
+                nearbyBuilding: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/building')
+						.then(function (response) {
+							self.nearBuilding =  response.data;
+							console.log(self.nearBuilding);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				},
+				nearbyRange: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/range')
+						.then(function (response) {
+							self.nearRange =  response.data;
+							console.log(self.nearRange);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				},
                 setRange: function(range) {
+                    var id = this.$data.user_id;
+                    // this.$data.serverDataError = false;
+                    // this.$data.serverDBError = false;
+                    // this.$data.serverError = false;
+                    var self=this;
+                    axios.post('http://localhost:3000/user/'+id+'/range',{
+                            "range": range
+                    }).then(function (response) {
+                            // console.log(response.data.redirect);
+                            // window.location = response.data.redirect;
+                        console.log(response)
+                        self.$data.user_range=range;
+                    })
+                    .catch(function (error) {
 
-                    axios.post('/user/range')
-                        .then(function (response) {
+                        console.log(error.response);
 
-                            this.message = response.data.redirect;
-                            console.log(response.data.redirect);
-                            window.location = response.data.redirect;
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });  
-                }             
+                        //por so uma mensagem de erro geral // TODO
+                        if(error.response.status==400){
+                            alert('Warning: Server returned error, probably due to an incorrect request.');
+                            // self.$data.serverDataError = true;
+                            // setTimeout(function(){
+                            //      self.$data.serverDataError = false;
+                            // }, 2000);
+                            // self.$data.serverDataError = true;
+                        }
+                        else if(error.response.status==500){
+                            alert(' Warning: '+error.response.data+', pleasy try again.');
+                            // self.$data.serverDBError = true;
+                            // self.$data.DBerror_message = error.response.data;
+                            // setTimeout(function(){
+                            //      self.$data.serverDBError = false;
+                            // }, 2000);
+                        }
+                        else{
+                            alert(' Warning: Server returned error.');
+                            // self.$data.serverError=true;
+                            // self.$data.DBerror_message = error.response.data;
+                            // setTimeout(function(){
+                            //      self.$data.serverError = false;
+                            // }, 2000);
+                        }
+                    });  
+
+                },
+
+                getLocation: function(){    
+                    if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.updateLocation);
+                    } else {
+                        alert('It seems like Geolocation, which is required for this page, is not enabled in your browser. Please use a browser which supports it.');
+                    }
+                },
+
+                updateLocation: function(position) {
+                    var lat = position.coords.latitude;
+                    var long = position.coords.longitude;
+                    console.log('Your latitude is :'+lat+' and longitude is '+long);
+
+                    this.$data.user_location=[lat,long];
+                    var id = this.$data.user_id;
+                    axios.post('http://localhost:3000/user/'+id+'/location',{
+                            "coords": {
+                                "latitude": lat,
+                                "longitude": long
+                            }
+                    }).then(function (response) {
+                            // console.log(response.data.redirect);
+                            // window.location = response.data.redirect;
+                        console.log(response)
+                    })
+                    .catch(function (error) {
+
+                        console.log(error.response);
+
+                        if(error.response.status==500){
+                            alert(' Warning: '+error.response.data+', pleasy try again.');
+                        }
+                        else{
+                            alert(' Warning: Server returned error.');
+                        }
+
+                    });       
+                },
+
+                Logout: function() {
+
+                    window.location.href = '/user/logout';
+                }
+
+            },
+
+            // //mounted? created? ready?? <-- VER O MELHOR // TODO
+            created(){
+                
+                this.getLocation();
+
+                setInterval(function () {
+                    this.getLocation();
+                }.bind(this), 30000);    
             }
         })
     </script>

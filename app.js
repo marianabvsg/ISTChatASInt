@@ -2,8 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-//const csp = require('helmet-csp');
 var session = require('express-session');
+var cookieParser = require('cookie-parser');
 
 // routes
 const userRoutes = require('./routes/userRoutes.js')
@@ -19,6 +19,8 @@ const http_port = process.env.PORT || 3000
 
 const app = express();
 
+app.use(cookieParser());
+
 app.use(bodyParser.urlencoded({
     extended: true
 }))
@@ -27,24 +29,8 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
+// TO DELETE
 app.use(session({secret: "mysecretkey"}));
-
-// app.use(csp({
-//     // Specify directives as normal.
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       scriptSrc: ["*"]
-//     },
-   
-//     // This module will detect common mistakes in your directives and throw errors
-//     // if it finds any. To disable this, enable "loose mode".
-//     loose: false,
-   
-//     // Set to true if you only want browsers to report errors, not block them.
-//     // You may also set this to a function(req, res) in order to decide dynamically
-//     // whether to use reportOnly mode, e.g., to allow for a dynamic kill switch.
-//     reportOnly: false
-//   }))
 
 // Create a connection to the database
 database.connectToServer( function( err ) {

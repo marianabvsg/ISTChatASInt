@@ -109,9 +109,8 @@ class userDB {
         let proj= { ist_id: 1, name: 1};
 
         db.collection("users").find(query,{ projection: proj }).toArray(function(err, docs) {
-            
             //returns all users
-            callback(err,docs);
+            return callback(err,docs);
         });
     }
 
@@ -176,13 +175,11 @@ class userDB {
     listNearbyUsersByRange(user_id,range,callback){
 
         var self=this;
-
+		
         //get user coordinates from the db
         this.getCoordinates(user_id,function(coords) {
-
             //get list of nearby users
             self.listInRange(coords.lat,coords.long,range,function(err,results) {
-
                 //remove the user from this list
                 let users = results.filter(function(el) { return el.ist_id != user_id; }); 
                 callback(err,users)
@@ -225,7 +222,6 @@ class userDB {
     getRange(user_id,callback){
 
         let db = database.getDB();
-
         // checks if the key is in the users database
         db.collection("users").findOne({
             "ist_id": user_id
@@ -242,6 +238,7 @@ class userDB {
         }); 
 
     }
+    
 
 }
 

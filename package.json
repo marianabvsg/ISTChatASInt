@@ -20,6 +20,7 @@
   "dependencies": {
     "apikeygen": "^1.1.0",
     "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
@@ -28,6 +29,7 @@
     "mongodb": "^3.1.10",
     "mysql": "^2.16.0",
     "nodemon": "^1.18.7",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "vue-router": "^3.0.2"
   }
 }
