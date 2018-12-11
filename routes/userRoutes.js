@@ -30,13 +30,6 @@ router.get('/', function(req, res) {
     //res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
-// router.get('/:user', function(req, res) {
-
-//     res.status(400).send("hello")
-
-//     //res.sendFile(path.join(__dirname + '/../public/user.html'));
-// })
-
 router.post('/:user/location', function(req, res) {
  
     var user=req.params.user;
@@ -194,7 +187,7 @@ router.get('/auth', function(req, res) {
 
                         // possibly redirect to another page
                         // TODO
-                        res.redirect(301, "/user")
+                        res.redirect(301, "/user/" + user.username)
                         //res.status(3011).redirect("/user");
                         //res.sendFile(path.join(__dirname + '/../public/user.html'));
                     })
@@ -315,6 +308,13 @@ router.get('/:user/receive', function(req, res) {
     // TODO
 
 
+})
+
+router.get('/:user', function(req, res) {
+
+    res.send("hello")
+
+    //res.sendFile(path.join(__dirname + '/../public/user.html'));
 })
 
 module.exports = router;
