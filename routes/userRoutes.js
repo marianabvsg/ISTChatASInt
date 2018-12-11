@@ -8,6 +8,7 @@ var userDB = require('../services/userDB.js');
 var logsDB = require('../services/logsDB.js');
 var buildingDB = require('../services/buildingDB.js');
 var filename = __dirname + "/../vars/constants.json";
+var cache = require('../services/cache.js');
 
 // APP data:
 var client_id = "1414440104755246";
