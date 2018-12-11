@@ -7,7 +7,7 @@
     <title>IST Chat ASInt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <!-- <script src="main.js"></script> -->
+    <!-- <script src="main.js"></script> -->    
 
     <!-- Vuejs import-->
     <script src="https://unpkg.com/vue"></script>
@@ -22,20 +22,26 @@
         <p> location: {{user_location}} </p>
 
         <h2>Messages:</h2>
-
-        <!-- <ul v-for="msg in messages">
-            <li>{{msg.user}} --- {{msg.message}}</li>
-        </ul> -->
+        
 
         <h2>Range:</h2>
         <p>Current range is: {{ user_range }}</p>
         <input v-model=range placeholder="Range"><button @click="setRange(range)">Set</button>
         <h2>Nearby:</h2>
-
+        <button @click = "nearbyBuilding()">building</button>
+		<button @click = "nearbyRange()">range</button>
+        <ul v-for="body in nearRange">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+        <ul v-for="body in nearBuilding">
+            <li>{{body.ist_id}} --- {{body.name}}</li>
+        </ul>
+		
         <h2>Logout:</h2>
-        <button @click="logout()">Logout</button>
 
-        </div>
+        <button @click="Logout">Logout</button>
+	</div>
+
 
 <!-- 
       <div v-if="!serverOk">
@@ -48,19 +54,42 @@
         var vm = new Vue({
             el: '#app',
             data: {
+                message: 'User',
+                nearBuilding:'',
+                nearRange: '',
+                nearAll:'',
                 user_range: null, // get default range value  // TODO
                 user_id: 'ist181669',
                 range: null,
-                // serverDataError: false,
-                // serverDBError: false,
-                // DBerror_message: null,
-                // serverError: false,
                 user_location : ''
             },
 
 
             methods: {
-
+                nearbyBuilding: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/building')
+						.then(function (response) {
+							self.nearBuilding =  response.data;
+							console.log(self.nearBuilding);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				},
+				nearbyRange: function() {
+					var id = this.$data.user_id;
+					var self = this;
+					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/range')
+						.then(function (response) {
+							self.nearRange =  response.data;
+							console.log(self.nearRange);
+						})
+						.catch(function(error) {
+							console.log(error);
+						});
+				},
                 setRange: function(range) {
                     var id = this.$data.user_id;
                     // this.$data.serverDataError = false;
@@ -145,6 +174,11 @@
                         }
 
                     });       
+                },
+
+                Logout: function() {
+
+                    window.location.href = '/user/logout';
                 }
 
             },
@@ -156,10 +190,8 @@
 
                 setInterval(function () {
                     this.getLocation();
-                }.bind(this), 30000); 
-                
+                }.bind(this), 30000);    
             }
-
         })
     </script>
 </body>
