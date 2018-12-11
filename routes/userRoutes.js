@@ -201,6 +201,16 @@ router.get('/auth', function(req, res) {
                             'id': user.username,
                             'token': token
                         });
+                        // set cache
+                        cache.setValue(token, user.username, function (err, value) {
+							if(err) console.log('Error setting cache');
+						});
+                        // temp
+                        cache.getValue(token, function (err, value) {
+							console.log(value);
+						});
+                        
+                        
                         //res.cookie('token', token);
 
                         // possibly redirect to another page
