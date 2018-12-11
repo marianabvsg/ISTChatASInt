@@ -217,10 +217,7 @@ router.get('/auth', function(req, res) {
                         // req.session.user = user.username;
                         // 
                         // set cookies
-                        res.cookie('user', {
-                            'id': user.username,
-                            'token': token
-                        });
+                        res.cookie('user', token);
 
                         cache.setValue(token, user.username, function(err,success) {
                             if(success){
@@ -428,11 +425,11 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    console.log("HEREEEEEE");
-    console.log(req.cookies.user.token);
+    //console.log("HEREEEEEE");
+    //console.log(req.cookies.user.token);
     cache.getValue(req.cookies.user.token, function(err,id) {
-        console.log("ID:")
-        console.log(id);
+        // console.log("ID:")
+        // console.log(id);
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');

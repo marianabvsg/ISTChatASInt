@@ -15,6 +15,7 @@ module.exports = {
 
             socket.on('message', function(data) {
                 console.log("message: " + data);
+                console.log("cookie: " + socket.request.headers.cookie);
             })
 
             socket.on('disconnect', function() {
