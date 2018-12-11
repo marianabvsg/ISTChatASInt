@@ -7,8 +7,8 @@ class cache {
 	
 	constructor() {}
 
-	setValue(token, id, callback) {
-		myCache.set(token, id, function (err, success) {
+	setValue(token, value, callback) {
+		myCache.set(token, value, function (err, success) {
 			return callback(err, success)
 		});
 	}
@@ -25,6 +25,16 @@ class cache {
 		myCache.del(token, function (err, count) {
 			return callback(err, count) //0 if the not match
 		});
+	}
+	
+	listKeys(callback) {
+		myCache.keys( function (err, result) {
+			return callback(err,result)
+		});
+	}
+	
+	closeCache() {
+		myCache.close();
 	}
 }
 

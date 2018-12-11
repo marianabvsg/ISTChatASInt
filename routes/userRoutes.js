@@ -18,117 +18,138 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 // 
 
 router.get('/', function(req, res) {
-    
-    //console.log("Cookies :  ", req.cookies);
-
-    // user not authenticated
-    // TO DELETE
-    // if(req.session.user == null) {
-    //     res.status(400).send("gtfo");
-    // } else {
-    //     res.status(400).send("hello " + req.session.user);
-    // }
-
     res.sendFile(path.join(__dirname + '/../public/user.html'));
+
+    //check token
+    // cache.getValue(req.cookies.token, function(err,id) {
+    //     if (id==undefined){
+    //         // redirect to the login page
+    //         res.redirect(301, '/');
+    //     }
+    //     else{
+    //         //console.log("Cookies :  ", req.cookies);
+
+    //         // user not authenticated
+    //         // TO DELETE
+    //         // if(req.session.user == null) {
+    //         //     res.status(400).send("gtfo");
+    //         // } else {
+    //         //     res.status(400).send("hello " + req.session.user);
+    //         // }
+    //     }
+    // });
 })
 
+
 router.post('/location', function(req, res) {
- 
-    var latitude = Number(req.body.coords.latitude);
-    var longitude = Number(req.body.coords.longitude);
 
-    // nao sei se aqui é preciso checkar alguma coisa // TODO
-    //CHECKAR SE ELE     O USER AINDA ESTÁ NALGUM SITIO? // TODO <- TIPO SE ELE SE TIVER DESCONECTADO
-    // ou aquilo retorna alguma cena se não encontrar a lat e long?
-
-    //chekcar se user existe? // TODO
-
-    //update user's location in the database
-    userDB.updateLocation(user,latitude,longitude,function(err){
-    	if(err){
-    		res.status(500).send("Error updating user location in users database");
-            return;
-    	}
-		console.log("1 location updated in users DB")
-    });
-
-    var file = require(filename)
-    let range= Number(file.building_range);
-
-    buildingDB.findNearestBuilding(latitude,longitude,range, function(errbuilding,building_name){
-    
-    	if(errbuilding){
-    		res.status(500).send("Error getting user's building from the database");
-			return;
-    	}
-
-        //checking if user is in one of the registered buildings
-        if(building_name.length){       
-    
-            //update user's building in the database
-            // we choose the nearest building
-            userDB.updateBuilding(user,building_name[0].name,function(err){
-    			if(err){
-    				res.status(500).send("Error while updating user's building in users database");
-            		return;
-    			}
-				console.log("1 building updated in users DB")
-    		});
-
-            //insert new movement log
-            logsDB.insertMove(user,latitude,longitude,building_name[0].name,function(err){
-				if(err){
-    				res.status(500).send("Error while inserting move in logs database");
-            		return;
-    			}
-				console.log("1 move inserted in logs DB")
-            });
-
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
         }
         else{
-            //update user's building in the database//
-            userDB.updateBuilding(user, null,function(err){
-    			if(err){
-    				res.status(500).send("Error while updating user's building in users database");
-            		return;
-    			}
-				console.log("1 building updated in users DB")
-    		});
+            var latitude = Number(req.body.coords.latitude);
+            var longitude = Number(req.body.coords.longitude);
 
-            //insert new movement log
-            logsDB.insertMove(user,latitude,longitude,null,function(err){
-				if(err){
-    				res.status(500).send("Error while inserting move in logs database");
-            		return;
-    			}
-				console.log("1 move inserted in logs DB")
+            //update user's location in the database
+            userDB.updateLocation(id,latitude,longitude,function(err){
+                if(err){
+                    res.status(500).send("Error updating user location in users database");
+                    return;
+                }
+                console.log("1 location updated in users DB")
             });
-        }
 
-        res.sendStatus(200);
-    })
+            var file = require(filename)
+            let range= Number(file.building_range);
+
+            buildingDB.findNearestBuilding(latitude,longitude,range, function(errbuilding,building_name){
+            
+                if(errbuilding){
+                    res.status(500).send("Error getting user's building from the database");
+                    return;
+                }
+
+                //checking if user is in one of the registered buildings
+                if(building_name.length){       
+            
+                    //update user's building in the database
+                    // we choose the nearest building
+                    userDB.updateBuilding(id,building_name[0].name,function(err){
+                        if(err){
+                            res.status(500).send("Error while updating user's building in users database");
+                            return;
+                        }
+                        console.log("1 building updated in users DB")
+                    });
+
+                    //insert new movement log
+                    logsDB.insertMove(id,latitude,longitude,building_name[0].name,function(err){
+                        if(err){
+                            res.status(500).send("Error while inserting move in logs database");
+                            return;
+                        }
+                        console.log("1 move inserted in logs DB")
+                    });
+
+                }
+                else{
+                    //update user's building in the database//
+                    userDB.updateBuilding(id, null,function(err){
+                        if(err){
+                            res.status(500).send("Error while updating user's building in users database");
+                            return;
+                        }
+                        console.log("1 building updated in users DB")
+                    });
+
+                    //insert new movement log
+                    logsDB.insertMove(id,latitude,longitude,null,function(err){
+                        if(err){
+                            res.status(500).send("Error while inserting move in logs database");
+                            return;
+                        }
+                        console.log("1 move inserted in logs DB")
+                    });
+                }
+
+                res.sendStatus(200);
+            })
+        }
+    });
 })
 
 // Logout of the user
 // TODO
 router.get('/logout', function(req, res) {
 
-    // clean the user from the database 
-    // TODO
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            // clean the user from the database 
+            // TODO
 
-    // clear the cookie 
-    res.clearCookie('user');
-    
-    // clear cache
-    // TODO
+            // clear the cookie 
+            res.clearCookie('user');
+            
+            // clean cache
+            // TODO
 
-    // redirect to the login page
-    res.redirect(301, '/');
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+    });
+
 })
 
 // Login of the user
 router.get('/login', function(req, res) {
-
     res.send({
         redirect: redirect_page
     })
@@ -195,16 +216,23 @@ router.get('/auth', function(req, res) {
                         // console.log(req.session.user == undefined)
                         // req.session.user = user.username;
                         // 
-
                         // set cookies
                         res.cookie('user', {
                             'id': user.username,
                             'token': token
                         });
-                        //res.cookie('token', token);
 
+                        cache.setValue(token, user.username, function(err,success) {
+                            if(success){
+                                res.redirect(301, "/user/");
+                            }
+                            else{
+                                res.status(500).send("Error saving users token");
+                                return;  
+                            }
+                        });
+                        //res.cookie('token', token);
                         // possibly redirect to another page
-                        res.redirect(301, "/user")
                     });
         
                 } else {
@@ -221,6 +249,17 @@ router.get('/auth', function(req, res) {
 
 // TODO
 router.post('/message', function(req, res) {
+
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            //SEND MESSAGE // TODO
+        }
+    });
 
  //    //get message to send from req body
  //    var message = req.body.message;
@@ -239,80 +278,184 @@ router.post('/message', function(req, res) {
 
 router.post('/range', function(req, res) {
 
-	//get range to send from req body
-    var range = Number(req.body.range);
-    var user= req.params.user;
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            //get range to send from req body
+            var range = Number(req.body.range);
+
+            // checking if range is a number 
+            if (!isNaN(range)){
+                // //set new range for the specified user
+                userDB.setRange(id, range, function(err, result) {
+                    if(err) {
+                        res.status(500).send("Error updating user range in the database");
+                        return;
+                    }
+
+                    //DO STUFF // TODO
+                    res.sendStatus(200);
+                })
+            }else{
+                res.sendStatus(400);
+            }
+        }
+    });
+
+	// //get range to send from req body
+ //    var range = Number(req.body.range);
+ //    var user= req.params.user;
     
-    //check if user exists in our database?? // TODO
+ //    //check if user exists in our database?? // TODO
 
-    // checking if range is a number 
-    if (!isNaN(range)){
+ //    // checking if range is a number 
+ //    if (!isNaN(range)){
 
-	    // //set new range for the specified user
-	    userDB.setRange(user, range, function(err, result) {
-			if(err) {
-				res.status(500).send("Error updating user range in the database");
-				return;
-			}
+	//     // //set new range for the specified user
+	//     userDB.setRange(user, range, function(err, result) {
+	// 		if(err) {
+	// 			res.status(500).send("Error updating user range in the database");
+	// 			return;
+	// 		}
 
-			//DO STUFF // TODO
-			res.sendStatus(200);
-		})
-	}else{
-		res.sendStatus(400);
-	}
+	// 		//DO STUFF // TODO
+	// 		res.sendStatus(200);
+	// 	})
+	// }else{
+	// 	res.sendStatus(400);
+	// }
 
 })
 
 //see who is nearby: within the range 
 router.get('/nearby/range', function(req, res) {
 
-    //check user?? // TODO
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            userDB.getRange(id, function(results_user){
+                if(!Object.keys(results_user).length){
+                    res.sendStatus(404);
+                }
+                
+                userDB.listNearbyUsersByRange(id,Number(results_user.range),function(err,results) {
+
+                    if(err) {
+                        res.status(500).send("Error getting users from the database");
+                        return;
+                    }
+                    res.send(results); //assuming it returns empty if there are no users
+                });
+            })
+        }
+    });
 	
-    var user=req.params.user;
-    // get user's range 
-    userDB.getRange(user, function(results_user){
-    	if(!Object.keys(results_user).length){
-    		res.sendStatus(404);
-    	}
+ //    var user=req.params.user;
+ //    // get user's range 
+ //    userDB.getRange(user, function(results_user){
+ //    	if(!Object.keys(results_user).length){
+ //    		res.sendStatus(404);
+ //    	}
 		
-	    userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
+	//     userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
 
-			if(err) {
-				res.status(500).send("Error getting users from the database");
-				return;
-			}
+	// 		if(err) {
+	// 			res.status(500).send("Error getting users from the database");
+	// 			return;
+	// 		}
 
-	        // VER COMO MANDAR RESULTADOS // TODO
-	        res.send(results); //assuming it returns empty if there are no users
-	    });
-	})
+	//         // VER COMO MANDAR RESULTADOS // TODO
+	//         res.send(results); //assuming it returns empty if there are no users
+	//     });
+	// })
 
 })
 
 //see who is nearby: on the same building 
 router.get('/nearby/building', function(req, res) {
 
-    //check user?? // TODO
-
-    userDB.listNearbyUsersByBuilding(req.params.user,function(err,results) {
-
-		if(err) {
-			res.status(500).send("Error getting users from the database");
-			return;
-		}
-
-        // VER COMO MANDAR RESULTADOS // TODO
-        res.send(results); //assuming it returns empty if there are no users
-    })
-
+    //check token
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            userDB.listNearbyUsersByBuilding(id,function(err,results) {
+                if(err) {
+                    res.status(500).send("Error getting users from the database");
+                    return;
+                }
+                res.send(results); //assuming it returns empty if there are no users
+            })
+        }
+    });
 })
 
-// TO DELETE PROBABLY
+// TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
-
+	obj = { my: "Special", variable: 42 };
+	cache.setValue('rui', obj, function (err, value) {
+		console.log(value);
+	});
+	cache.getValue('rui', function (err, value) {
+		console.log(value);
+	});
+	obj = { my: "Special", variable: 42, t: 3};
+	cache.setValue('rui', obj, function (err, value) {
+		console.log(value);
+	});
+	cache.getValue('rui', function (err, value) {
+		console.log(value);
+	});
+	cache.listKeys(function (err, value) {
+		console.log(value);
+	});
     // TODO
   
 })
+
+//ger user_id
+router.get('/id', function(req, res) {
+
+    //check token
+    console.log("HEREEEEEE");
+    console.log(req.cookies.user.token);
+    cache.getValue(req.cookies.user.token, function(err,id) {
+        console.log("ID:")
+        console.log(id);
+        if (id==undefined){
+            // redirect to the login page
+            res.redirect(301, '/');
+        }
+        else{
+            res.send(id);
+        }
+    });
+    // cache.listKeys(function(err,result){
+    //     console.log('here')
+    //     console.log(result);
+    // });
+})
+
+// router.get('/:user', function(req, res) {
+
+//     res.sendFile(path.join(__dirname + '/../public/user.html'));
+// })
+
+// function checkUserToken(req){
+//     cookie_user_params=req.cookies;
+
+//     if()
+// }
 
 module.exports = router;

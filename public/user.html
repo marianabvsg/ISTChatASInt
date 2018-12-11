@@ -64,7 +64,7 @@
                 nearRange: '',
                 nearAll:'',
                 user_range: null, // get default range value  // TODO
-                user_id: 'ist181669',
+                user_id: '',
                 range: null,
                 user_location : ''
             },
@@ -72,36 +72,46 @@
 
             methods: {
                 nearbyBuilding: function() {
-					var id = this.$data.user_id;
 					var self = this;
-					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/building')
+					axios.get('/user/nearby/building')
 						.then(function (response) {
 							self.nearBuilding =  response.data;
 							console.log(self.nearBuilding);
 						})
 						.catch(function(error) {
-							console.log(error);
+							console.log(error.response);
+
+                           if(error.response.status==500){
+                                alert(' Warning: '+error.response.data+', pleasy try again.');
+                            }
+                            else{
+                                alert(' Warning: Server returned error.');
+                            }
 						});
 				},
 				nearbyRange: function() {
-					var id = this.$data.user_id;
 					var self = this;
-					axios.get('http://127.0.0.1:3000/user/'+id+'/nearby/range')
+					axios.get('/user/nearby/range')
 						.then(function (response) {
 							self.nearRange =  response.data;
 							console.log(self.nearRange);
 						})
 						.catch(function(error) {
-							console.log(error);
+							console.log(error.response);
+                            if(error.response.status==500){
+                                alert(' Warning: '+error.response.data+', pleasy try again.');
+                            }
+                            else{
+                                alert('Warning: Server returned error.');
+                            }
 						});
 				},
                 setRange: function(range) {
-                    var id = this.$data.user_id;
                     // this.$data.serverDataError = false;
                     // this.$data.serverDBError = false;
                     // this.$data.serverError = false;
                     var self=this;
-                    axios.post('http://localhost:3000/user/'+id+'/range',{
+                    axios.post('/user/range',{
                             "range": range
                     }).then(function (response) {
                             // console.log(response.data.redirect);
@@ -157,7 +167,7 @@
 
                     this.$data.user_location=[lat,long];
                     var id = this.$data.user_id;
-                    axios.post('http://localhost:3000/user/'+id+'/location',{
+                    axios.post('/user/location',{
                             "coords": {
                                 "latitude": lat,
                                 "longitude": long
@@ -185,22 +195,47 @@
 
                     window.location.href = '/user/logout';
                 },
-
                 sendMessage: function(message) {
 
                     socket.emit('message', message);
-                }
+                },
+                getUserID: function(){
+                    var self = this;
+                    console.log('here');
+                    axios.get('http://localhost:3000/user/id')
+                        .then(function (response) {
+                            console.log(response.data)
+                            self.user_id =  response.data;
+                            self.refreshLocation();
+                            // console.log(self.user_id);
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                        });
+                    //callback();
+                },
+
+                refreshLocation: function(){
+                     this.getLocation();
+
+                    setInterval(function () {
+                        this.getLocation();
+                    }.bind(this), 30000); 
+                },
+
+                // init: function(){
+                //     var self = this;
+                //     this.getUserID().then(self.refreshLocation());
+                // }
 
             },
 
-            // //mounted? created? ready?? <-- VER O MELHOR // TODO
-            created(){
-                
-                this.getLocation();
 
-                setInterval(function () {
-                    this.getLocation();
-                }.bind(this), 30000);    
+            // //mounted? created? ready?? 
+            mounted(){
+                // this.init();
+                this.getUserID();
+                // this.refreshLocation());   
             }
         })
     </script>
