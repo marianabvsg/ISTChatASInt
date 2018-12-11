@@ -119,7 +119,7 @@ router.get('/logout', function(req, res) {
     // clear the cookie 
     res.clearCookie('user');
     
-    // clean cache
+    // clear cache
     // TODO
 
     // redirect to the login page

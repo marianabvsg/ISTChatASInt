@@ -14,6 +14,9 @@
 
     <!-- Axios import -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <!-- Socket.io import -->
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div id="app">
@@ -22,6 +25,8 @@
         <p> location: {{user_location}} </p>
 
         <h2>Messages:</h2>
+
+        <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
         
 
         <h2>Range:</h2>
@@ -49,12 +54,12 @@
         </div> -->
 
     <script>
-
+        var socket = io();
 
         var vm = new Vue({
             el: '#app',
             data: {
-                message: 'User',
+                message: '',
                 nearBuilding:'',
                 nearRange: '',
                 nearAll:'',
@@ -179,6 +184,11 @@
                 Logout: function() {
 
                     window.location.href = '/user/logout';
+                },
+
+                sendMessage: function(message) {
+
+                    socket.emit('message', message);
                 }
 
             },

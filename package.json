@@ -31,6 +31,7 @@
     "node-cache": "^4.2.0",
     "nodemon": "^1.18.7",
     "request": "^2.88.0",
+    "socket.io": "^2.2.0",
     "vue-router": "^3.0.2"
   }
 }
