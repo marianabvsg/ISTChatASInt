@@ -308,9 +308,25 @@ router.get('/nearby/building', function(req, res) {
 
 })
 
-// TO DELETE PROBABLY
+// TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
-
+	obj = { my: "Special", variable: 42 };
+	cache.setValue('rui', obj, function (err, value) {
+		console.log(value);
+	});
+	cache.getValue('rui', function (err, value) {
+		console.log(value);
+	});
+	obj = { my: "Special", variable: 42, t: 3};
+	cache.setValue('rui', obj, function (err, value) {
+		console.log(value);
+	});
+	cache.getValue('rui', function (err, value) {
+		console.log(value);
+	});
+	cache.listKeys(function (err, value) {
+		console.log(value);
+	});
     // TODO
   
 })
