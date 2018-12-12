@@ -202,10 +202,12 @@
 
                     window.location.href = '/user/logout';
                 },
+                
                 sendMessage: function(message) {
 
                     socket.emit('message', message);
                 },
+
                 getUserID: async function(){
                     var self = this;
                     axios.get('/user/id')

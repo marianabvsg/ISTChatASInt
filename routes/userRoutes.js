@@ -425,7 +425,6 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    console.log("HEREEEEEE");
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("und");

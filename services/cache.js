@@ -35,7 +35,7 @@ class cache {
 	
 	//recebe formato ["user1", "user2", ..]
 	//retorna formato [ 'socket1', 'socket2', ...]
-	getSocket(usersVector, callback) {
+	getSockets(usersVector, callback) {
 		myCache.mget(usersVector, function(err, result) {
 			var arrayIDs = [];
 			

@@ -36,17 +36,21 @@ module.exports = {
         // get a list of the users that are in the bot's building
         userDB.listByBuilding(building, function(err, users) {
 
-            if (err) {
-                console.log(err);
-                callback(err);
+            if (err || users == undefined || users.length == 0) {
+
+                if(err == null) {
+                    return callback("No user inside the building you're trying to send to.");
+                } else {
+                    return callback(err);
+                }
+                
             }
 
             // from the users list get the list of their respective socket.id
             cache.getSockets(users, function(err, sockets_list) {
 
                 if(err) {
-                    console.log(err);
-                    callback(err);;
+                    return callback(err);;
                 }
 
                 // array empty or does not exist
@@ -56,19 +60,20 @@ module.exports = {
                     console.log("No user in the building, so no message is sent.");
 
                     // it's not considered an error
-                    callback(null);;
+                    return callback("No user in the building, so no message is sent.");;
                 } else {
                     
                     // send message to all the users in the message
                     for (socketId in sockets_list) {
+
                         // sending to individual socketid (private message)
                         _io.to(`${socketId}`).emit('message', message);
                     }
 
                     // no error detected
-                    callback(null);;
+                    return callback(null);;
                 }
-            })
+            });
         });
     }
 }

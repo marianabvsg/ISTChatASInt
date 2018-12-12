@@ -12,7 +12,7 @@ router.post('/', function(req, res) {
     botDB.checkBot(key, function(err, building) {
 
         // no bot in the db with that key
-        if(err) {
+        if(err || building == null) {
             res.sendStatus(403);
             return;
         }
@@ -23,7 +23,7 @@ router.post('/', function(req, res) {
         var message = req.body.message;
 
         if(message == null) {
-           res.status(404).send("Error: Message not stated.");
+            res.status(404).send("Error: Message not stated.");
             return;
         }
 
@@ -32,13 +32,15 @@ router.post('/', function(req, res) {
 
             if(err) {
                 console.log(err);
-                res.sendStatus(500);
-                return
-            }
+                res.status(500).send(err);
+                return;
 
-            // everything was OK
-            res.sendStatus(200);
-        })
+            } else {
+                // everything was OK
+                res.sendStatus(200);
+                return;
+            }
+        });
 
     })
 })
