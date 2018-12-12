@@ -11,6 +11,7 @@ class buildingDB {
     // receives a building name and returns its coordinates 
     getCoordinates(name,callback) {
 
+        // gets the db object
         let db = database.getDB();
 
         // checks if the key is in the bots database
@@ -34,6 +35,7 @@ class buildingDB {
     // receives a building coordinates and returns its name
     getName(lat,long,callback) {
 
+        // gets the db object
         let db = database.getDB();
 
         // checks if the key is in the bots database
@@ -59,6 +61,7 @@ class buildingDB {
     // insert from jsonfile of buildings into the database
     insertFromFile(jsonfile, callback) {
 
+        // gets the db object
         let db = database.getDB();
 
         for(let room of jsonfile){
@@ -81,6 +84,7 @@ class buildingDB {
     // insert one building into the database
     insert(id, name, lat, long , callback) {
 
+        // gets the db object
         let db = database.getDB();
         
 		db.collection("buildings").updateOne(
@@ -107,6 +111,7 @@ class buildingDB {
 
     listAll(callback){
 
+        // gets the db object
         let db = database.getDB();
 
         db.collection("buildings").find().toArray(function(err, docs) {
@@ -116,8 +121,10 @@ class buildingDB {
         });
     }
 
+    // returns the nearest according from a certain position within a range
     findNearestBuilding(lat,long,range,callback){
 
+        // gets the db object
         let db = database.getDB();
 
         let query = {location:  {
@@ -139,20 +146,6 @@ class buildingDB {
             callback(err,docs);
         });
 
-
-    //     this.listAll(function(buildings){
-
-    //         var building_name = new Array();
-
-    //         for(var building of buildings)           
-    //             //check if user's coordinates are within the specified range given the building coordinates
-    //             if (cenas){
-    //                 building_name.push(building.name);
-    //             }
-
-    //         callback(building_name)
-    //     })        
-    // }
     }  
 
 }

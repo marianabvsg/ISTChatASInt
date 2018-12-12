@@ -33,6 +33,22 @@ class cache {
 		});
 	}
 	
+	//recebe formato ["user1", "user2", ..]
+	//retorna formato [ 'socket1', 'socket2', ...]
+	getSocket(usersVector, callback) {
+		myCache.mget(usersVector, function(err, result) {
+			var arrayIDs = [];
+			
+			for (var x in result) {
+				if(result.hasOwnProperty(x)) {
+					arrayIDs.push(result[x].socketID);
+				}
+			}			
+			return callback(err, arrayIDs)
+		});
+	}
+	
+	
 	closeCache() {
 		myCache.close();
 	}

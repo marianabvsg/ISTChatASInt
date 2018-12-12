@@ -218,18 +218,18 @@ router.get('/auth', function(req, res) {
                         // TO DELETE
                         // console.log(req.session.user == undefined)
                         // req.session.user = user.username;
-                        // 
-                        // set cookies
+                    
+                        // set cookies with expiration time of 1h
+                        res.cookie('user', token, { expires: new Date(Date.now() + 3600000)});
 
-                        res.cookie('user', token);
-						cache.setValue(token, user.username, function(err,success) {
-                            if(success){
-                                res.redirect(301, "/user/");
-                            }
-                            else{
+                        cache.setValue(token, user.username, function(err,success) {
+
+                            if(err && !success) {
                                 res.status(500).send("Error saving users token");
-                                return;  
+                                return;
                             }
+                        
+                            res.redirect(301, "/user/");
                         });
 							
                         
@@ -406,24 +406,18 @@ router.get('/nearby/building', function(req, res) {
 
 // TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
-	obj = { my: "Special", variable: 42 };
+	obj = { socketID: 1, variable: 42, t: 3};
 	cache.setValue('rui', obj, function (err, value) {
 		console.log(value);
 	});
-	cache.getValue('rui', function (err, value) {
+	obj = { socketID: "rita", variable: 42, t: 3};
+	cache.setValue('miguel', obj, function (err, value) {
 		console.log(value);
 	});
-	obj = { my: "Special", variable: 42, t: 3};
-	cache.setValue('rui', obj, function (err, value) {
+	let users = ["rui", "miguel"]
+	cache.getSocket(users, function (err, value) {
 		console.log(value);
 	});
-	cache.getValue('rui', function (err, value) {
-		console.log(value);
-	});
-	cache.listKeys(function (err, value) {
-		console.log(value);
-	});
-    // TODO
   
 })
 
@@ -436,6 +430,7 @@ router.get('/id', function(req, res) {
         if (id==undefined){
 			console.log("und");
             // redirect to the login pag
+            //res.redirect(301, '/');
             res.send('Please login first');        
         }
         else{ 

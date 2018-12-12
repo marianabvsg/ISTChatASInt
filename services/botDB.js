@@ -10,8 +10,10 @@ class botDB {
     // insert new bot in the bot's database
     insert(key, building) {
 
+        // gets the db object
         let db = database.getDB();
         
+        // inserts in the db the bot's key and building
 		db.collection("bots").insertOne({
             "key": key,
             "building": building
@@ -30,17 +32,19 @@ class botDB {
     // return building if key valid, not permited otherwise
     checkBot(key, callback) {
 
+        // gets the db object
         let db = database.getDB();
 
         // checks if the key is in the bots database
         db.collection("bots").findOne({
             "key": key
-        }, function(doc) {
+        }, function(err, doc) {
 
-            if(!doc) {
-                return callback(false);
+            if(err) {
+                return callback(err, null);
             } else {
-                return callback(true);
+
+                return callback(err, doc.building);
             }
 
         });

@@ -6,13 +6,20 @@ var _db;
 
 module.exports = {
 
+  // initiates the connection to the DB Server
   connectToServer: function( callback ) {
+
     MongoClient.connect(database_name, function( err, db ) {
-      _db = db.db("asint");
-      return callback( err );
-    } );
+
+        // set the name of the collection
+        _db = db.db("asint");
+
+        return callback( err );
+    });
+    
   },
 
+  // get the DB state
   getDB: function() {
     return _db;
   }
