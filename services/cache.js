@@ -17,6 +17,7 @@ class cache {
 
 	getValue(token, callback) {
 		myCache.get(token, function (err, value) {
+			console.log("value: "+value);
 			return callback(err,value) //value == undefined if not match
 		});
 	}

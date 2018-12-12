@@ -9,7 +9,7 @@ module.exports = {
   // initiates the connection to the DB Server
   connectToServer: function( callback ) {
 
-    MongoClient.connect(uri, function( err, db ) {
+    MongoClient.connect(uri, { useNewUrlParser: true }, function( err, db ) {
 		
         // set the name of the collection
         _db = db.db("asint");
