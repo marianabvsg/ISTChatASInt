@@ -15,6 +15,7 @@ module.exports = {
         _io = socketio.listen(server, {cookie: false}); //to remove io: param from cookie
 
         _io.sockets.on('connection', function(socket){
+			console.log("user connected");
 			let token = socket.request.headers.cookie; //'data=xxxxx'
                 token = token.substr((token.indexOf('=')+1)); //removes 'data='
                 console.log('\n' + token);
@@ -53,7 +54,6 @@ module.exports = {
                 if(err) {
                     return callback(err);;
                 }
-
                 // array empty or does not exist
                 if (sockets_list === undefined || sockets_list.length == 0) {
                     

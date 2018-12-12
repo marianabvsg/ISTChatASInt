@@ -61,6 +61,7 @@ class cache {
 								arrayIDs.push(result[x].socketID);
 							}
 						}
+						i = usersVector.length;
 					}
 				}
 				return callback(err, arrayIDs)
