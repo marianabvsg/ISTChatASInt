@@ -20,13 +20,13 @@ module.exports = {
             
             socket.on('message', function(data) {
                 console.log("message: " + data);
-                retrieveUser(socket, function (user) {
+               /* retrieveUser(socket, function (user) {
 					//updata message -- todo
 					console.log(user);
 					sendToNearbyUsers(user, function (result) {
 						console.log(result);
 					});
-				});
+				});*/
             });
 
             socket.on('disconnect', function() {
