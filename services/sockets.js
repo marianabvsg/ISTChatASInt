@@ -15,10 +15,14 @@ module.exports = {
         _io = socketio.listen(server, {cookie: false}); //to remove io: param from cookie
 
         _io.sockets.on('connection', function(socket){
-
+			let token = socket.request.headers.cookie; //'data=xxxxx'
+                token = token.substr((token.indexOf('=')+1)); //removes 'data='
+                console.log('\n' + token);
+                cache.addSocketID(token, socket.id, function (err, suc) {
+					console.log(suc);
+				});
             socket.on('message', function(data) {
                 console.log("message: " + data);
-                console.log("cookie: " + socket.request.headers.cookie);
             })
 
             socket.on('disconnect', function() {
@@ -35,7 +39,6 @@ module.exports = {
 
         // get a list of the users that are in the bot's building
         userDB.listByBuilding(building, function(err, users) {
-
             if (err || users == undefined || users.length == 0) {
 
                 if(err == null) {
@@ -45,10 +48,8 @@ module.exports = {
                 }
                 
             }
-
             // from the users list get the list of their respective socket.id
             cache.getSockets(users, function(err, sockets_list) {
-
                 if(err) {
                     return callback(err);;
                 }
@@ -64,10 +65,9 @@ module.exports = {
                 } else {
                     
                     // send message to all the users in the message
-                    for (socketId in sockets_list) {
-
+                    for (socketID in sockets_list) {
                         // sending to individual socketid (private message)
-                        _io.to(`${socketId}`).emit('message', message);
+                        _io.to(sockets_list[socketID]).emit('message', message);
                     }
 
                     // no error detected

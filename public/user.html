@@ -60,8 +60,11 @@
         </div> -->
 
     <script>
-        var socket = io();
-
+        var socket = io(); //conecta a quem serve esta página
+        socket.on('message', function (data) {
+			console.log(data)
+		});
+		
         var vm = new Vue({
             el: '#app',
             data: {
@@ -205,7 +208,7 @@
 
                     socket.emit('message', message);
                 },
-
+                
                 getUserID: async function(){
                     var self = this;
                     axios.get('/user/id')
@@ -213,7 +216,7 @@
                             console.log(response.status)
                             self.user_id =  response.data;
 
-                            self.refreshLocation();
+                            // self.refreshLocation();
                             // console.log(self.user_id);
                         })
                         .catch(function(error) {

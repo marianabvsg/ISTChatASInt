@@ -8,9 +8,8 @@ var messageService = require('../services/sockets.js');
 router.post('/', function(req, res) {
 
     var key = req.body.key;
-
     botDB.checkBot(key, function(err, building) {
-
+		
         // no bot in the db with that key
         if(err || building == null) {
             res.sendStatus(403);
@@ -29,7 +28,7 @@ router.post('/', function(req, res) {
 
         // send message to the users in the building
         messageService.sendMessage(message, building, function(err) {
-
+			
             if(err) {
                 console.log(err);
                 res.status(500).send(err);

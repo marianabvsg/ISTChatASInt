@@ -47,9 +47,8 @@ class userDB {
 
         let db = database.getDB();
         let query = { building: room };
-
-        db.collection("users").find(query).toArray(function(err, docs) {
-
+        let proj= {_id: 0, ist_id: 1}; //to return only id's
+        db.collection("users").find(query, {projection : proj}).toArray(function(err, docs) {
             //returns all users
             return callback(err,docs);
         });

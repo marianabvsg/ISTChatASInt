@@ -74,7 +74,7 @@ router.post('/location', function(req, res) {
                     res.status(500).send("Error getting user's building from the database");
                     return;
                 }
-
+				console.log(building_name);
                 //checking if user is in one of the registered buildings
                 if(building_name.length){       
             
@@ -223,7 +223,6 @@ router.get('/auth', function(req, res) {
                         res.cookie('user', token, { expires: new Date(Date.now() + 3600000)});
 
                         cache.setValue(token, user.username, function(err,success) {
-
                             if(err && !success) {
                                 res.status(500).send("Error saving users token");
                                 return;
@@ -410,12 +409,12 @@ router.get('/receive', function(req, res) {
 	cache.setValue('rui', obj, function (err, value) {
 		console.log(value);
 	});
-	obj = { socketID: "rita", variable: 42, t: 3};
+	obj = { socketID: "rita", variable: 4, t: 3};
 	cache.setValue('miguel', obj, function (err, value) {
 		console.log(value);
 	});
-	let users = ["rui", "miguel"]
-	cache.getSocket(users, function (err, value) {
+	let users = [42]
+	cache.getSockets(users, function (err, value) {
 		console.log(value);
 	});
   
@@ -434,7 +433,7 @@ router.get('/id', function(req, res) {
         }
         else{ 
 			console.log(id);
-            res.send(id);
+            res.send(id.user_id);
         }
     });
     // cache.listKeys(function(err,result){
