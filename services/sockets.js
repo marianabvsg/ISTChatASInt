@@ -16,15 +16,17 @@ module.exports = {
 
         _io.sockets.on('connection', function(socket){
 			console.log("user connected");
-			retrieveToken(socket, function (suc) {});
-            
+			retrieveToken(socket, function (token) {
+				cache.addSocketID(token, socket.id, function (err, suc) {});  //updates cache with token
+			});
+ 
             socket.on('message', function(data) {
                 console.log("message: " + data);
-               /* retrieveUser(socket, function (user) {
+				/*retrieveUser(socket, function (user) {
 					//updata message -- todo
-					console.log(user);
+					console.log("user: " + user);
 					sendToNearbyUsers(user, function (result) {
-						console.log(result);
+						//console.log(result);
 					});
 				});*/
             });
@@ -90,9 +92,6 @@ function retrieveToken(socket, callback) {
 	let result;
 	let token = socket.request.headers.cookie; //'data=xxxxx'
 	token = token.substr((token.indexOf('=')+1)); //removes 'data='	
-	cache.addSocketID(token, socket.id, function (err, suc) { //updates cache with token
-		result = suc;
-	});
 	
 	return callback(token)
 }
@@ -101,7 +100,6 @@ function retrieveUser(socket, callback) {
 	let user;
 	retrieveToken(socket, function(token) {
 		cache.getValue(token, function (err, result) {
-			console.log("rs: " + result);
 			user = result.user_id;
 		}); 
 	});
@@ -109,8 +107,8 @@ function retrieveUser(socket, callback) {
 }
 
 function sendToNearbyUsers(user , callback) {
-	let users;
-	userDB.listNearbyUsersByRange(user, function(err, users) {
+	userDB.listNearbyUsersByRange(user, 10000, function(users) {
+		users = [{"ist_id":"ist181607"}];
 		cache.getSockets(users, function(err, sockets_list) {
                 if(err) {
                     return callback(err);;
@@ -128,14 +126,12 @@ function sendToNearbyUsers(user , callback) {
                     // send message to all the users in the message
                     for (socketID in sockets_list) {
                         // sending to individual socketid (private message)
-                        _io.to(sockets_list[socketID]).emit('message', message);
+                        _io.to(sockets_list[socketID]).emit('message', 'hello');
                     }
 
                     // no error detected
-                    return callback(null);;
+                    return callback(null);
                 }
             });
 	});
-	
-	return callback(usersArray);
 }

@@ -17,7 +17,6 @@ class cache {
 
 	getValue(token, callback) {
 		myCache.get(token, function (err, value) {
-			console.log("value: "+value);
 			return callback(err,value) //value == undefined if not match
 		});
 	}
@@ -38,12 +37,11 @@ class cache {
 	//cache after addSocketiD  = token : {user_id, socketID}
 	addSocketID(token, sockID, callback) {
 		let id;
+		let obj;
+		let self = this;
 		this.getValue(token, function (err, result) {
-			id = result; //retrieves stored value
-		});
-		let obj = { user_id: id, socketID: sockID}; //replace with new format
-		this.setValue(token, obj, function (err, result) {
-			console.log(result);
+			obj = { user_id: result, socketID: sockID}; //replace with new format
+			self.setValue(token, obj, function (err, result) {});
 		});
 	}
 	

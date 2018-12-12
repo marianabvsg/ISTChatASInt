@@ -21,7 +21,6 @@ router.get('/', function(req, res) {
 	
 	
     res.sendFile(path.join(__dirname + '/../public/user.html'));
-	console.log("ahoy");
     //check token
     // cache.getValue(req.cookies.token, function(err,id) {
     //     if (id==undefined){
@@ -409,9 +408,8 @@ router.get('/receive', function(req, res) {
 	cache.setValue('rui', obj, function (err, value) {
 		console.log(value);
 	});
-	obj = { socketID: "rita", variable: 4, t: 3};
-	cache.setValue('miguel', obj, function (err, value) {
-		console.log(value);
+	cache.getValue('rui', function (err, value) {
+		console.log(value)
 	});
 	let users = [42]
 	cache.getSockets(users, function (err, value) {
@@ -432,8 +430,7 @@ router.get('/id', function(req, res) {
             res.send('Please login first');        
         }
         else{ 
-			console.log(id);
-            res.send(id.user_id);
+            res.send(id.user_id); //(warning)se este user ainda não tiver token associado (acho que n acontece) envia mal para a pagina, porque aí seria só res.send(id)
         }
     });
     // cache.listKeys(function(err,result){
