@@ -18,8 +18,10 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 // 
 
 router.get('/', function(req, res) {
+	
+	
     res.sendFile(path.join(__dirname + '/../public/user.html'));
-
+	console.log("ahoy");
     //check token
     // cache.getValue(req.cookies.token, function(err,id) {
     //     if (id==undefined){
@@ -46,8 +48,9 @@ router.post('/location', function(req, res) {
     //check token
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
+			console.log("redi location");
             // redirect to the login page
-            res.redirect(301, '/');
+            res.send('please login first');
         }
         else{
             var latitude = Number(req.body.coords.latitude);
@@ -219,8 +222,7 @@ router.get('/auth', function(req, res) {
                         // set cookies
 
                         res.cookie('user', token);
-						
-                        cache.setValue(token, user.username, function(err,success) {
+						cache.setValue(token, user.username, function(err,success) {
                             if(success){
                                 res.redirect(301, "/user/");
                             }
@@ -229,6 +231,9 @@ router.get('/auth', function(req, res) {
                                 return;  
                             }
                         });
+							
+                        
+						
                         //res.cookie('token', token);
                         // possibly redirect to another page
                     });
@@ -426,14 +431,15 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    //console.log("HEREEEEEE");
+    console.log("HEREEEEEE");
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
-			console.log("Mega here");
-            // redirect to the login page
-            res.redirect(301, '/');
+			console.log("und");
+            // redirect to the login pag
+            res.send('Please login first');        
         }
         else{ 
+			console.log(id);
             res.send(id);
         }
     });

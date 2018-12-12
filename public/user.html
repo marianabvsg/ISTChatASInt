@@ -202,9 +202,9 @@
                 getUserID: function(){
                     var self = this;
                     console.log('here');
-                    axios.get('http://localhost:3000/user/id')
+                    axios.get('/user/id')
                         .then(function (response) {
-                            console.log(response.data)
+                            console.log(response.status)
                             self.user_id =  response.data;
                             self.refreshLocation();
                             // console.log(self.user_id);

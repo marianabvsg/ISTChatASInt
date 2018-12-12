@@ -6,12 +6,9 @@ var _io;
 module.exports = {
     
     listen: function(server){
-        _io = socketio.listen(server);
-
-        //console.log("olá");
+        _io = socketio.listen(server, {cookie: false});
 
         _io.sockets.on('connection', function(socket){
-            //console.log("heyo: " + socket.id);
 
             socket.on('message', function(data) {
                 console.log("message: " + data);
