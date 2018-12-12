@@ -2,13 +2,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+// TO DELETE
 //var session = require('express-session');
 var cookieParser = require('cookie-parser');
 
+// create an express instance
 const app = express();
-
 var http = require("http").Server(app);
 
+// initiate the socket.io server
 var io = require('./services/sockets.js').listen(http);
 
 // routes
@@ -23,14 +25,17 @@ var database = require( './services/database.js' );
 // Get environment defined variables
 const http_port = process.env.PORT || 3000
 
+// for parsing cookies on express.js
 app.use(cookieParser());
 
+// for parsing bodies in express.js
 app.use(bodyParser.urlencoded({
     extended: true
 }))
 
 app.use(bodyParser.json())
 
+// for security
 app.use(cors())
 
 // TO DELETE
@@ -38,20 +43,16 @@ app.use(cors())
 
 // Create a connection to the database
 database.connectToServer( function( err ) {
+    
     if(err) {
         console.log("Error in database connection: " + err);
     } else {
 
-
+        // inits the HTTP Server
         var server = http.listen(http_port, () => {
             console.log('Waiting for requests on port: ' + server.address().port)
-            //console.log('server is running on port', server.address().port);
         });
 
-        // Launch API server            
-        // app.listen(http_port, function() {
-        //     console.log('Waiting for requests on port: ' + http_port)
-        // })
     }
 });
 

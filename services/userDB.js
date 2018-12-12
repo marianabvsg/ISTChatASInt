@@ -114,9 +114,8 @@ class userDB {
         });
     }
 
-
+    // returns all users which are in the same building
     listInBuilding(building_name,callback){
-        // returns all users which are in the same building
         let db = database.getDB();
         let query = { building: building_name };
 

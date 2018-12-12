@@ -1,27 +1,45 @@
 const express = require('express')
 const router = express.Router()
 
+// our own services
 var botDB = require('../services/botDB.js');
+var messageService = require('../services/sockets.js');
 
 router.post('/', function(req, res) {
 
     var key = req.body.key;
 
-    botDB.checkBot(key, function(result) {
-
-        // there were results in the db
-        if(result == true) {
-
-            // Send message
-            //     var message = req.body.message;
-            //     // TODO
-
-            res.sendStatus(200);
+    botDB.checkBot(key, function(err, building) {
 
         // no bot in the db with that key
-        } else {
+        if(err) {
             res.sendStatus(403);
+            return;
         }
+
+        // there were results in the db
+
+        // Send message
+        var message = req.body.message;
+
+        if(message == null) {
+           res.status(404).send("Error: Message not stated.");
+            return;
+        }
+
+        // send message to the users in the building
+        messageService.sendMessage(message, building, function(err) {
+
+            if(err) {
+                console.log(err);
+                res.sendStatus(500);
+                return
+            }
+
+            // everything was OK
+            res.sendStatus(200);
+        })
+
     })
 })
 

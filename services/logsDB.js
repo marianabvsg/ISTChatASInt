@@ -7,7 +7,7 @@ class logsDB {
 
     }
 
-    //insert new message in the logs_movements db
+    //insert new message in the logs_messages db
     insertMessage(user_id, message,building,callback) {
 
         let db = database.getDB();
@@ -46,7 +46,6 @@ class logsDB {
         var self=this;
 
         this.listAllMoves(function(results_moves) {
-
 
             self.listAllMessages(function(results_msgs) {
 
