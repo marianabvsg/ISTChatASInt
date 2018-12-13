@@ -26,6 +26,7 @@ module.exports = {
                 console.log("message: " + data);
 				retrieveUserFromSocketID(socket, function (user) {
 					//todo - insert message in logs
+					if(user === undefined) {return} //intruder alert
 					console.log("user: " + user);
 					sendToNearbyUsersRange(user, data, function (result) {
 						//console.log(result);
