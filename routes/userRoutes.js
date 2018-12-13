@@ -282,7 +282,7 @@ router.post('/range', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
         }
         else{
             //get range to send from req body
@@ -339,7 +339,8 @@ router.get('/nearby/range', function(req, res) {
 
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
+            res.status(404);
         }
         else{
             userDB.getRange(id, function(results_user){
@@ -387,7 +388,7 @@ router.get('/nearby/building', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
         }
         else{
             userDB.listNearbyUsersByBuilding(id,function(err,results) {

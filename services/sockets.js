@@ -17,7 +17,7 @@ module.exports = {
 		
 		//if anyone connects to my socket, i will associate his socket id to his cache
         _io.sockets.on('connection', function(socket){
-			console.log("user connected");
+			console.log("socket connected");
 			retrieveTokenFromCookie(socket, function (token) {
 				cache.addSocketID(token, socket.id, function (err) {if(err){return err}});  //updates cache with token
 			});

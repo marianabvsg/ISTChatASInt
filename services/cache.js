@@ -35,6 +35,7 @@ class cache {
 	//gets the user id matching the token
 	getUserID(token, callback) {
 		myCache.get(token, function(err, value) {
+			if(value === undefined) {return callback(err, value)}
 			if(value.user_id != undefined) {
 				value = value.user_id;
 			}
