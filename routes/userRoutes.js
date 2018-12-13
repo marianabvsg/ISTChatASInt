@@ -19,7 +19,6 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
 	
-	
     res.sendFile(path.join(__dirname + '/../public/user.html'));
     //check token
     // cache.getValue(req.cookies.token, function(err,id) {
@@ -254,7 +253,7 @@ router.post('/message', function(req, res) {
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            //res.redirect(301, '/');
         }
         else{
             //SEND MESSAGE // TODO
@@ -333,10 +332,8 @@ router.post('/range', function(req, res) {
 
 //see who is nearby: within the range 
 router.get('/nearby/range', function(req, res) {
-
     //check token
     cache.getUserID(req.cookies.user, function(err,id) {
-
         if (id==undefined){
             // redirect to the login page
             // res.redirect(301, '/');
@@ -349,11 +346,11 @@ router.get('/nearby/range', function(req, res) {
                 }
                 
                 userDB.listNearbyUsersByRange(id,Number(results_user.range),function(err,results) {
-
                     if(err) {
                         res.status(500).send("Error getting users from the database");
                         return;
                     }
+                    console.log(results);
                     res.send(results); //assuming it returns empty if there are no users
                 });
             })

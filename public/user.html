@@ -60,6 +60,7 @@
         </div> -->
 
     <script>
+		var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}};
         var socket = io(); //conecta a quem serve esta página
         socket.on('message', function (data) {
 			console.log(data)
@@ -98,11 +99,11 @@
 						});
 				},
 				nearbyRange: function() {
-					var self = this;
-					axios.get('/user/nearby/range')
+					let self = this;
+					axios.get('/user/nearby/range', config)
 						.then(function (response) {
 							self.nearRange =  response.data;
-							console.log(self.nearRange);
+							console.log(response);
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -224,12 +225,12 @@
                 
                 getUserID: async function(){
                     var self = this;
-                    axios.get('/user/id')
+                    axios.get('/user/id', config)
                         .then(function (response) {
                             console.log(response.status)
                             self.user_id =  response.data;
 
-                            self.refreshLocation();
+                            // self.refreshLocation();
                             // console.log(self.user_id);
                         })
                         .catch(function(error) {

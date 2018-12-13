@@ -74,8 +74,8 @@ function retrieveUserFromSocketID(socket, callback) {
 	//retrieves the token matching the cookie token
 	retrieveTokenFromCookie(socket, function(token) {
 		//from the token gets the matching user
-		cache.getValue(token, function (err, result) {
-			user = result.user_id;
+		cache.getUserID(token, function (err, result) {
+			user = result;
 		}); 
 	});
 	return callback(user);
@@ -117,7 +117,7 @@ function writeMsgToSocket(users, message, callback) {
 		// array empty or does not exist
 		if (sockets_list === undefined || sockets_list.length == 0) {
 			// no user in the building, so no message is sent
-			console.log("No logged in user in range\building, so no message is sent");
+			console.log("No logged in user in range or building, so no message is sent");
 			// it's not considered an error
 			return callback("No logged in user in range\building, so no message is sent");;
 		} else {
