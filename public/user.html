@@ -200,7 +200,6 @@
                 },
 
                 Logout: function() {
-					
 					axios.get('/user/logout')
 						.then(function (response) {
 							if(response.status==200) {

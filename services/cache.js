@@ -6,9 +6,9 @@ const myCache = new NodeCache();
 class cache {
 	
 	constructor() {}
-
+	//3600 = ttl in seconds
 	setValue(token, value, callback) {
-		myCache.set(token, value, function (err, success) {
+		myCache.set(token, value, 3600, function (err, success) {
 			return callback(err, success)
 		});
 	}

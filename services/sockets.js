@@ -34,7 +34,7 @@ module.exports = {
             });
 
             socket.on('disconnect', function() {
-                //console.log("byeo: " + socket.id);
+                console.log("socket disconnected");
             })
 
         })
