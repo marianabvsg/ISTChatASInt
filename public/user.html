@@ -200,8 +200,22 @@
                 },
 
                 Logout: function() {
-
-                    window.location.href = '/user/logout';
+					
+					axios.get('/user/logout')
+						.then(function (response) {
+							if(response.status==200) {
+								window.location.href = '/';
+							}
+						})
+						.catch(function(error) {
+							console.log(error.response);
+                            if(error.response.status==500){
+                                alert(' Warning: '+error.response.data+', pleasy try again.');
+                            }
+                            else{
+                                alert('Warning: Server returned error.');
+                            }
+						});
                 },
 
                 sendMessage: function(message) {

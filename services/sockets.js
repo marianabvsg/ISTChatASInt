@@ -3,6 +3,7 @@ var socketio = require('socket.io');
 
 // access to the users database
 var userDB = require('../services/userDB.js');
+var logsDB = require('../services/logsDB.js');
 
 // access to the cache
 var cache = require('../services/cache.js');
@@ -17,19 +18,19 @@ module.exports = {
 		//if anyone connects to my socket, i will associate his socket id to his cache
         _io.sockets.on('connection', function(socket){
 			console.log("user connected");
-			retrieveToken(socket, function (token) {
+			retrieveTokenFromCookie(socket, function (token) {
 				cache.addSocketID(token, socket.id, function (err) {if(err){return err}});  //updates cache with token
 			});
 			//cache.printCache(function (err) {});
             socket.on('message', function(data) {
                 console.log("message: " + data);
-				/*retrieveUser(socket, function (user) {
-					//updata message -- todo
+				retrieveUserFromSocketID(socket, function (user) {
+					//todo - insert message in logs
 					console.log("user: " + user);
-					sendToNearbyUsers(user, data, function (result) {
+					sendToNearbyUsersRange(user, data, function (result) {
 						//console.log(result);
 					});
-				});*/
+				});
             });
 
             socket.on('disconnect', function() {
@@ -43,14 +44,15 @@ module.exports = {
 
     // send a message to every user present in the bot's respective building
     sendMessage: function(message, building, callback) {
+		//as mensagens enviadas pelos bots tb vão para os logs??? - todo
 		sendToNearbyUsersBuilding(building, message, function (err) {callback(err)});
     },
     
     //internal functions declaration
-    retrieveToken: retrieveToken,
+    retrieveTokenFromCookie: retrieveTokenFromCookie,
     sendToNearbyUsersRange: sendToNearbyUsersRange,
     sendToNearbyUsersBuilding: sendToNearbyUsersBuilding,
-    retrieveUser: retrieveUser,
+    retrieveUserFromSocketID: retrieveUserFromSocketID,
     writeMsgToSocket: writeMsgToSocket
 }
 
@@ -58,7 +60,7 @@ module.exports = {
 
 
 //isolates a token that comes with a cookie
-function retrieveToken(socket, callback) {
+function retrieveTokenFromCookie(socket, callback) {
 	let result;
 	let token = socket.request.headers.cookie; //'data=xxxxx'
 	token = token.substr((token.indexOf('=')+1)); //removes 'data='	
@@ -67,10 +69,10 @@ function retrieveToken(socket, callback) {
 }
 
 //from the socket id who sent a message, gets the macthing user from the cache
-function retrieveUser(socket, callback) {
+function retrieveUserFromSocketID(socket, callback) {
 	let user;
 	//retrieves the token matching the cookie token
-	retrieveToken(socket, function(token) {
+	retrieveTokenFromCookie(socket, function(token) {
 		//from the token gets the matching user
 		cache.getValue(token, function (err, result) {
 			user = result.user_id;
@@ -81,8 +83,8 @@ function retrieveUser(socket, callback) {
 
 //gets all users in the range of a single 'user' and writes them 'message'
 function sendToNearbyUsersRange(user, message, callback) {
-	userDB.listNearbyUsersByRange(user, 10000, function(users) {
-		users = [{"ist_id":"ist181607"}];
+	userDB.listNearbyUsersByRange(user, 10000, function(err, users) {
+		console.log(users);
 		writeMsgToSocket(users, message, function () {});
 	});
 }
@@ -115,9 +117,9 @@ function writeMsgToSocket(users, message, callback) {
 		// array empty or does not exist
 		if (sockets_list === undefined || sockets_list.length == 0) {
 			// no user in the building, so no message is sent
-			console.log("No user in the building, so no message is sent.");
+			console.log("No logged in user in range\building, so no message is sent");
 			// it's not considered an error
-			return callback("No user in the building, so no message is sent.");;
+			return callback("No logged in user in range\building, so no message is sent");;
 		} else {
 			// send message to all the users requested in arg
 			for (socketID in sockets_list) {

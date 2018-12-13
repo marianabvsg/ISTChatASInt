@@ -45,7 +45,7 @@ router.get('/', function(req, res) {
 router.post('/location', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("redi location");
             // redirect to the login page
@@ -126,25 +126,24 @@ router.post('/location', function(req, res) {
 // Logout of the user
 // TODO
 router.get('/logout', function(req, res) {
-
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
-        if (id==undefined){
+    cache.getUserID(req.cookies.user, function(err,id) {
+        if (id==undefined){		
             // redirect to the login page
-            res.redirect(301, '/');
+            res.sendStatus(200);
         }
         else{
             // clean the user from the database 
-            // TODO
-
-            // clear the cookie 
-            res.clearCookie('user');
-            
-            // clean cache
-            // TODO
-
-            // redirect to the login page
-            res.redirect(301, '/');
+            userDB.deleteUser(id, function(err) {
+				if(err) {console.log("Error deleting from DB");}
+				// clean cache
+				cache.deleteValue(req.cookies.user, function (err, count) {
+					if(err) {console.log("Error deleting from cache")}
+					// clear the cookie 
+					res.clearCookie('user');
+					res.sendStatus(200);	// Client will redirect to home after receive 200
+				});
+			});
         }
     });
 
@@ -280,7 +279,7 @@ router.post('/message', function(req, res) {
 router.post('/range', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -336,7 +335,7 @@ router.post('/range', function(req, res) {
 router.get('/nearby/range', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
 
         if (id==undefined){
             // redirect to the login page
@@ -385,7 +384,7 @@ router.get('/nearby/range', function(req, res) {
 router.get('/nearby/building', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
             res.redirect(301, '/');
@@ -425,7 +424,7 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("und");
             // redirect to the login pag
@@ -433,7 +432,7 @@ router.get('/id', function(req, res) {
             res.send('Please login first');        
         }
         else{ 
-            res.send(id.user_id); //(warning)se este user ainda não tiver token associado (acho que n acontece) envia mal para a pagina, porque aí seria só res.send(id)
+            res.send(id);
         }
     });
     // cache.listKeys(function(err,result){

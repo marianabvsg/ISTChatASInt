@@ -32,6 +32,16 @@ class cache {
 		});
 	}
 	
+	//gets the user id matching the token
+	getUserID(token, callback) {
+		myCache.get(token, function(err, value) {
+			if(value.user_id != undefined) {
+				value = value.user_id;
+			}
+			return callback(err, value)  //value == undefined if not match
+		});
+	}
+	
 	printCache(callback) {
 		myCache.keys( function (err, keys) {
 			myCache.mget(keys, function (err, result)  {
@@ -45,7 +55,7 @@ class cache {
 	
 	//cache line before addSocketID = token : user_id
 	//cache line after addSocketiD  = token : {user_id, socketID}
-	//used when socket is created to attribute a socketID to a user
+	//used when the socket is created, to attribute a socketID to a user in the cache
 	//when page is refreshed, a new socket is created, since the user had already a socketID, only needs to update it
 	addSocketID(token, sockID, callback) {
 		let obj;
