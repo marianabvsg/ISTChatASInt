@@ -179,6 +179,7 @@ class userDB {
             //get list of nearby users
             self.listInRange(coords.lat,coords.long,range,function(err,results) {
                 //remove the user from this list
+                console.log(results);
                 let users = results.filter(function(el) { return el.ist_id != user_id; }); 
                 callback(err,users)
             })       

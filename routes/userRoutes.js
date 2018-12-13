@@ -404,6 +404,9 @@ router.get('/nearby/building', function(req, res) {
 
 // TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
+	cache.listKeys(function (err, value) {
+		console.log("val: " + value);
+	});
 	obj = { socketID: 1, variable: 42, t: 3};
 	cache.setValue('rui', obj, function (err, value) {
 		console.log(value);

@@ -13,7 +13,6 @@ class cache {
 		});
 	}
 
-	//é possivel fazer get de varios valores ao mesmo tmepo se for preciso
 
 	getValue(token, callback) {
 		myCache.get(token, function (err, value) {
@@ -33,15 +32,19 @@ class cache {
 		});
 	}
 	
-	//cache before addSocketID = token : user_id
-	//cache after addSocketiD  = token : {user_id, socketID}
+	//line before addSocketID = token : user_id
+	//line after addSocketiD  = token : {user_id, socketID}
 	addSocketID(token, sockID, callback) {
-		let id;
 		let obj;
 		let self = this;
 		this.getValue(token, function (err, result) {
+			if(err) {return err}
+			if(result===undefined) {return callback(null)} //no match for this token, do nothing
 			obj = { user_id: result, socketID: sockID}; //replace with new format
-			self.setValue(token, obj, function (err, result) {});
+			self.setValue(token, obj, function (err, result) {
+				if(err) {return err}
+				return callback(null); //success
+			});
 		});
 	}
 	
@@ -50,7 +53,9 @@ class cache {
 	getSockets(usersVector, callback) {
 		myCache.keys(function (err, keyList) { //keyList = all token in cache (x no total)
 			if(err) return err; 
+			if(keyList === undefined || keyList.length == 0) {return callback(null)} //cache empty, do nothing
 			myCache.mget(keyList, function(err, result) { //result = cada linha é um valor de um token (x linhas no total)
+				if(err) return err;
 				var arrayIDs = [];
 				var i = usersVector.length;
 				for (var x in result) { //para cada linha de result
@@ -63,7 +68,7 @@ class cache {
 						i = usersVector.length;
 					}
 				}
-				return callback(err, arrayIDs)
+				return callback(null, arrayIDs); //success
 			});	
 		});
 	}

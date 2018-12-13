@@ -1,4 +1,4 @@
 {
-  "building_range": 5000,
-  "default_user_range": 5
+  "building_range": 1000000,
+  "default_user_range": 10000
 }
