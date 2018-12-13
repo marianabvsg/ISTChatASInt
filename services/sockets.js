@@ -20,7 +20,7 @@ module.exports = {
 			retrieveToken(socket, function (token) {
 				cache.addSocketID(token, socket.id, function (err) {if(err){return err}});  //updates cache with token
 			});
- 
+			//cache.printCache(function (err) {});
             socket.on('message', function(data) {
                 console.log("message: " + data);
 				/*retrieveUser(socket, function (user) {

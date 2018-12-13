@@ -32,15 +32,32 @@ class cache {
 		});
 	}
 	
-	//line before addSocketID = token : user_id
-	//line after addSocketiD  = token : {user_id, socketID}
+	printCache(callback) {
+		myCache.keys( function (err, keys) {
+			myCache.mget(keys, function (err, result)  {
+				console.log("Cache state:");
+				console.log(result)
+			});
+		});
+		return callback(null);
+	}
+	
+	
+	//cache line before addSocketID = token : user_id
+	//cache line after addSocketiD  = token : {user_id, socketID}
+	//used when socket is created to attribute a socketID to a user
+	//when page is refreshed, a new socket is created, since the user had already a socketID, only needs to update it
 	addSocketID(token, sockID, callback) {
 		let obj;
 		let self = this;
 		this.getValue(token, function (err, result) {
 			if(err) {return err}
 			if(result===undefined) {return callback(null)} //no match for this token, do nothing
-			obj = { user_id: result, socketID: sockID}; //replace with new format
+			if(result.socketID != undefined) {
+				obj = {user_id: result.user_id, socketID: sockID} //when page is refreshed after logging, updates socketID
+			} else { 											  
+				obj = { user_id: result, socketID: sockID}; //replace with new format
+			}
 			self.setValue(token, obj, function (err, result) {
 				if(err) {return err}
 				return callback(null); //success
