@@ -19,9 +19,7 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
 	
-	
     res.sendFile(path.join(__dirname + '/../public/user.html'));
-	console.log("ahoy");
     //check token
     // cache.getValue(req.cookies.token, function(err,id) {
     //     if (id==undefined){
@@ -46,7 +44,7 @@ router.get('/', function(req, res) {
 router.post('/location', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("redi location");
             // redirect to the login page
@@ -127,25 +125,24 @@ router.post('/location', function(req, res) {
 // Logout of the user
 // TODO
 router.get('/logout', function(req, res) {
-
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
-        if (id==undefined){
+    cache.getUserID(req.cookies.user, function(err,id) {
+        if (id==undefined){		
             // redirect to the login page
-            res.redirect(301, '/');
+            res.sendStatus(200);
         }
         else{
             // clean the user from the database 
-            // TODO
-
-            // clear the cookie 
-            res.clearCookie('user');
-            
-            // clean cache
-            // TODO
-
-            // redirect to the login page
-            res.redirect(301, '/');
+            userDB.deleteUser(id, function(err) {
+				if(err) {console.log("Error deleting from DB");}
+				// clean cache
+				cache.deleteValue(req.cookies.user, function (err, count) {
+					if(err) {console.log("Error deleting from cache")}
+					// clear the cookie 
+					res.clearCookie('user');
+					res.sendStatus(200);	// Client will redirect to home after receive 200
+				});
+			});
         }
     });
 
@@ -256,7 +253,7 @@ router.post('/message', function(req, res) {
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            //res.redirect(301, '/');
         }
         else{
             //SEND MESSAGE // TODO
@@ -281,10 +278,10 @@ router.post('/message', function(req, res) {
 router.post('/range', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
         }
         else{
             //get range to send from req body
@@ -335,13 +332,12 @@ router.post('/range', function(req, res) {
 
 //see who is nearby: within the range 
 router.get('/nearby/range', function(req, res) {
-
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
-
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
+            res.status(404);
         }
         else{
             userDB.getRange(id, function(results_user){
@@ -350,11 +346,11 @@ router.get('/nearby/range', function(req, res) {
                 }
                 
                 userDB.listNearbyUsersByRange(id,Number(results_user.range),function(err,results) {
-
                     if(err) {
                         res.status(500).send("Error getting users from the database");
                         return;
                     }
+                    console.log(results);
                     res.send(results); //assuming it returns empty if there are no users
                 });
             })
@@ -386,10 +382,10 @@ router.get('/nearby/range', function(req, res) {
 router.get('/nearby/building', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            res.redirect(301, '/');
+            // res.redirect(301, '/');
         }
         else{
             userDB.listNearbyUsersByBuilding(id,function(err,results) {
@@ -405,13 +401,15 @@ router.get('/nearby/building', function(req, res) {
 
 // TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
+	cache.listKeys(function (err, value) {
+		console.log("val: " + value);
+	});
 	obj = { socketID: 1, variable: 42, t: 3};
 	cache.setValue('rui', obj, function (err, value) {
 		console.log(value);
 	});
-	obj = { socketID: "rita", variable: 4, t: 3};
-	cache.setValue('miguel', obj, function (err, value) {
-		console.log(value);
+	cache.getValue('rui', function (err, value) {
+		console.log(value)
 	});
 	let users = [42]
 	cache.getSockets(users, function (err, value) {
@@ -424,7 +422,7 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    cache.getValue(req.cookies.user, function(err,id) {
+    cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("und");
             // redirect to the login pag
@@ -432,8 +430,7 @@ router.get('/id', function(req, res) {
             res.send('Please login first');        
         }
         else{ 
-			console.log(id);
-            res.send(id.user_id);
+            res.send(id);
         }
     });
     // cache.listKeys(function(err,result){

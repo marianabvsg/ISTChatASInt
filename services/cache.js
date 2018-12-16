@@ -6,18 +6,16 @@ const myCache = new NodeCache();
 class cache {
 	
 	constructor() {}
-
+	//3600 = ttl in seconds
 	setValue(token, value, callback) {
-		myCache.set(token, value, function (err, success) {
+		myCache.set(token, value, 3600, function (err, success) {
 			return callback(err, success)
 		});
 	}
 
-	//é possivel fazer get de varios valores ao mesmo tmepo se for preciso
 
 	getValue(token, callback) {
 		myCache.get(token, function (err, value) {
-			console.log("value: "+value);
 			return callback(err,value) //value == undefined if not match
 		});
 	}
@@ -34,16 +32,47 @@ class cache {
 		});
 	}
 	
-	//cache before addSocketID = token : user_id
-	//cache after addSocketiD  = token : {user_id, socketID}
-	addSocketID(token, sockID, callback) {
-		let id;
-		this.getValue(token, function (err, result) {
-			id = result; //retrieves stored value
+	//gets the user id matching the token
+	getUserID(token, callback) {
+		myCache.get(token, function(err, value) {
+			if(value === undefined) {return callback(err, value)}
+			if(value.user_id != undefined) {
+				value = value.user_id;
+			}
+			return callback(err, value)  //value == undefined if not match
 		});
-		let obj = { user_id: id, socketID: sockID}; //replace with new format
-		this.setValue(token, obj, function (err, result) {
-			console.log(result);
+	}
+	
+	printCache(callback) {
+		myCache.keys( function (err, keys) {
+			myCache.mget(keys, function (err, result)  {
+				console.log("Cache state:");
+				console.log(result)
+			});
+		});
+		return callback(null);
+	}
+	
+	
+	//cache line before addSocketID = token : user_id
+	//cache line after addSocketiD  = token : {user_id, socketID}
+	//used when the socket is created, to attribute a socketID to a user in the cache
+	//when page is refreshed, a new socket is created, since the user had already a socketID, only needs to update it
+	addSocketID(token, sockID, callback) {
+		let obj;
+		let self = this;
+		this.getValue(token, function (err, result) {
+			if(err) {return err}
+			if(result===undefined) {return callback(null)} //no match for this token, do nothing
+			if(result.socketID != undefined) {
+				obj = {user_id: result.user_id, socketID: sockID} //when page is refreshed after logging, updates socketID
+			} else { 											  
+				obj = { user_id: result, socketID: sockID}; //replace with new format
+			}
+			self.setValue(token, obj, function (err, result) {
+				if(err) {return err}
+				return callback(null); //success
+			});
 		});
 	}
 	
@@ -52,7 +81,9 @@ class cache {
 	getSockets(usersVector, callback) {
 		myCache.keys(function (err, keyList) { //keyList = all token in cache (x no total)
 			if(err) return err; 
+			if(keyList === undefined || keyList.length == 0) {return callback(null)} //cache empty, do nothing
 			myCache.mget(keyList, function(err, result) { //result = cada linha é um valor de um token (x linhas no total)
+				if(err) return err;
 				var arrayIDs = [];
 				var i = usersVector.length;
 				for (var x in result) { //para cada linha de result
@@ -65,7 +96,7 @@ class cache {
 						i = usersVector.length;
 					}
 				}
-				return callback(err, arrayIDs)
+				return callback(null, arrayIDs); //success
 			});	
 		});
 	}

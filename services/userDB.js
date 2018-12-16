@@ -160,12 +160,10 @@ class userDB {
         }).then(function(doc) {
             // if doc not found, return an empty object
             if(!doc) {
-                callback({});
+                callback(null);
             // else return an object with lat and long
             } else {
-                callback({
-                    "building": doc.building
-                });
+                callback(doc.building);
             }
         });        
     }
@@ -234,8 +232,16 @@ class userDB {
                 });
             }
         }); 
-
     }
+    
+    deleteUser(user_id, callback) {
+		let db = database.getDB();
+		let myQuery = {"ist_id":user_id}
+		db.collection("users").deleteOne(myQuery, function (err, obj) {
+			if(err) {throw err}
+			callback(err);
+		});
+	}
     
 
 }
