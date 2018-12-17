@@ -13,6 +13,7 @@ var cache = require('../services/cache.js');
 // APP data:
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
+//var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
 var redirect_uri = 'http://localhost:3000/user/auth';
 var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
 // 
@@ -20,24 +21,6 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 router.get('/', function(req, res) {
 	
     res.sendFile(path.join(__dirname + '/../public/user.html'));
-    //check token
-    // cache.getValue(req.cookies.token, function(err,id) {
-    //     if (id==undefined){
-    //         // redirect to the login page
-    //         res.redirect(301, '/');
-    //     }
-    //     else{
-    //         //console.log("Cookies :  ", req.cookies);
-
-    //         // user not authenticated
-    //         // TO DELETE
-    //         // if(req.session.user == null) {
-    //         //     res.status(400).send("gtfo");
-    //         // } else {
-    //         //     res.status(400).send("hello " + req.session.user);
-    //         // }
-    //     }
-    // });
 })
 
 
