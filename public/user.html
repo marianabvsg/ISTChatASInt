@@ -69,8 +69,11 @@
         var socket = io(); //conecta a quem serve esta página
         socket.on('message', function (data) {
             console.log(data)
-            vm.messages.push(data);
+            if (data != null) {
+				vm.messages.push(data);
+			}
 		});
+		
 		
         var vm = new Vue({
             el: '#app',
