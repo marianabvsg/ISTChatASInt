@@ -123,7 +123,7 @@ class buildingDB {
 
     // returns the nearest according from a certain position within a range
     findNearestBuilding(lat,long,range,callback){
-
+		
         // gets the db object
         let db = database.getDB();
 
@@ -136,12 +136,10 @@ class buildingDB {
                 $maxDistance: range
             }
         }};
-
+		
         //{'location':{ $near: [ lat, long ], $maxDistance: 10}};
         let proj= { name: 1};
-
         db.collection("buildings").find(query,{ projection: proj }).toArray(function(err, docs) {
-            
             //returns all users
             callback(err,docs);
         });

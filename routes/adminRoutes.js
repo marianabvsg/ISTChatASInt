@@ -117,7 +117,6 @@ router.get('/list/users', function(req, res) {
             res.status(500).send("Error getting all users from the database");
             return;
         }
-
         res.send(results); //assuming it returns empty if there are no users
     })
     
