@@ -31,13 +31,13 @@ router.post('/', function(req, res) {
 
         // send message to the users in the building
         messageService.sendMessage(message, building, function(err) {
-			
             if(err) {
                 console.log(err);
                 res.status(500).send(err);
                 return;
 
             } else {
+				console.log(message)
                 // everything was OK
                 res.sendStatus(200);
                 return;

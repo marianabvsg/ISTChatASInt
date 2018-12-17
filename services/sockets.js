@@ -210,7 +210,7 @@ function writeMsgToSocket(users, message, callback) {
 			// send message to all the users requested in arg
 			for (socketID in sockets_list) {
 				// sending to individual socketid (private message)
-				_io.to(sockets_list[socketID]).emit('message', 	);
+				_io.to(sockets_list[socketID]).emit('message', message);
 			}
 
 			// no error detected
