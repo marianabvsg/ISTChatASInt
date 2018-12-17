@@ -4,8 +4,9 @@
   "description": "Internet Based Systems Architecture Project",
   "main": "app.js",
   "scripts": {
-    "test": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
   },
   "repository": {
     "type": "git",

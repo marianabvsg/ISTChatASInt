@@ -92,7 +92,6 @@
 					axios.get('/user/nearby/building')
 						.then(function (response) {
 							self.nearBuilding =  response.data;
-							console.log(self.nearBuilding);
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -110,7 +109,6 @@
 					axios.get('/user/nearby/range', config)
 						.then(function (response) {
 							self.nearRange =  response.data;
-							console.log(response);
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -130,9 +128,7 @@
                     axios.post('/user/range',{
                             "range": range
                     }).then(function (response) {
-                            // console.log(response.data.redirect);
-                            // window.location = response.data.redirect;
-                        console.log(response)
+
                         self.$data.user_range=range;
                     })
                     .catch(function (error) {
@@ -142,27 +138,12 @@
                         //por so uma mensagem de erro geral // TODO
                         if(error.response.status==400){
                             alert('Warning: Server returned error, probably due to an incorrect request.');
-                            // self.$data.serverDataError = true;
-                            // setTimeout(function(){
-                            //      self.$data.serverDataError = false;
-                            // }, 2000);
-                            // self.$data.serverDataError = true;
                         }
                         else if(error.response.status==500){
                             alert(' Warning: '+error.response.data+', pleasy try again.');
-                            // self.$data.serverDBError = true;
-                            // self.$data.DBerror_message = error.response.data;
-                            // setTimeout(function(){
-                            //      self.$data.serverDBError = false;
-                            // }, 2000);
                         }
                         else{
-                            alert(' Warning: Server returned error.');
-                            // self.$data.serverError=true;
-                            // self.$data.DBerror_message = error.response.data;
-                            // setTimeout(function(){
-                            //      self.$data.serverError = false;
-                            // }, 2000);
+                            alert(' Warning: Server returned error.');                
                         }
                     });  
 
@@ -179,7 +160,6 @@
                 updateLocation: function(position) {
                     var lat = position.coords.latitude;
                     var long = position.coords.longitude;
-                    console.log('Your latitude is :'+lat+' and longitude is '+long);
 
                     this.$data.user_location=[lat,long];
                     var id = this.$data.user_id;
@@ -191,7 +171,7 @@
                     }).then(function (response) {
                             // console.log(response.data.redirect);
                             // window.location = response.data.redirect;
-                        console.log(response)
+                        //console.log(response)
                     })
                     .catch(function (error) {
 
