@@ -160,12 +160,10 @@ class userDB {
         }).then(function(doc) {
             // if doc not found, return an empty object
             if(!doc) {
-                callback({});
+                callback(null);
             // else return an object with lat and long
             } else {
-                callback({
-                    "building": doc.building
-                });
+                callback(doc.building);
             }
         });        
     }

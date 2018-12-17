@@ -31,6 +31,11 @@
 
         <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
         
+        <p v-if="messages.length != 0">Messages received:</p>
+        <ul v-for="msg in messages">
+            <li>{{msg.user}} -- {{msg.data}}</li>
+        </ul>
+
         <!-- Section to define the range -->
         <h2>Range:</h2>
         <p>Current range is: {{ user_range }}</p>
@@ -63,7 +68,8 @@
 		var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}};
         var socket = io(); //conecta a quem serve esta página
         socket.on('message', function (data) {
-			console.log(data)
+            console.log(data)
+            vm.messages.push(data);
 		});
 		
         var vm = new Vue({
@@ -76,7 +82,8 @@
                 user_range: null, // get default range value  // TODO
                 user_id: '',
                 range: null,
-                user_location : ''
+                user_location : '',
+                messages: []
             },
 
             methods: {

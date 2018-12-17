@@ -10,6 +10,63 @@ var cache = require('../services/cache.js');
 
 var _io;
 
+//internal functions
+
+function retrieveToken(socket, callback) {
+	let result;
+	let token = socket.request.headers.cookie; //'data=xxxxx'
+	token = token.substr((token.indexOf('=')+1)); //removes 'data='	
+	cache.addSocketID(token, socket.id, function (err, suc) { //updates cache with token
+		result = suc;
+	});
+	
+	return callback(token)
+}
+
+function retrieveUser(socket, callback) {
+	let user;
+	retrieveToken(socket, function(token) {
+		cache.getValue(token, function (err, result) {
+			console.log("rs: " + result);
+			user = result.user_id;
+		}); 
+	});
+	return callback(user);
+}
+
+function sendToNearbyUsers(user , callback) {
+	let users;
+	userDB.listNearbyUsersByRange(user, function(err, users) {
+		cache.getSockets(users, function(err, sockets_list) {
+                if(err) {
+                    return callback(err);;
+                }
+                // array empty or does not exist
+                if (sockets_list === undefined || sockets_list.length == 0) {
+                    
+                    // no user in the building, so no message is sent
+                    console.log("No user in the building, so no message is sent.");
+
+                    // it's not considered an error
+                    return callback("No user in the building, so no message is sent.");;
+                } else {
+                    
+                    // send message to all the users in the message
+                    for (socketID in sockets_list) {
+                        // sending to individual socketid (private message)
+                        _io.to(sockets_list[socketID]).emit('message', message);
+                    }
+
+                    // no error detected
+                    return callback(null);;
+                }
+            });
+	});
+	
+	return callback(usersArray);
+}
+
+
 module.exports = {
     
     listen: function(server){
@@ -25,12 +82,35 @@ module.exports = {
             socket.on('message', function(data) {
                 console.log("message: " + data);
 				retrieveUserFromSocketID(socket, function (user) {
-					//todo - insert message in logs
-					if(user === undefined) {return} //intruder alert
+
+					if(user == undefined) {return} //intruder alert
+
 					console.log("user: " + user);
-					sendToNearbyUsersRange(user, data, function (result) {
-						//console.log(result);
+
+					userDB.getBuilding(user, function(building) {
+						if(building != null) {
+							//todo - insert message in logs
+							logsDB.insertMessage(user, data, building, function(err) {
+								if(err) {
+									console.log("InserMessage in sockets: " + err)
+								}
+							})
+						}
+					})
+
+					// create a message with the data to send and the sender id
+					var message = {
+						'user': user,
+						'data': data
+					}
+
+					sendToNearbyUsersRange(user, message, function (err) {
+		
+						if(err) {
+							console.log("Error in socket message: " + err);
+						}
 					});
+
 				});
             });
 
@@ -84,9 +164,14 @@ function retrieveUserFromSocketID(socket, callback) {
 
 //gets all users in the range of a single 'user' and writes them 'message'
 function sendToNearbyUsersRange(user, message, callback) {
+
 	userDB.listNearbyUsersByRange(user, 10000, function(err, users) {
-		console.log(users);
-		writeMsgToSocket(users, message, function () {});
+
+		writeMsgToSocket(users, message, function (err) {
+			if(err) {
+				callback(err);
+			}
+		});
 	});
 }
 
@@ -127,6 +212,7 @@ function writeMsgToSocket(users, message, callback) {
 				// sending to individual socketid (private message)
 				_io.to(sockets_list[socketID]).emit('message', 	);
 			}
+
 			// no error detected
 			return callback(null);;
 		}

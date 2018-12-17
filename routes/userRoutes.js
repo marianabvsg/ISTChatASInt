@@ -176,7 +176,7 @@ router.get('/auth', function(req, res) {
             return console.log(err); 
         }
 
-        if(res.statusCode == 200) {
+        if(response.statusCode == 200) {
 
             var token = JSON.parse(response.body).access_token
 

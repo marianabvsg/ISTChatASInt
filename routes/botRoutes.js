@@ -19,7 +19,10 @@ router.post('/', function(req, res) {
         // there were results in the db
 
         // Send message
-        var message = req.body.message;
+        var message = {
+            'user': 'Bot ' + building,
+            'data': req.body.message
+        }
 
         if(message == null) {
             res.status(404).send("Error: Message not stated.");
