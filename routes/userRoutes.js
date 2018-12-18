@@ -50,7 +50,8 @@ router.post('/location', function(req, res) {
         if (id==undefined){
 			console.log("redi location");
             // redirect to the login page
-            res.send('please login first');
+            res.status(403).send('Please login first');
+            // res.send('please login first');
         }
         else{
             var latitude = Number(req.body.coords.latitude);
@@ -425,13 +426,13 @@ router.get('/receive', function(req, res) {
 router.get('/id', function(req, res) {
 
     //check token
-    console.log("HEREEEEEE");
     cache.getValue(req.cookies.user, function(err,id) {
         if (id==undefined){
 			console.log("und");
             // redirect to the login pag
             //res.redirect(301, '/');
-            res.send('Please login first');        
+            res.status(403).send('Please login first');
+            // res.send('Please login first');        
         }
         else{ 
 			console.log(id);

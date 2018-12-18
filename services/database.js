@@ -8,7 +8,7 @@ module.exports = {
 
   // initiates the connection to the DB Server
   connectToServer: function( callback ) {
-
+    
     MongoClient.connect(database_name, function( err, db ) {
 
         // set the name of the collection
