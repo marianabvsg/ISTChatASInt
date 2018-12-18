@@ -64,7 +64,7 @@ class logsDB {
 
         let db = database.getDB();
 
-        db.collection("logs_messages").find().toArray(function(err, docs) {
+        db.collection("logs_messages").find({},{projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;
@@ -80,7 +80,7 @@ class logsDB {
 
         let db = database.getDB();
 
-        db.collection("logs_moves").find().toArray(function(err, docs) {
+        db.collection("logs_moves").find({},{projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;
@@ -117,7 +117,7 @@ class logsDB {
         let db = database.getDB();
         let query = { ist_id: user };
 
-        db.collection("logs_moves").find(query).toArray(function(err, docs) {
+        db.collection("logs_moves").find(query, {projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;
@@ -134,7 +134,7 @@ class logsDB {
         let db = database.getDB();
         let query = { ist_id: user };
 
-        db.collection("logs_messages").find(query).toArray(function(err, docs) {
+        db.collection("logs_messages").find(query, {projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;
@@ -171,7 +171,7 @@ class logsDB {
         let db = database.getDB();
         let query = { building: room };
 
-        db.collection("logs_messages").find(query).toArray(function(err, docs) {
+        db.collection("logs_messages").find(query, {projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;
@@ -188,7 +188,7 @@ class logsDB {
         let db = database.getDB();
         let query = { building: room };
 
-        db.collection("logs_moves").find(query).toArray(function(err, docs) {
+        db.collection("logs_moves").find(query, {projection:{_id: 0}}).toArray(function(err, docs) {
             
             if(err) {
                 throw err;

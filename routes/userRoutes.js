@@ -13,8 +13,8 @@ var cache = require('../services/cache.js');
 // APP data:
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
-var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
-// var redirect_uri = 'http://localhost:3000/user/auth';
+//var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
+var redirect_uri = 'http://localhost:3000/user/auth';
 var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
 // 
 

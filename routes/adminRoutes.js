@@ -99,8 +99,7 @@ router.post('/building/range', function(req, res) {
 router.get('/list/users', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
-
+    const secret = req.body.adminkey;	
     // validate secret
    /* if(secret == null || secret == {} || secret != adminkey) {
         
@@ -128,7 +127,6 @@ router.get('/list/users/building/:building', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
-
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
         
@@ -152,7 +150,6 @@ router.get('/list/users/building/:building', function(req, res) {
             res.status(500).send("Error getting all users from the database");
             return;
         }
-
 		res.send(results);
 	})
 })
@@ -172,7 +169,6 @@ router.get('/list/logs', function(req, res) {
     }
 
 	logsDB.listAll(function(results) {
-
         res.send(results); //assuming it returns empty if there are no users
     })
 
