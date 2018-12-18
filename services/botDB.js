@@ -39,12 +39,12 @@ class botDB {
         db.collection("bots").findOne({
             "key": key
         }, function(err, doc) {
-
-            if(err) {
-                return callback(err, null);
+            
+            // if error or no doc is returned
+            if(err || doc == null) {
+                callback(err, null);
             } else {
-
-                return callback(err, doc.building);
+                callback(err, doc.building);
             }
 
         });

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src localhost:3000; style-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com/vue https://unpkg.com/axios/dist/axios.min.js;"> -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>IST Chat ASInt</title>
@@ -32,6 +31,11 @@
 
         <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
         
+        <p v-if="messages.length != 0">Messages received:</p>
+        <ul v-for="msg in messages">
+            <li>{{msg.user}} -- {{msg.data}}</li>
+        </ul>
+
         <!-- Section to define the range -->
         <h2>Range:</h2>
         <p>Current range is: {{ user_range }}</p>
@@ -61,8 +65,16 @@
         </div> -->
 
     <script>
-        var socket = io();
-
+		var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}};
+        var socket = io(); //conecta a quem serve esta página
+        socket.on('message', function (data) {
+            console.log(data)
+            if (data != null) {
+				vm.messages.push(data);
+			}
+		});
+		
+		
         var vm = new Vue({
             el: '#app',
             data: {
@@ -73,9 +85,9 @@
                 user_range: null, // get default range value  // TODO
                 user_id: '',
                 range: null,
-                user_location : ''
+                user_location : '',
+                messages: []
             },
-
 
             methods: {
                 nearbyBuilding: function() {
@@ -83,7 +95,6 @@
 					axios.get('/user/nearby/building')
 						.then(function (response) {
 							self.nearBuilding =  response.data;
-							console.log(self.nearBuilding);
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -97,11 +108,10 @@
 						});
 				},
 				nearbyRange: function() {
-					var self = this;
-					axios.get('/user/nearby/range')
+					let self = this;
+					axios.get('/user/nearby/range', config)
 						.then(function (response) {
 							self.nearRange =  response.data;
-							console.log(self.nearRange);
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -121,9 +131,7 @@
                     axios.post('/user/range',{
                             "range": range
                     }).then(function (response) {
-                            // console.log(response.data.redirect);
-                            // window.location = response.data.redirect;
-                        console.log(response)
+
                         self.$data.user_range=range;
                     })
                     .catch(function (error) {
@@ -133,27 +141,12 @@
                         //por so uma mensagem de erro geral // TODO
                         if(error.response.status==400){
                             alert('Warning: Server returned error, probably due to an incorrect request.');
-                            // self.$data.serverDataError = true;
-                            // setTimeout(function(){
-                            //      self.$data.serverDataError = false;
-                            // }, 2000);
-                            // self.$data.serverDataError = true;
                         }
                         else if(error.response.status==500){
                             alert(' Warning: '+error.response.data+', pleasy try again.');
-                            // self.$data.serverDBError = true;
-                            // self.$data.DBerror_message = error.response.data;
-                            // setTimeout(function(){
-                            //      self.$data.serverDBError = false;
-                            // }, 2000);
                         }
                         else{
-                            alert(' Warning: Server returned error.');
-                            // self.$data.serverError=true;
-                            // self.$data.DBerror_message = error.response.data;
-                            // setTimeout(function(){
-                            //      self.$data.serverError = false;
-                            // }, 2000);
+                            alert(' Warning: Server returned error.');                
                         }
                     });  
 
@@ -170,7 +163,6 @@
                 updateLocation: function(position) {
                     var lat = position.coords.latitude;
                     var long = position.coords.longitude;
-                    console.log('Your latitude is :'+lat+' and longitude is '+long);
 
                     this.$data.user_location=[lat,long];
                     var id = this.$data.user_id;
@@ -182,7 +174,7 @@
                     }).then(function (response) {
                             // console.log(response.data.redirect);
                             // window.location = response.data.redirect;
-                        console.log(response)
+                        //console.log(response)
                     })
                     .catch(function (error) {
 
@@ -199,16 +191,31 @@
                 },
 
                 Logout: function() {
-
-                    window.location.href = '/user/logout';
+					axios.get('/user/logout')
+						.then(function (response) {
+							if(response.status==200) {
+								window.location.href = '/';
+							}
+						})
+						.catch(function(error) {
+							console.log(error.response);
+                            if(error.response.status==500){
+                                alert(' Warning: '+error.response.data+', pleasy try again.');
+                            }
+                            else{
+                                alert('Warning: Server returned error.');
+                            }
+						});
                 },
+
                 sendMessage: function(message) {
 
                     socket.emit('message', message);
                 },
+                
                 getUserID: async function(){
                     var self = this;
-                    axios.get('/user/id')
+                    axios.get('/user/id', config)
                         .then(function (response) {
                             console.log(response.status)
                             self.user_id =  response.data;
@@ -227,7 +234,7 @@
 
                     setInterval(function () {
                         this.getLocation();
-                    }.bind(this), 30000); 
+                    }.bind(this), 300000); 
                 },
 
                 // init: function(){

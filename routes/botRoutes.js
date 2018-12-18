@@ -8,11 +8,10 @@ var messageService = require('../services/sockets.js');
 router.post('/', function(req, res) {
 
     var key = req.body.key;
-
     botDB.checkBot(key, function(err, building) {
-
+		
         // no bot in the db with that key
-        if(err) {
+        if(err || building == null) {
             res.sendStatus(403);
             return;
         }
@@ -20,25 +19,30 @@ router.post('/', function(req, res) {
         // there were results in the db
 
         // Send message
-        var message = req.body.message;
+        var message = {
+            'user': 'Bot ' + building,
+            'data': req.body.message
+        }
 
         if(message == null) {
-           res.status(404).send("Error: Message not stated.");
+            res.status(404).send("Error: Message not stated.");
             return;
         }
 
         // send message to the users in the building
         messageService.sendMessage(message, building, function(err) {
-
             if(err) {
                 console.log(err);
-                res.sendStatus(500);
-                return
-            }
+                res.status(500).send(err);
+                return;
 
-            // everything was OK
-            res.sendStatus(200);
-        })
+            } else {
+				console.log(message)
+                // everything was OK
+                res.sendStatus(200);
+                return;
+            }
+        });
 
     })
 })

@@ -4,8 +4,9 @@
   "description": "Internet Based Systems Architecture Project",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "monitor": "nodemon app.js",
+    "deploy": "gcloud preview app deploy"
   },
   "repository": {
     "type": "git",
@@ -31,7 +32,6 @@
     "node-cache": "^4.2.0",
     "nodemon": "^1.18.7",
     "request": "^2.88.0",
-    "socket.io": "^2.2.0",
-    "vue-router": "^3.0.2"
+    "socket.io": "^2.2.0"
   }
 }

@@ -53,7 +53,8 @@ def menu(secretKey):
 		r = requests.get(url, data = payload, params = params)
 	#elif (method == "4")
 		
-	print (r) #response
+	resp = r.json() #response
+	print(resp)
 		
 	
 	

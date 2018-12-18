@@ -47,9 +47,8 @@ class userDB {
 
         let db = database.getDB();
         let query = { building: room };
-
-        db.collection("users").find(query).toArray(function(err, docs) {
-
+        let proj= {_id: 0, ist_id: 1}; //to return only id's
+        db.collection("users").find(query, {projection : proj}).toArray(function(err, docs) {
             //returns all users
             return callback(err,docs);
         });
@@ -161,12 +160,10 @@ class userDB {
         }).then(function(doc) {
             // if doc not found, return an empty object
             if(!doc) {
-                callback({});
+                callback(null);
             // else return an object with lat and long
             } else {
-                callback({
-                    "building": doc.building
-                });
+                callback(doc.building);
             }
         });        
     }
@@ -235,8 +232,16 @@ class userDB {
                 });
             }
         }); 
-
     }
+    
+    deleteUser(user_id, callback) {
+		let db = database.getDB();
+		let myQuery = {"ist_id":user_id}
+		db.collection("users").deleteOne(myQuery, function (err, obj) {
+			if(err) {throw err}
+			callback(err);
+		});
+	}
     
 
 }
