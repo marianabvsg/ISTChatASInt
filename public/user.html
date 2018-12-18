@@ -45,19 +45,26 @@
         <h2>Nearby:</h2>
         <button @click = "nearbyBuilding()">building</button>
 		<button @click = "nearbyRange()">range</button>
-        <ul v-for="body in nearRange">
+
+        <div v-if="rangeListOpen">
+            <p> Users in my range: </p>
+            <ul v-for="body in nearRange">
             <li>{{body.ist_id}} --- {{body.name}}</li>
-        </ul>
-        <ul v-for="body in nearBuilding">
-            <li>{{body.ist_id}} --- {{body.name}}</li>
-        </ul>
-        
+            </ul>
+        </div>
+
+        <div v-if="buildingListOpen">
+            <p> Users in my building: </p>
+            <ul v-for="body in nearBuilding">
+                <li>{{body.ist_id}} --- {{body.name}}</li>
+            </ul>
+        </div>
+            
         <!-- Section of the logout-->
         <h2>Logout:</h2>
         <button @click="Logout">Logout</button>
 
 	</div>
-
 
 <!-- 
       <div v-if="!serverOk">
@@ -82,11 +89,13 @@
                 nearBuilding:'',
                 nearRange: '',
                 nearAll:'',
-                user_range: null, // get default range value  // TODO
+                user_range: '', // get default range value  // TODO
                 user_id: '',
                 range: null,
                 user_location : '',
-                messages: []
+                messages: [],
+                buildingListOpen: false,
+                rangeListOpen: false,
             },
 
             methods: {
@@ -95,6 +104,8 @@
 					axios.get('/user/nearby/building')
 						.then(function (response) {
 							self.nearBuilding =  response.data;
+                            self.rangeListOpen= false;
+                            self.buildingListOpen= true;
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -112,6 +123,8 @@
 					axios.get('/user/nearby/range', config)
 						.then(function (response) {
 							self.nearRange =  response.data;
+                            self.buildingListOpen= false;
+                            self.rangeListOpen= true;
 						})
 						.catch(function(error) {
 							console.log(error.response);
@@ -219,12 +232,27 @@
                         .then(function (response) {
                             console.log(response.status)
                             self.user_id =  response.data;
-
+                            self.getRange();
                             self.refreshLocation();
                             // console.log(self.user_id);
                         })
                         .catch(function(error) {
                             console.log(error);
+                            alert(' Warning: '+error.response.data);
+                        });
+                },
+
+                getRange: function(){
+                    var self = this;
+                    axios.get('/user/range', config)
+                        .then(function (response) {
+                            console.log(response.status)
+                            console.log(response)
+                            self.$data.user_range =  response.data.range;
+                        })
+                        .catch(function(error) {
+                            console.log(error);
+                            alert(' Warning: '+error.response.data);
                         });
                 },
 

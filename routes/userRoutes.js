@@ -14,7 +14,7 @@ var cache = require('../services/cache.js');
 var client_id = "1414440104755246";
 var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLCJeqbZGBAXI4TbilRXSACUq9TaTg==";
 var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
-//var redirect_uri = 'http://localhost:3000/user/auth';
+// var redirect_uri = 'http://localhost:3000/user/auth';
 var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
 // 
 
@@ -31,7 +31,8 @@ router.post('/location', function(req, res) {
         if (id==undefined){
 			console.log("redi location");
             // redirect to the login page
-            res.send('please login first');
+            res.sendStatus(403);
+            // res.send('please login first');
         }
         else{
             var latitude = Number(req.body.coords.latitude);
@@ -112,7 +113,8 @@ router.get('/logout', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){		
             // redirect to the login page
-            res.sendStatus(200);
+            // res.sendStatus(200);
+            res.sendStatus(403);
         }
         else{
             // clean the user from the database 
@@ -203,6 +205,7 @@ router.get('/auth', function(req, res) {
                         res.cookie('user', token, { expires: new Date(Date.now() + 3600000)});
 
                         cache.setValue(token, user.username, function(err,success) {
+
                             if(err && !success) {
                                 res.status(500).send("Error saving users token");
                                 return;
@@ -237,6 +240,7 @@ router.post('/message', function(req, res) {
         if (id==undefined){
             // redirect to the login page
             //res.redirect(301, '/');
+            res.sendStatus(403);
         }
         else{
             //SEND MESSAGE // TODO
@@ -265,6 +269,7 @@ router.post('/range', function(req, res) {
         if (id==undefined){
             // redirect to the login page
             // res.redirect(301, '/');
+            res.sendStatus(403);
         }
         else{
             //get range to send from req body
@@ -320,7 +325,7 @@ router.get('/nearby/range', function(req, res) {
         if (id==undefined){
             // redirect to the login page
             // res.redirect(301, '/');
-            res.status(404);
+            res.sendStatus(403);
         }
         else{
             userDB.getRange(id, function(results_user){
@@ -368,7 +373,7 @@ router.get('/nearby/building', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            // res.redirect(301, '/');
+            res.sendStatus(403);;
         }
         else{
             userDB.listNearbyUsersByBuilding(id,function(err,results) {
@@ -410,7 +415,8 @@ router.get('/id', function(req, res) {
 			console.log("und");
             // redirect to the login pag
             //res.redirect(301, '/');
-            res.send('Please login first');        
+            res.status(403).send('Please login first');
+            // res.send('Please login first');        
         }
         else{ 
             res.send(id);
@@ -420,6 +426,26 @@ router.get('/id', function(req, res) {
     //     console.log('here')
     //     console.log(result);
     // });
+})
+
+//ger user_id
+router.get('/range', function(req, res) {
+
+    //check token
+    cache.getUserID(req.cookies.user, function(err,id) {
+        if (id==undefined){
+            res.sendStatus(403);
+        }
+        else{
+            userDB.getRange(id,function(results) {
+                // if(!Object.keys(results).length){
+                //     res.sendStatus(404);
+                // }
+                res.send(results); //assuming it returns empty if there is no range
+            })
+        }
+    });
+
 })
 
 // router.get('/:user', function(req, res) {
