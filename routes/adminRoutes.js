@@ -102,11 +102,11 @@ router.get('/list/users', function(req, res) {
     const secret = req.body.adminkey;
 
     // validate secret
-    if(secret == null || secret == {} || secret != adminkey) {
+   /* if(secret == null || secret == {} || secret != adminkey) {
         
         res.sendStatus(403);
         return;
-    }
+    }*/
 
     // get the list of users from the database
     // assuming we have available the object users from the userDB class
