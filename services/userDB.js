@@ -119,9 +119,8 @@ class userDB {
         let query = { building: building_name };
 
         let proj= { ist_id: 1, name: 1};
-
         db.collection("users").find(query,{ projection: proj }).toArray(function(err, docs) {
-            
+            console.log(docs);
             //returns all users
             callback(err,docs);
         });
@@ -190,7 +189,7 @@ class userDB {
         //get user building from the db
         this.getBuilding(user_id,function(res) {
             //get list of nearby users (in the same building)
-            self.listInBuilding(res.building,function(err,results) {
+            self.listInBuilding(res,function(err,results) {
 
                 //remove the user from this list
                 let users = results.filter(function(el) { return el.ist_id != user_id; }); 
@@ -223,11 +222,13 @@ class userDB {
             "ist_id": user_id
         }).then(function(doc) {
             // if doc not found, return an empty object
+            console.log("getRange:")
+            console.log(doc.range);
             if(!doc) {
-                callback({});
+                return callback({});
             // else return an object with range
             } else {
-                callback({
+                return callback({
                     "range": doc.range
                 });
             }
