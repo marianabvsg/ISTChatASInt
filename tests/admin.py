@@ -138,6 +138,7 @@ def listLogsByUser(secretKey):
 	for i in data:
 		print(i)
 		print("\n")
+
 	
 def listLogsByBuilding(secretKey):
 	
@@ -161,14 +162,24 @@ def listLogsByBuilding(secretKey):
 		print(i)
 		print("\n")
 	
+def createBot(secretKey):
+	payload = {}
+	params = {}
+	headers = {'Content-type': 'application/json'}
+	payload['adminkey'] = secretKey
+	payload['building'] = input("Insert building name: ")
 	
+	url = "http://localhost:3000/admin/bot"
+	r = requests.post(url, data = payload) #post
+	print (r.json())
 	
 	
 def menu(secretKey):
 	
 	print (30 * "-" , "Menu" , 30 * "-")
 	print("Select an option:\n[1] - To send buildings file,\n[2] - To list all users,\n[3] - To list all users in a building,")
-	print("[4] - To list all logs,\n[5] - To list all moves,\n[6] - To list all messages,\n[7] - To filter logs by users,\n[8] - To filter logs by building")
+	print("[4] - To list all logs,\n[5] - To list all moves,\n[6] - To list all messages,\n[7] - To filter logs by users,")
+	print("[8] - To filter logs by building,\n[9] - To create a new bot.")
 	option = input("Please input one of the above numbers: ")
 	
 	if(option == '1'):
@@ -187,6 +198,8 @@ def menu(secretKey):
 		listLogsByUser(secretKey)		
 	if(option == '8'):
 		listLogsByBuilding(secretKey)		
+	if(option == '9'):
+		createBot(secretKey)		
 	
 	
 def main():
