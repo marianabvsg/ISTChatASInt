@@ -368,7 +368,7 @@ router.get('/list/logs/building/:building', function(req, res) {
 
 
 // Generate an api key for a new bot
-router.get('/bot', function(req, res) {
+router.post('/bot', function(req, res) {
 
     // check if the secret is correct
     const secret = req.body.adminkey;
