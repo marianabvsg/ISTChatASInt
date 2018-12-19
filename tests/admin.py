@@ -12,8 +12,8 @@ def login():
 	password = input("Password: ")
 	
 	payload = {'username':user, 'password':password}
-	#url = "https://asint-chat.appspot.com/admin/login"
-	url = "http://127.0.0.1:3000/admin/login"
+	url = "https://asint-chat.appspot.com/admin/login"
+	#url = "http://127.0.0.1:3000/admin/login"
 	r = requests.post(url, data = payload) #post
 	key = r.json() #convert response to dictionary
 	
@@ -41,9 +41,10 @@ def listAll(secretKey):
 	headers = {'Content-type': 'application/json'}
 	payload['adminkey'] = secretKey
 	
-	#url = "http://asint-chat.appspot.com/admin/list/users"
-	url = "http://localhost:3000/admin/list/users"
+	url = "https://asint-chat.appspot.com/admin/list/users"
+	#url = "http://localhost:3000/admin/list/users"
 	r = requests.get(url, data = payload)
+	#print(r)
 	#print only name - id
 	data = r.json()
 	for i in data:
@@ -169,7 +170,8 @@ def createBot(secretKey):
 	payload['adminkey'] = secretKey
 	payload['building'] = input("Insert building name: ")
 	
-	url = "http://localhost:3000/admin/bot"
+	#url = "http://localhost:3000/admin/bot"
+	url = "https://asint-chat.appspot.com/admin/bot"
 	r = requests.post(url, data = payload) #post
 	print (r.json())
 	
