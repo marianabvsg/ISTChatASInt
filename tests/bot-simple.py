@@ -2,7 +2,7 @@ import requests
 
 api_key = "vcx7p763rl8W09wCoElLAxrbk3HLYmkAoxRvPwlP"
 
-url = "http://127.0.0.1:3000/bot"
+url = "https://asint-chat.appspot.com/bot"
 
 # message to send the message to the server
 def sendMessage(msg):
