@@ -12,11 +12,15 @@ class userDB {
 
         let db = database.getDB();
 
+        // creates a TTL of user of 1h
+        db.collection("users").createIndex({"createdAt": 1}, {expireAfterSeconds: 3600});
+
         // Check first if user is already in the database and only if not it inserts
         db.collection("users").updateOne({
              "ist_id": id
             }, {
              $set:{ 
+                 "createdAt": new Date(),
                  "name": name,
                  "range": range
                 }

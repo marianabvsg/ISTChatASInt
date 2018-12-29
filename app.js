@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 // TO DELETE
 //var session = require('express-session');
 var cookieParser = require('cookie-parser');
@@ -37,6 +38,9 @@ app.use(bodyParser.json())
 
 // for security
 app.use(cors())
+
+app.use("/css",  express.static(__dirname + '/public/css'));
+app.use("/vendor", express.static(__dirname + '/public/vendor'));
 
 // TO DELETE
 //app.use(session({secret: "mysecretkey"}));

@@ -20,7 +20,7 @@ var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id
 
 router.get('/', function(req, res) {
 	
-    res.sendFile(path.join(__dirname + '/../public/user.html'));
+    res.sendFile(path.join(__dirname + '/../public/newuser.html'));
 })
 
 
@@ -247,19 +247,6 @@ router.post('/message', function(req, res) {
         }
     });
 
- //    //get message to send from req body
- //    var message = req.body.message;
-
- //    // get all users in my range:
- //    var nearbyUsers= users.listUsersInRange(req.params.user);
-
- //    //checkar se a lista é empty
-	// // percorrer a lista e para cada user na lista enviar a mensagem pretendida 
- //    for(var receiver in nearbyUsers) {
- //    	//NAO TENHO BEM A CERTEZA SE ISTO É ASSIM, DEPOIS VER CONSOANTE O QUE FOR MANDADO
- //    	//send message to receiver
- //    	//TODO
-	// }
 })
 
 router.post('/range', function(req, res) {
@@ -293,29 +280,6 @@ router.post('/range', function(req, res) {
         }
     });
 
-	// //get range to send from req body
- //    var range = Number(req.body.range);
- //    var user= req.params.user;
-    
- //    //check if user exists in our database?? // TODO
-
- //    // checking if range is a number 
- //    if (!isNaN(range)){
-
-	//     // //set new range for the specified user
-	//     userDB.setRange(user, range, function(err, result) {
-	// 		if(err) {
-	// 			res.status(500).send("Error updating user range in the database");
-	// 			return;
-	// 		}
-
-	// 		//DO STUFF // TODO
-	// 		res.sendStatus(200);
-	// 	})
-	// }else{
-	// 	res.sendStatus(400);
-	// }
-
 })
 
 //see who is nearby: within the range 
@@ -345,25 +309,6 @@ router.get('/nearby/range', function(req, res) {
         }
     });
 	
- //    var user=req.params.user;
- //    // get user's range 
- //    userDB.getRange(user, function(results_user){
- //    	if(!Object.keys(results_user).length){
- //    		res.sendStatus(404);
- //    	}
-		
-	//     userDB.listNearbyUsersByRange(user,Number(results_user.range),function(err,results) {
-
-	// 		if(err) {
-	// 			res.status(500).send("Error getting users from the database");
-	// 			return;
-	// 		}
-
-	//         // VER COMO MANDAR RESULTADOS // TODO
-	//         res.send(results); //assuming it returns empty if there are no users
-	//     });
-	// })
-
 })
 
 //see who is nearby: on the same building 

@@ -1,8 +1,4 @@
-{
-  "type" : "CAMPUS",
-  "id" : "2448131360897",
-  "name" : "Alameda",
-  "containedSpaces" : [ {
+[ {
     "id" : "2448131361042",
     "name" : "Pavilhão de Civil",
     "lat": 38.7368263,
@@ -43,4 +39,3 @@
     "lat": 38.7368098,
     "long": -9.1397191
   }]
-}
