@@ -80,7 +80,12 @@
                          <!-- Section to define the range -->
                         <h1>Range:</h1>
                         <p>Current range is: {{ user_range }}</p>
-                        <input v-model=range placeholder="Range"><button @click="setRange(range)">Set</button>
+                        <input v-model=range placeholder="Range"><button @click="setRange(range)">Set Range</button>
+                        <h1>Location:</h1>
+                        <input v-model=lat placeholder="Latitude">
+                        <input v-model=long placeholder="Longitude">
+                        <button @click="manualLocation(lat, long)">Set Location</button>
+                        
                     </div>
 
                     <div v-if="nearbytoggle">
@@ -138,6 +143,8 @@
                 user_range: '', // get default range value  // TODO
                 user_id: '',
                 range: null,
+                lat: null,
+                long: null,
                 user_location : '',
                 messages: [],
                 buildingListOpen: false,
@@ -242,11 +249,10 @@
                         alert('It seems like Geolocation, which is required for this page, is not enabled in your browser. Please use a browser which supports it.');
                     }
                 },
-
+				
                 updateLocation: function(position) {
                     var lat = position.coords.latitude;
                     var long = position.coords.longitude;
-
                     this.$data.user_location=[lat,long];
                     var id = this.$data.user_id;
                     axios.post('/user/location',{
@@ -272,6 +278,14 @@
 
                     });       
                 },
+                
+                manualLocation: function (lat, long) {
+					//getting the format right to updatelocation
+					var position = {coords: {latitude: 0, longitude: 0,}};
+					position.coords.latitude = lat;
+                    position.coords.longitude = long;
+					this.updateLocation(position)
+				},
 
                 Logout: function() {
 					axios.get('/user/logout')
