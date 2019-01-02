@@ -16,11 +16,15 @@ var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLC
 //var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
 var redirect_uri = 'http://localhost:3000/user/auth';
 var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
+var is_logged = 0;
 // 
 
 router.get('/', function(req, res) {
-	
-    res.sendFile(path.join(__dirname + '/../public/newuser.html'));
+	if(is_logged) {
+		res.sendFile(path.join(__dirname + '/../public/newuser.html'));
+	} else {
+		res.sendStatus(403);
+	}
 })
 
 
@@ -155,14 +159,14 @@ router.get('/auth', function(req, res) {
     //console.log(req.query.code);
 
     request.post("https://fenix.tecnico.ulisboa.pt/oauth/access_token?client_id=" + client_id + "&client_secret=" + client_secret + "&redirect_uri=" + redirect_uri + "&code=" + req.query.code + "&grant_type=authorization_code", (err, response, body) => {
-
+		
         if (err) { 
             console.log("Error in second phase");
             return console.log(err); 
         }
-
+	
         if(response.statusCode == 200) {
-
+			is_logged = 1;
             var token = JSON.parse(response.body).access_token
 
             // uncomment if you want to see the authorization token
