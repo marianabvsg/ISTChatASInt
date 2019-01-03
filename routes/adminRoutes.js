@@ -143,9 +143,6 @@ router.get('/list/users/building/:building', function(req, res) {
         //find users 
         userDB.listByBuilding(req.params.building,function(err,results2){
 
-            console.log("results:")
-            console.log(results2)
-
             if(err || results2.length == 0 || results2 == null) {
                 res.send([]);
             } else {
