@@ -12,11 +12,12 @@ def login():
 	password = input("Password: ")
 	
 	payload = {'username':user, 'password':password}
-	url = "https://asint-chat.appspot.com/admin/login"
-	#url = "http://127.0.0.1:3000/admin/login"
+	#url = "https://asint-chat.appspot.com/admin/login"
+	url = "http://127.0.0.1:3000/admin/login"
+	print (payload, user, password)
 	r = requests.post(url, data = payload) #post
 	key = r.json() #convert response to dictionary
-	
+
 	return key["adminkey"] #retrieve key
 
 
@@ -212,7 +213,7 @@ def main():
 	secretKey = login() #get secret key
 	while (secretKey is None):
 		print ("Invalid user, try again")
-		secretkey = login()
+		secretKey = login()
 	
 	print ("\nAhh, welcome back!\n")
 	while(1):
