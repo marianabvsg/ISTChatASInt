@@ -336,6 +336,7 @@ router.get('/nearby/building', function(req, res) {
 
 // TO DELETE PROBABLY -- TESTES DA CACHE
 router.get('/receive', function(req, res) {
+	
 	cache.listKeys(function (err, value) {
 		console.log("val: " + value);
 	});
