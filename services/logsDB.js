@@ -8,14 +8,15 @@ class logsDB {
     }
 
     //insert new message in the logs_messages db
-    insertMessage(user_id, message,building,callback) {
+    insertMessage(user_id, message,building,destination,callback) {
 
         let db = database.getDB();
         
         db.collection("logs_messages").insertOne({
             "ist_id": user_id,
             "msg": message,
-            "building": building
+            "building": building,
+            "destination": destination
          }, function(err, res) {
              
             return callback(err)

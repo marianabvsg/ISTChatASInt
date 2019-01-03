@@ -60,7 +60,6 @@ router.post('/location', function(req, res) {
                     res.status(500).send("Error getting user's building from the database");
                     return;
                 }
-				console.log(building_name);
                 //checking if user is in one of the registered buildings
                 if(building_name.length){       
             
@@ -306,7 +305,6 @@ router.get('/nearby/range', function(req, res) {
                         res.status(500).send("Error getting users from the database");
                         return;
                     }
-                    console.log(results);
                     res.send(results); //assuming it returns empty if there are no users
                 });
             })
@@ -396,16 +394,5 @@ router.get('/range', function(req, res) {
     });
 
 })
-
-// router.get('/:user', function(req, res) {
-
-//     res.sendFile(path.join(__dirname + '/../public/user.html'));
-// })
-
-// function checkUserToken(req){
-//     cookie_user_params=req.cookies;
-
-//     if()
-// }
 
 module.exports = router;

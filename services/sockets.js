@@ -89,28 +89,29 @@ module.exports = {
 
 					console.log("user: " + user);
 
-					userDB.getBuilding(user, function(building) {
-						if(building != null) {
-							//todo - insert message in logs
-							logsDB.insertMessage(user, data, building, function(err) {
-								if(err) {
-									console.log("InserMessage in sockets: " + err)
-								}
-							})
-						}
-					})
-
 					// create a message with the data to send and the sender id
 					var message = {
 						'user': user,
 						'data': data
 					}
 
-					sendToNearbyUsersRange(user, message, function (err) {
+					sendToNearbyUsersRange(user, message, function (response, destination) {
 		
-						if(err) {
-							console.log("Error in socket message: " + err);
-						}
+						if(response) {console.log(response, destination);}
+						
+						//extract users to receive the message
+						getUsersVector(destination, function (usersVector) {
+							//get the source building
+							userDB.getBuilding(user, function(building) {
+								if(building != null) {
+									//insert log
+									logsDB.insertMessage(user, data, building, usersVector, function(err) {
+										if(err) {console.log("InserMessage in sockets: " + err)}
+									})
+								}
+							})
+						});
+						
 					});
 
 				});
@@ -136,10 +137,24 @@ module.exports = {
     sendToNearbyUsersRange: sendToNearbyUsersRange,
     sendToNearbyUsersBuilding: sendToNearbyUsersBuilding,
     retrieveUserFromSocketID: retrieveUserFromSocketID,
-    writeMsgToSocket: writeMsgToSocket
+    writeMsgToSocket: writeMsgToSocket,
+    getUsersVector : getUsersVector
 }
 
 //internal functions
+
+//from an array of json object of type [{ist_id:istxxxx}, ..]
+//creates a vector of type [istxxxx, istxxx...]
+//returns [] if empty
+function getUsersVector(dest, callback) {
+	var usersVector = [];
+	if(dest != null) {
+		for (i in dest) {
+			usersVector.push(dest[i].ist_id)
+		}
+	}
+	callback(usersVector)
+}
 
 
 //isolates a token that comes with a cookie
@@ -170,9 +185,7 @@ function sendToNearbyUsersRange(user, message, callback) {
 	userDB.listNearbyUsersByRange(user, 10000, function(err, users) {
 
 		writeMsgToSocket(users, message, function (err) {
-			if(err) {
-				callback(err);
-			}
+			callback(err, users);
 		});
 	});
 }
@@ -205,9 +218,8 @@ function writeMsgToSocket(users, message, callback) {
 		// array empty or does not exist
 		if (sockets_list === undefined || sockets_list.length == 0) {
 			// no user in the building, so no message is sent
-			console.log("No logged in user in range or building, so no message is sent");
 			// it's not considered an error
-			return callback("No logged in user in range\building, so no message is sent");;
+			return callback("No logged in user in range or building, so no message is sent");;
 		} else {
 			// send message to all the users requested in arg
 			for (socketID in sockets_list) {

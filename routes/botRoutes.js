@@ -6,7 +6,6 @@ var botDB = require('../services/botDB.js');
 var messageService = require('../services/sockets.js');
 
 router.post('/', function(req, res) {
-
     var key = req.body.key;
     botDB.checkBot(key, function(err, building) {
 		

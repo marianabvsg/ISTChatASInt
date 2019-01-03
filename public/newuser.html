@@ -74,6 +74,12 @@
                         <ul v-for="msg in messages">
                             <li>{{msg.user}} -- {{msg.data}}</li>
                         </ul>
+                        
+                        <p v-if="sentMsgs.length != 0">Messages sent:</p>
+                        <ul v-for="msg in sentMsgs">
+                            <li>{{msg}}</li>
+                        </ul>
+                        
                     </div>
 
                     <div v-if="settingstoggle">
@@ -147,6 +153,7 @@
                 long: null,
                 user_location : '',
                 messages: [],
+                sentMsgs: [],
                 buildingListOpen: false,
                 rangeListOpen: false,
                 chattoggle: false,
@@ -306,8 +313,10 @@
                 },
 
                 sendMessage: function(message) {
-
-                    socket.emit('message', message);
+                    socket.emit('message', message)
+                    if (message != null) {
+						vm.sentMsgs.push(message);
+					}	
                 },
                 
                 getUserID: async function(){
