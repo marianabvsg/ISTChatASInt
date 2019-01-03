@@ -16,9 +16,6 @@ const adminkey = "secretkey";
 
 // login of admin, gives secretkey if username and password are correct
 router.post('/login', function(req, res) {
-    
-    // ADD SECURITY LATER
-    // TODO
 
     if(req.body.username == 'admin' &&  req.body.password == '123') {
         // the user is the admin
@@ -52,6 +49,7 @@ router.post('/building', function(req, res) {
 
     // receive JSON file
     const building_file = req.body.building;
+
     // check if it's a valid JSON file
     // TODO
 
@@ -101,11 +99,11 @@ router.get('/list/users', function(req, res) {
     // check if the secret is correct
     const secret = req.body.adminkey;	
     // validate secret
-   /* if(secret == null || secret == {} || secret != adminkey) {
+    if(secret == null || secret == {} || secret != adminkey) {
         
         res.sendStatus(403);
         return;
-    }*/
+    }
 
     // get the list of users from the database
     // assuming we have available the object users from the userDB class
@@ -135,23 +133,29 @@ router.get('/list/users/building/:building', function(req, res) {
     }
 
 	//check if building exists in the database
-    buildingDB.getCoordinates(req.params.building, function(results){
+    buildingDB.getCoordinates(req.params.building, function(results1){
     	
-    	if(!Object.keys(results).length){
-    		res.sendStatus(404);
-    	}
+    	if(!Object.keys(results1).length){
+            res.sendStatus(404);
+            return
+        }
+        
+        //find users 
+        userDB.listByBuilding(req.params.building,function(err,results2){
+
+            console.log("results:")
+            console.log(results2)
+
+            if(err || results2.length == 0 || results2 == null) {
+                res.send([]);
+            } else {
+                res.send(results2);
+            }
+        })
     })
 
 
-	//find users 
-	userDB.listByBuilding(req.params.building,function(err,results){
-
-        if(err) {
-            res.status(500).send("Error getting all users from the database");
-            return;
-        }
-		res.send(results);
-	})
+	
 })
 
 
@@ -285,13 +289,6 @@ router.get('/list/logs/messages/user/:user', function(req, res) {
         return;
     }
 
- //    //check if user exists in the database
-	// userDB.getCoordinates(req.params.user, function(results){
-    	
- //    	if(!Object.keys(results).length){
- //    		res.sendStatus(404);
- //    	}
- //    })
     logsDB.listMessagesByUser(req.params.user,function(results) {
 
         res.send(results); //assuming it returns empty if there are no users
@@ -392,22 +389,33 @@ router.post('/bot', function(req, res) {
 
 
     // if the building exists
-    if(building == null /* or doesn't belong to the DB of buildings TODO */) {
+    if(building == null) {
 
         // not found
         res.sendStatus(403);
     } else {
 
-        var key = apikey();  // generates 40 char base64 encoded key
+        /* or doesn't belong to the DB of buildings TODO */
+        buildingDB.getCoordinates(building, function(result) {
 
-        // save the key into the DB with the correspondent building
-        botDB.insert(key, building);
-    
-        // return the key to the admin
-        // mandar status 200????
-        res.send({
-            'key': key
+            if(!Object.keys(result).length) {
+                // not found
+                res.sendStatus(403);
+            } else {
+                var key = apikey();  // generates 40 char base64 encoded key
+
+                // save the key into the DB with the correspondent building
+                botDB.insert(key, building);
+            
+                // return the key to the admin
+                res.send({
+                    'key': key
+                })
+            }
+
         })
+
+
     }
 })
 

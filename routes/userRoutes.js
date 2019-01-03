@@ -258,7 +258,6 @@ router.post('/range', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // redirect to the login page
-            // res.redirect(301, '/');
             res.sendStatus(403);
         }
         else{
@@ -274,10 +273,11 @@ router.post('/range', function(req, res) {
                         return;
                     }
 
-                    //DO STUFF // TODO
+                    // OK
                     res.sendStatus(200);
                 })
             }else{
+                // NOT OK
                 res.sendStatus(400);
             }
         }
