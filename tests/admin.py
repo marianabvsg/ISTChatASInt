@@ -2,6 +2,12 @@
 import requests
 import json
 import sys
+import os
+script_dir = os.path.dirname(__file__)
+
+# comment or uncomment depending if you're running the server locally or in the cloud
+# url = "https://asint-chat.appspot.com/"
+url = "http://127.0.0.1:3000/"
 
 
 def login():
@@ -12,9 +18,8 @@ def login():
 	password = input("Password: ")
 	
 	payload = {'username':user, 'password':password}
-	url = "https://asint-chat.appspot.com/admin/login"
-	#url = "http://127.0.0.1:3000/admin/login"
-	r = requests.post(url, data = payload) #post
+	endpoint = url + "admin/login"
+	r = requests.post(endpoint, data = payload) #post
 	key = r.json() #convert response to dictionary
 	
 	return key["adminkey"] #retrieve key
@@ -26,11 +31,23 @@ def sendFile(secretKey):
 	params = {}
 	headers = {'Content-type': 'application/json'}
 	payload['adminkey'] = secretKey
+
+	endpoint = url + "admin/building"
+
+	print("Warning: the JSON file must be in the data/ directory")
+	name_of_file = input("Name of the JSON file: ")
+
+	relative_path = "../data/" + name_of_file
+
+	file_path = os.path.join(script_dir, relative_path)
+
+	try:
+		with open(file_path, 'r') as data:
+			payload['building'] = json.load(data)
+		r = requests.post(endpoint, headers = headers, data = json.dumps(payload))
+	except FileNotFoundError as e:
+		print("File not found!")
 	
-	url = "https://asint-chat.appspot.com/admin/building"
-	with open("../data/buildings-alameda.json") as data:
-		payload['building'] = json.load(data)
-	r = requests.post(url, headers = headers, data = json.dumps(payload))
 
 
 #list all logged users
@@ -41,9 +58,8 @@ def listAll(secretKey):
 	headers = {'Content-type': 'application/json'}
 	payload['adminkey'] = secretKey
 	
-	url = "https://asint-chat.appspot.com/admin/list/users"
-	#url = "http://localhost:3000/admin/list/users"
-	r = requests.get(url, data = payload)
+	endpoint = url + "admin/list/users"
+	r = requests.get(endpoint, data = payload)
 	#print(r)
 	#print only name - id
 	data = r.json()
@@ -59,9 +75,9 @@ def listAllMoves(secretKey):
 	headers = {'Content-type': 'application/json'}
 	payload['adminkey'] = secretKey
 	
-	#url = "http://asint-chat.appspot.com/admin/list/users"
-	url = "http://localhost:3000/admin/list/logs/movements"
-	r = requests.get(url, data = payload)
+	endpoint = url + "admin/list/logs/movements"
+
+	r = requests.get(endpoint, data = payload)
 	#print only name - id
 	data = r.json()
 	for i in data:
@@ -75,9 +91,9 @@ def listAllMsgs(secretKey):
 	headers = {'Content-type': 'application/json'}
 	payload['adminkey'] = secretKey
 	
-	#url = "http://asint-chat.appspot.com/admin/list/users"
-	url = "http://localhost:3000/admin/list/logs/messages"
-	r = requests.get(url, data = payload)
+	endpoint = url + "admin/list/logs/messages"
+
+	r = requests.get(endpoint, data = payload)
 	#print only name - id
 	data = r.json()
 	for i in data:
@@ -91,15 +107,18 @@ def listUsersByBuilding(secretKey):
 	params = {}
 	payload['adminkey'] = secretKey
 	headers = {'Content-type': 'application/json'}
+
+	endpoint = url + "admin/list/users/building/" + input("Insert building name: ") #update url with building selected
 	
-	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
-	url = "http://localhost:3000/admin/list/users/building/"
-	url = url + input("Insert building name: ") #update url with building selected
-	
-	r = requests.get(url, data = payload)
-	data = r.json()
-	for i in data:
-		print("\n" + i['ist_id'])
+	r = requests.get(endpoint, data = payload)
+
+	if	r.status_code == 200:
+		data = r.json()
+			
+		for i in data:
+			print("\n" + i['ist_id'])
+	else:
+		print("\n Building doesn't exist.")
 	
 def listAllLogs(secretKey):
 	
@@ -107,11 +126,10 @@ def listAllLogs(secretKey):
 	params = {}
 	payload['adminkey'] = secretKey
 	headers = {'Content-type': 'application/json'}
+
+	endpoint = url + "admin/list/logs"
 	
-	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
-	url = "http://localhost:3000/admin/list/logs"
-	
-	r = requests.get(url, data = payload)
+	r = requests.get(endpoint, data = payload)
 	data = r.json()
 	for i in data:
 		print(i)
@@ -125,16 +143,18 @@ def listLogsByUser(secretKey):
 	headers = {'Content-type': 'application/json'}
 	
 	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
+
+	endpoint = url + "admin/list/users/building/"
 	
-	kind = input("[1] - Messages\n[2] - Moves\nOption: ");
+	kind = input("[1] - Messages\n[2] - Moves\nOption: ")
 	if (kind == '1'): #list messages
-		url = "http://localhost:3000/admin/list/logs/messages/user/"
+		endpoint = url + "admin/list/logs/messages/user/"
 	if (kind == '2'): #list moves
-		url = "http://localhost:3000/admin/list/logs/movements/user/"
+		endpoint = url + "admin/list/logs/movements/user/"
 	
-	url = url + input("Insert user id: ") #updated url with selected user
+	endpoint = endpoint + input("Insert user id: ") #updated url with selected user
 	
-	r = requests.get(url, data = payload)
+	r = requests.get(endpoint, data = payload)
 	data = r.json()
 	for i in data:
 		print(i)
@@ -151,13 +171,13 @@ def listLogsByBuilding(secretKey):
 	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
 	kind = input("[1] - Messages\n[2] - Moves\nOption: ");
 	if (kind == '1'): #list messages
-		url = "http://localhost:3000/admin/list/logs/messages/building/"
+		endpoint = url + "admin/list/logs/messages/building/"
 	if (kind == '2'): #list moves
-		url = "http://localhost:3000/admin/list/logs/movements/building/"
+		endpoint = url + "admin/list/logs/movements/building/"
 	
-	url = url + input("Insert building name: ")
+	endpoint = endpoint + input("Insert building name: ")
 	
-	r = requests.get(url, data = payload)
+	r = requests.get(endpoint, data = payload)
 	data = r.json()
 	for i in data:
 		print(i)
@@ -170,10 +190,14 @@ def createBot(secretKey):
 	payload['adminkey'] = secretKey
 	payload['building'] = input("Insert building name: ")
 	
-	#url = "http://localhost:3000/admin/bot"
-	url = "https://asint-chat.appspot.com/admin/bot"
-	r = requests.post(url, data = payload) #post
-	print (r.json())
+	endpoint = url + 'admin/bot'
+
+	r = requests.post(endpoint, data = payload) #post
+
+	if r.status_code == 403:
+		print("Building not found.")
+	else:
+		print (r.json())
 	
 	
 def menu(secretKey):

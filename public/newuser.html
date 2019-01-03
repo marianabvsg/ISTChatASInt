@@ -64,17 +64,30 @@
             <div id="page-content-wrapper">
                 <div class="container-fluid">
 
+
+                    <div v-if="!chattoggle && !settingstoggle && !nearbytoggle">
+                        <h1>Welcome to IST Chat app:</h1>
+                        <h3>The application is structured in the following way:</h3><br>
+                        <ul>
+                            <li>Click <strong>Chat</strong> if you want to send or receive message;</li><br>
+                            <li>Click <strong>Nearby</strong> if you want to check who's close to you;</li><br>
+                            <li>Click <strong>Setting</strong> if you want to change the application settings;</li><br>
+                            <li>Click <strong>Logout</strong> if you want to exit the application.</li>
+                        </ul>
+                    </div>
+
                     <div v-if="chattoggle">
                         <!-- Section to send and check the messages -->
                         <h1>Messages:</h1>
-
+                        <br>
                         <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
                         
+                        <br>
                         <p v-if="messages.length != 0">Messages received:</p>
                         <ul v-for="msg in messages">
                             <li>{{msg.user}} -- {{msg.data}}</li>
                         </ul>
-                        
+                        <br>
                         <p v-if="sentMsgs.length != 0">Messages sent:</p>
                         <ul v-for="msg in sentMsgs">
                             <li>{{msg}}</li>
@@ -87,6 +100,7 @@
                         <h1>Range:</h1>
                         <p>Current range is: {{ user_range }}</p>
                         <input v-model=range placeholder="Range"><button @click="setRange(range)">Set Range</button>
+                        
                         <h1>Location:</h1>
                         <input v-model=lat placeholder="Latitude">
                         <input v-model=long placeholder="Longitude">
@@ -99,16 +113,17 @@
                         <h1>Nearby:</h1>
                         <button @click = "nearbyBuilding()">building</button>
                         <button @click = "nearbyRange()">range</button>
+                       
 
                         <div v-if="rangeListOpen">
-                            <p> Users in my range: </p>
+                            <h3> Users in my range: </h3>
                             <ul v-for="body in nearRange">
                             <li>{{body.ist_id}} --- {{body.name}}</li>
                             </ul>
                         </div>
 
                         <div v-if="buildingListOpen">
-                            <p> Users in my building: </p>
+                            <h3> Users in my building: </h3>
                             <ul v-for="body in nearBuilding">
                                 <li>{{body.ist_id}} --- {{body.name}}</li>
                             </ul>
