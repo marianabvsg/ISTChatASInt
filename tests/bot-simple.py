@@ -1,11 +1,11 @@
 import requests
 
 # bot Torre Norte
-api_key = "Vkj1ZsQDWmbFT8UKmzpWKr1BcFThfTgRTcd77dM0"
+api_key = "pNsKnnllXxnNveyqrRUeDyxIhyYDqsxLGKOlJtSF"
 
-# bot Central
-#api_key = "cYidKeTM3wFnLYhPX73ztkLRxdE4oXwQoMkIpKyR"
-
+# bot Civil
+#api_key = "A4KrDgJjBXeaT0zREMkrwaZyB1oR9KZ14QpQbB6j"
+    
 #url = "https://asint-chat.appspot.com/bot"
 url = "http://127.0.0.1:3000/bot"
 

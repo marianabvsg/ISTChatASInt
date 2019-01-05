@@ -35,7 +35,6 @@ router.post('/location', function(req, res) {
     //check token
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
-			console.log("redi location");
             // redirect to the login page
             res.sendStatus(403);
             // res.send('please login first');
