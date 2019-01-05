@@ -16,15 +16,18 @@ var client_secret = "LKdG1K78CufC/uKyuzw1ReUxufb0oq/OAUNvZl2lIvlWEA3ypLx0pmqPuLC
 //var redirect_uri = 'https://asint-chat.appspot.com/user/auth';
 var redirect_uri = 'http://localhost:3000/user/auth';
 var redirect_page = 'https://fenix.tecnico.ulisboa.pt/oauth/userdialog?client_id=' + client_id + '&redirect_uri=' + redirect_uri;
-var is_logged = 0;
-// 
+
 
 router.get('/', function(req, res) {
-	if(is_logged) {
+
+    cache.getUserID(req.cookies.user, function(err,id) {
+        if (id==undefined){
+            res.sendStatus(403);
+        }
+        else{
 		res.sendFile(path.join(__dirname + '/../public/newuser.html'));
-	} else {
-		res.sendStatus(403);
-	}
+	   }
+    }
 })
 
 
@@ -123,7 +126,6 @@ router.get('/logout', function(req, res) {
 				// clean cache
 				cache.deleteValue(req.cookies.user, function (err, count) {
 					if(err) {console.log("Error deleting from cache")}
-					is_logged = 0;
 					// clear the cookie 
 					res.clearCookie('user');
 					res.sendStatus(200);	// Client will redirect to home after receive 200
@@ -163,7 +165,6 @@ router.get('/auth', function(req, res) {
         }
 	
         if(response.statusCode == 200) {
-			is_logged = 1;
             var token = JSON.parse(response.body).access_token
 
             // uncomment if you want to see the authorization token
