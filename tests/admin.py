@@ -6,8 +6,8 @@ import os
 script_dir = os.path.dirname(__file__)
 
 # comment or uncomment depending if you're running the server locally or in the cloud
-# url = "https://asint-chat.appspot.com/"
-url = "http://127.0.0.1:3000/"
+url = "https://asint-chat.appspot.com/"
+#url = "http://127.0.0.1:3000/"
 
 
 def login():
@@ -60,7 +60,7 @@ def listAll(secretKey):
 	payload['adminkey'] = secretKey
 	
 	endpoint = url + "admin/list/users"
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	#print(r)
 	#print only name - id
 	data = r.json()
@@ -78,7 +78,7 @@ def listAllMoves(secretKey):
 	
 	endpoint = url + "admin/list/logs/movements"
 
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	#print only name - id
 	data = r.json()
 	for i in data:
@@ -94,7 +94,7 @@ def listAllMsgs(secretKey):
 	
 	endpoint = url + "admin/list/logs/messages"
 
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	#print only name - id
 	data = r.json()
 	for i in data:
@@ -111,7 +111,7 @@ def listUsersByBuilding(secretKey):
 
 	endpoint = url + "admin/list/users/building/" + input("Insert building name: ") #update url with building selected
 	
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 
 	if	r.status_code == 200:
 		data = r.json()
@@ -130,7 +130,7 @@ def listAllLogs(secretKey):
 
 	endpoint = url + "admin/list/logs"
 	
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	data = r.json()
 	for i in data:
 		print(i)
@@ -155,7 +155,7 @@ def listLogsByUser(secretKey):
 	
 	endpoint = endpoint + input("Insert user id: ") #updated url with selected user
 	
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	data = r.json()
 	for i in data:
 		print(i)
@@ -178,7 +178,7 @@ def listLogsByBuilding(secretKey):
 	
 	endpoint = endpoint + input("Insert building name: ")
 	
-	r = requests.get(endpoint, data = payload)
+	r = requests.get(endpoint, params = payload)
 	data = r.json()
 	for i in data:
 		print(i)

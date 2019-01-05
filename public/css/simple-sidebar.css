@@ -106,7 +106,7 @@ body {
 
 .sidebar-location {
   position: absolute;
-  top: 80%;
+  top: 78%;
   margin: 0;
   padding: 0;
   text-indent: 20px;
@@ -120,11 +120,11 @@ body {
 .chatbox {
   background-color: rgb(233, 233, 233);
   width: 100%;
-  height: 220px;
+  height: 180px;
   padding: 10px;
   border: 5px solid gray;
   margin: 0;
-  max-height:220px;/*The important part*/
+  max-height:180px;/*The important part*/
   overflow: auto;
 }
 
