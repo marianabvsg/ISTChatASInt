@@ -1,9 +1,12 @@
 import requests
 import time
 
-api_key = "vcx7p763rl8W09wCoElLAxrbk3HLYmkAoxRvPwlP"
+#api_key = "vcx7p763rl8W09wCoElLAxrbk3HLYmkAoxRvPwlP"
 
-url = "http://127.0.0.1:3000/bot"
+# bot Civil
+api_key = "A4KrDgJjBXeaT0zREMkrwaZyB1oR9KZ14QpQbB6j"
+    
+url = "https://asint-chat.appspot.com/bot"
 
 # message to send the message to the server
 def sendMessage(msg):
@@ -16,7 +19,7 @@ def sendMessage(msg):
 message = input("Write a message to send to your building: ")
 period = input("Write a waiting interval between messages: ")
 
-# sends the message to the server every 10 seconds
+# sends the message to the server every period seconds
 while 1:
     sendMessage(message)
-    time.sleep(10)
+    time.sleep(float(period))

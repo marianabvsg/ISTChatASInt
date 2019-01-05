@@ -6,8 +6,8 @@ api_key = "pNsKnnllXxnNveyqrRUeDyxIhyYDqsxLGKOlJtSF"
 # bot Civil
 #api_key = "A4KrDgJjBXeaT0zREMkrwaZyB1oR9KZ14QpQbB6j"
     
-#url = "https://asint-chat.appspot.com/bot"
-url = "http://127.0.0.1:3000/bot"
+url = "https://asint-chat.appspot.com/bot"
+# url = "http://127.0.0.1:3000/bot"
 
 # message to send the message to the server
 def sendMessage(msg):
