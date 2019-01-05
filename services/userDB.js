@@ -13,7 +13,7 @@ class userDB {
         let db = database.getDB();
 
         // creates a TTL of user of 1h -- acho que só é preciso fazer isto uma vez
-        // db.collection("users").createIndex({"createdAt": 1}, {expireAfterSeconds: 3600});
+        db.collection("users").createIndex({"createdAt": 1}, {expireAfterSeconds: 3600});
 
         // Check first if user is already in the database and only if not it inserts
         db.collection("users").updateOne({

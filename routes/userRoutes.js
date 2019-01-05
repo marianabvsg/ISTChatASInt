@@ -246,7 +246,7 @@ router.post('/range', function(req, res) {
             var range = Number(req.body.range);
 
             // checking if range is a number 
-            if (!isNaN(range)){
+            if (!isNaN(range) || range > 0){
                 // //set new range for the specified user
                 userDB.setRange(id, range, function(err, result) {
                     if(err) {

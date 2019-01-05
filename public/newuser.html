@@ -216,6 +216,7 @@
                             }
                             else{
                                 alert(' Warning: Server returned error.');
+                                window.location.href = '/';
                             }
 						});
 				},
@@ -234,13 +235,12 @@
                             }
                             else{
                                 alert('Warning: Server returned error.');
+                                // redirect to login
+                                window.location.href = '/';
                             }
 						});
 				},
                 setRange: function(range) {
-                    // this.$data.serverDataError = false;
-                    // this.$data.serverDBError = false;
-                    // this.$data.serverError = false;
                     var self=this;
                     axios.post('/user/range',{
                             "range": range
@@ -260,7 +260,8 @@
                             alert(' Warning: '+error.response.data+', pleasy try again.');
                         }
                         else{
-                            alert(' Warning: Server returned error.');                
+                            alert(' Warning: Server returned error.');   
+                            window.location.href = '/';             
                         }
                     });  
 
@@ -298,6 +299,7 @@
                         }
                         else{
                             alert(' Warning: Server returned error.');
+                            window.location.href = '/';
                         }
 
                     });       
@@ -325,6 +327,7 @@
                             }
                             else{
                                 alert('Warning: Server returned error.');
+                                window.location.href = '/';
                             }
 						});
                 },
