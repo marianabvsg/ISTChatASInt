@@ -32,7 +32,7 @@ router.post('/', function(req, res) {
         messageService.sendMessage(message, building, function(err) {
             if(err) {
                 console.log(err);
-                res.status(500).send(err);
+                res.status(200).send(err);
                 return;
 
             } else {

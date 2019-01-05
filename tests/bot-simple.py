@@ -15,6 +15,7 @@ def sendMessage(msg):
     payload['key'] = api_key
     payload['message'] = msg
     r = requests.post(url, data = payload)
+    print(r.status_code)
 
 # Request the message
 message = input("Write a message to send to your building: ")

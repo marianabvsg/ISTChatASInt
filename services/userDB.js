@@ -226,8 +226,6 @@ class userDB {
             "ist_id": user_id
         }).then(function(doc) {
             // if doc not found, return an empty object
-            console.log("getRange:")
-            console.log(doc.range);
             if(!doc) {
                 return callback({});
             // else return an object with range

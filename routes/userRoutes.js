@@ -70,7 +70,7 @@ router.post('/location', function(req, res) {
                             res.status(500).send("Error while updating user's building in users database");
                             return;
                         }
-                        console.log("1 building updated in users DB")
+                        console.log("Users building updated in users DB")
                     });
 
                     //insert new movement log
@@ -110,13 +110,10 @@ router.post('/location', function(req, res) {
 })
 
 // Logout of the user
-// TODO
 router.get('/logout', function(req, res) {
     //check token
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){		
-            // redirect to the login page
-            // res.sendStatus(200);
             res.sendStatus(403);
         }
         else{
@@ -126,6 +123,7 @@ router.get('/logout', function(req, res) {
 				// clean cache
 				cache.deleteValue(req.cookies.user, function (err, count) {
 					if(err) {console.log("Error deleting from cache")}
+					is_logged = 0;
 					// clear the cookie 
 					res.clearCookie('user');
 					res.sendStatus(200);	// Client will redirect to home after receive 200
@@ -234,24 +232,6 @@ router.get('/auth', function(req, res) {
     });
 })
 
-
-// TODO
-router.post('/message', function(req, res) {
-
-    //check token
-    cache.getValue(req.cookies.user, function(err,id) {
-        if (id==undefined){
-            // redirect to the login page
-            //res.redirect(301, '/');
-            res.sendStatus(403);
-        }
-        else{
-            //SEND MESSAGE // TODO
-        }
-    });
-
-})
-
 router.post('/range', function(req, res) {
 
     //check token
@@ -334,8 +314,9 @@ router.get('/nearby/building', function(req, res) {
     });
 })
 
-// TO DELETE PROBABLY -- TESTES DA CACHE
+// ENDPOINT USED TO DEBUGS
 router.get('/receive', function(req, res) {
+	
 	cache.listKeys(function (err, value) {
 		console.log("val: " + value);
 	});
@@ -369,13 +350,9 @@ router.get('/id', function(req, res) {
             res.send(id);
         }
     });
-    // cache.listKeys(function(err,result){
-    //     console.log('here')
-    //     console.log(result);
-    // });
 })
 
-//ger user_id
+//get range
 router.get('/range', function(req, res) {
 
     //check token
@@ -385,9 +362,6 @@ router.get('/range', function(req, res) {
         }
         else{
             userDB.getRange(id,function(results) {
-                // if(!Object.keys(results).length){
-                //     res.sendStatus(404);
-                // }
                 res.send(results); //assuming it returns empty if there is no range
             })
         }

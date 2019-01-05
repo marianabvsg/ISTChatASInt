@@ -21,7 +21,7 @@ def login():
 	endpoint = url + "admin/login"
 	r = requests.post(endpoint, data = payload) #post
 	key = r.json() #convert response to dictionary
-	
+
 	return key["adminkey"] #retrieve key
 
 
@@ -45,6 +45,7 @@ def sendFile(secretKey):
 		with open(file_path, 'r') as data:
 			payload['building'] = json.load(data)
 		r = requests.post(endpoint, headers = headers, data = json.dumps(payload))
+		print(r.status_code)
 	except FileNotFoundError as e:
 		print("File not found!")
 	
@@ -64,7 +65,7 @@ def listAll(secretKey):
 	#print only name - id
 	data = r.json()
 	for i in data:
-		print("\n" + i['ist_id'] + " - " + i['name'])
+		print("\n" + i['ist_id'] + " - " + i['name'] + " - " + i["building"])
 
 
 #list all move logs
@@ -198,6 +199,22 @@ def createBot(secretKey):
 		print("Building not found.")
 	else:
 		print (r.json())
+		
+def changeBuildingRange(secretKey):
+	payload = {}
+	params = {}
+	headers = {'Content-type': 'application/json'}
+	payload['adminkey'] = secretKey
+	payload['building_range'] = input("Insert new building range: ")
+	
+	endpoint = url + 'admin/building/range'
+	
+	r = requests.post(endpoint, data = payload) #post
+	
+	if r.status_code == 200:
+		print("Success")
+	else:
+		print("Not updated")
 	
 	
 def menu(secretKey):
@@ -205,27 +222,31 @@ def menu(secretKey):
 	print (30 * "-" , "Menu" , 30 * "-")
 	print("Select an option:\n[1] - To send buildings file,\n[2] - To list all users,\n[3] - To list all users in a building,")
 	print("[4] - To list all logs,\n[5] - To list all moves,\n[6] - To list all messages,\n[7] - To filter logs by users,")
-	print("[8] - To filter logs by building,\n[9] - To create a new bot.")
+	print("[8] - To filter logs by building,\n[9] - To create a new bot\n[10] - To change buildings' default range.")
 	option = input("Please input one of the above numbers: ")
 	
 	if(option == '1'):
 		sendFile(secretKey)
-	if(option == '2'):
+	elif(option == '2'):
 		listAll(secretKey)
-	if(option == '3'):
+	elif(option == '3'):
 		listUsersByBuilding(secretKey)
-	if(option == '4'):
+	elif(option == '4'):
 		listAllLogs(secretKey)
-	if(option == '5'):
+	elif(option == '5'):
 		listAllMoves(secretKey)
-	if(option == '6'):
+	elif(option == '6'):
 		listAllMsgs(secretKey)		
-	if(option == '7'):
+	elif(option == '7'):
 		listLogsByUser(secretKey)		
-	if(option == '8'):
+	elif(option == '8'):
 		listLogsByBuilding(secretKey)		
-	if(option == '9'):
+	elif(option == '9'):
 		createBot(secretKey)		
+	elif(option == '10'):
+		changeBuildingRange(secretKey)
+	else:
+		print("Please select an option 1 to 10")		
 	
 	
 def main():
@@ -236,11 +257,12 @@ def main():
 	secretKey = login() #get secret key
 	while (secretKey is None):
 		print ("Invalid user, try again")
-		secretkey = login()
+		secretKey = login()
 	
 	print ("\nAhh, welcome back!\n")
 	while(1):
 		menu(secretKey)
+		print("\n")
 	
 	return 0
 
