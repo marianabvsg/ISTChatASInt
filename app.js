@@ -43,9 +43,6 @@ app.use("/css",  express.static(__dirname + '/public/css'));
 app.use("/vendor", express.static(__dirname + '/public/vendor'));
 app.use("/images", express.static(__dirname + '/public/images'));
 
-// TO DELETE
-//app.use(session({secret: "mysecretkey"}));
-
 // Create a connection to the database
 database.connectToServer( function( err ) {
     

@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>IST Chat ASInt</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <!-- <script src="main.js"></script> -->    
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>ISTChat</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/simple-sidebar.css" rel="stylesheet">
 
     <!-- Vuejs import-->
     <script src="https://unpkg.com/vue"></script>
@@ -17,59 +23,127 @@
     <!-- Socket.io import -->
     <script src="/socket.io/socket.io.js"></script>
 </head>
+
 <body>
     <div id="app">
+        <div id="wrapper">
 
-        <h1>User Page:</h1>
+            <!-- Sidebar -->
+            <div id="sidebar-wrapper">
+                <ul class="sidebar-nav">
+                    <li class="sidebar-brand">
+                        <strong>ASInt ISTChat</strong>
+                    </li>
+                    <li>
+                        <a @click="toggleSite('chat')">Chat</a>
+                    </li>
+                    <li>
+                        <a @click="toggleSite('nearby')">Nearby</a>
+                    </li>
+                    <li>
+                        <a @click="toggleSite('settings')">Settings</a>
+                    </li>
+                    <li>
+                        <a @click="Logout">Logout</a>
+                    </li>
+                </ul>
 
-        <!-- Identification-->
-        <p> user: {{user_id}} </p>
-        <p> location: {{user_location}} </p>
+                <div class="sidebar-id">
+                    <p><strong>User ID:</strong> <a style="font-size: 18px;">{{user_id}}</a></p> 
+                </div>
+                <div class="sidebar-location"> 
+                    <strong>Location:</strong>
+                    <div style="font-size: 12px; margin-top: -10px;"><strong>Lat:</strong> {{user_location[0]}}</div>
+                    <div style="font-size: 12px; margin-top: -10px;"><strong>Long:</strong> {{user_location[1]}}</div>
+                </div>
+            </div>
+            <!-- /#sidebar-wrapper -->
 
-        <!-- Section to send and check the messages -->
-        <h2>Messages:</h2>
+            <!-- Page Content -->
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
 
-        <input v-model=message placeholder="Insert message"><button @click="sendMessage(message)">Send</button>
-        
-        <p v-if="messages.length != 0">Messages received:</p>
-        <ul v-for="msg in messages">
-            <li>{{msg.user}} -- {{msg.data}}</li>
-        </ul>
 
-        <!-- Section to define the range -->
-        <h2>Range:</h2>
-        <p>Current range is: {{ user_range }}</p>
-        <input v-model=range placeholder="Range"><button @click="setRange(range)">Set</button>
+                    <div v-if="!chattoggle && !settingstoggle && !nearbytoggle">
+                        <h1>Welcome to IST Chat app:</h1>
+                        <h3>The application is structured in the following way:</h3><br>
+                        <ul>
+                            <li>Click <strong>Chat</strong> if you want to send or receive message;</li><br>
+                            <li>Click <strong>Nearby</strong> if you want to check who's close to you;</li><br>
+                            <li>Click <strong>Setting</strong> if you want to change the application settings;</li><br>
+                            <li>Click <strong>Logout</strong> if you want to exit the application.</li>
+                        </ul>
+                    </div>
 
-        <!-- Section of the nearby users-->
-        <h2>Nearby:</h2>
-        <button @click = "nearbyBuilding()">building</button>
-		<button @click = "nearbyRange()">range</button>
+                    <div v-if="chattoggle">
+                        <!-- Section to send and check the messages -->
+                        <h1>Chat application:</h1>
+                        <br>
+                        <input style="margin-bottom: 10px; width: 80%;" v-model=message placeholder="Insert message" @keyup.enter="sendMessage(message)"><button @click="sendMessage(message)" style="width: 20%;">Send</button>
+                        
+                        <br>
+                        <div class="chatbox">
+                            <p><strong>Messages received:</strong></p>
+                                <ul v-for="msg in messages">
+                                    <li>{{msg.user}} -- {{msg.data}}</li>
+                                </ul>
+                        </div>
+                        <br>
+                        <div class="chatbox">
+                            <p><strong>Messages sent:</strong></p>
+                            <ul v-for="msg in sentMsgs">
+                                <li>{{msg}}</li>
+                            </ul>
+                        </div>
+                        
+                    </div>
 
-        <div v-if="rangeListOpen">
-            <p> Users in my range: </p>
-            <ul v-for="body in nearRange">
-            <li>{{body.ist_id}} --- {{body.name}}</li>
-            </ul>
+                    <div v-if="settingstoggle">
+                         <!-- Section to define the range -->
+                        <h1>Range:</h1>
+                        <p>Current range is: {{ user_range }} meters</p>
+                        <input v-model=range placeholder="Range" style="width: 40%;"><button @click="setRange(range)" style="margin-bottom: 30px;">Set Range</button>
+                        
+                        <h1>Location:</h1>
+                        <input v-model=lat placeholder="Latitude" style="width: 20%;">
+                        <input v-model=long placeholder="Longitude" style="width: 20%;">
+                        <button @click="manualLocation(lat, long)">Set Location</button>
+                        
+                    </div>
+
+                    <div v-if="nearbytoggle">
+                        <!-- Section of the nearby users-->
+                        <h1>Nearby:</h1>
+                        <button @click = "nearbyBuilding()" style="width: 30%;">building</button> 
+                        <button @click = "nearbyRange()" style="width: 30%; margin-bottom: 10px;">range</button>
+                        
+                        <div v-if="rangeListOpen">
+                            <h3> Users in my range: </h3>
+                            <ul v-for="body in nearRange">
+                            <li>{{body.ist_id}} --- {{body.name}}</li>
+                            </ul>
+                        </div>
+
+                        <div v-if="buildingListOpen">
+                            <h3> Users in my building: </h3>
+                            <ul v-for="body in nearBuilding">
+                                <li>{{body.ist_id}} --- {{body.name}}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+            <!-- /#page-content-wrapper -->
+
         </div>
+        <!-- /#wrapper -->
+    </div>
 
-        <div v-if="buildingListOpen">
-            <p> Users in my building: </p>
-            <ul v-for="body in nearBuilding">
-                <li>{{body.ist_id}} --- {{body.name}}</li>
-            </ul>
-        </div>
-            
-        <!-- Section of the logout-->
-        <h2>Logout:</h2>
-        <button @click="Logout">Logout</button>
-
-	</div>
-
-<!-- 
-      <div v-if="!serverOk">
-        <strong>Warning!</strong> Server returned error, probably due to an incorrect request
-        </div> -->
+    <!-- Bootstrap core JavaScript -->
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <script>
 		var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-cache'}};
@@ -92,13 +166,40 @@
                 user_range: '', // get default range value  // TODO
                 user_id: '',
                 range: null,
+                lat: null,
+                long: null,
                 user_location : '',
                 messages: [],
+                sentMsgs: [],
                 buildingListOpen: false,
                 rangeListOpen: false,
+                chattoggle: false,
+                nearbytoggle: false,
+                settingstoggle: false
             },
 
             methods: {
+                // ugly function for changing which parts of the site are toggled
+                toggleSite: function(toggletype) {
+                    var self = this;
+                    if(toggletype == "chat") {
+                        self.chattoggle = true;
+                        self.nearbytoggle = false;
+                        self.settingstoggle = false;
+                    } else if(toggletype == "user") {
+                        self.chattoggle = false;
+                        self.nearbytoggle = false;
+                        self.settingstoggle = false;
+                    } else if(toggletype == "nearby") {
+                        self.chattoggle = false;
+                        self.nearbytoggle = true;
+                        self.settingstoggle = false;
+                    } else if(toggletype == "settings") {
+                        self.chattoggle = false;
+                        self.nearbytoggle = false;
+                        self.settingstoggle = true;
+                    }
+                },
                 nearbyBuilding: function() {
 					var self = this;
 					axios.get('/user/nearby/building')
@@ -115,6 +216,7 @@
                             }
                             else{
                                 alert(' Warning: Server returned error.');
+                                window.location.href = '/';
                             }
 						});
 				},
@@ -133,13 +235,12 @@
                             }
                             else{
                                 alert('Warning: Server returned error.');
+                                // redirect to login
+                                window.location.href = '/';
                             }
 						});
 				},
                 setRange: function(range) {
-                    // this.$data.serverDataError = false;
-                    // this.$data.serverDBError = false;
-                    // this.$data.serverError = false;
                     var self=this;
                     axios.post('/user/range',{
                             "range": range
@@ -159,7 +260,8 @@
                             alert(' Warning: '+error.response.data+', pleasy try again.');
                         }
                         else{
-                            alert(' Warning: Server returned error.');                
+                            alert(' Warning: Server returned error.');   
+                            window.location.href = '/';             
                         }
                     });  
 
@@ -172,11 +274,10 @@
                         alert('It seems like Geolocation, which is required for this page, is not enabled in your browser. Please use a browser which supports it.');
                     }
                 },
-
+				
                 updateLocation: function(position) {
                     var lat = position.coords.latitude;
                     var long = position.coords.longitude;
-
                     this.$data.user_location=[lat,long];
                     var id = this.$data.user_id;
                     axios.post('/user/location',{
@@ -198,10 +299,19 @@
                         }
                         else{
                             alert(' Warning: Server returned error.');
+                            window.location.href = '/';
                         }
 
                     });       
                 },
+                
+                manualLocation: function (lat, long) {
+					//getting the format right to updatelocation
+					var position = {coords: {latitude: 0, longitude: 0,}};
+					position.coords.latitude = lat;
+                    position.coords.longitude = long;
+					this.updateLocation(position)
+				},
 
                 Logout: function() {
 					axios.get('/user/logout')
@@ -217,13 +327,16 @@
                             }
                             else{
                                 alert('Warning: Server returned error.');
+                                window.location.href = '/';
                             }
 						});
                 },
 
                 sendMessage: function(message) {
-
-                    socket.emit('message', message);
+                    socket.emit('message', message)
+                    if (message != null) {
+						vm.sentMsgs.push(message);
+					}	
                 },
                 
                 getUserID: async function(){
@@ -281,5 +394,7 @@
             }
         })
     </script>
+
 </body>
+
 </html>

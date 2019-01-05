@@ -8,10 +8,10 @@ router.get('/', function(req, res) {
     cache.getUserID(req.cookies.user, function(err,id) {
         if (id==undefined){
             // Encaminha para a página de login se não estiver logado
-            res.sendFile(path.join(__dirname + '/../public/newindex.html'));
+            res.sendFile(path.join(__dirname + '/../public/index.html'));
         } else {
             // Encaminha para a página de user se já estiver logado
-            res.sendFile(path.join(__dirname + '/../public/newuser.html'));
+            res.sendFile(path.join(__dirname + '/../public/user.html'));
 	    }
     });
 
