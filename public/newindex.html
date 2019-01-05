@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>ISTChat</title>
+
+        <!-- Bootstrap core CSS -->
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Vuejs import-->
+        <script src="https://unpkg.com/vue"></script>
+
+        <!-- Axios import -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <!-- Custom styles for this template -->
+        <link href="/css/index.css" rel="stylesheet">
+
+    </head>
+
+    <body id="LoginForm">
+        <div id="app">
+            <div class="container">
+                <div class="login-form">
+                    <div class="main-div">
+                        <div class="panel">
+                            <h1><strong>IST CHAT APP</strong></h1><br>
+                            <img src="/images/IST_Logo.png" alt="IST Logo"> <br>
+                            
+                            <p>Please click the enter the button to Login!</p>
+                        </div>
+                            
+                        <button @click="login" class="btn btn-primary">Login</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-store'}};
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    message: 'Vue way!'
+                },
+                methods: {
+                    login() {
+    
+                        axios.get('/user/login')
+                            .then(function (response) {
+    
+                                this.message = response.data.redirect;
+                                console.log(response.data.redirect);
+    
+                                // redirect to fenix login
+                                window.location = response.data.redirect;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+    
+                    }
+    
+                }
+            })
+        </script>
+
+    </body>
+</html>

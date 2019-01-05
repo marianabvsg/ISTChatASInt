@@ -47,12 +47,6 @@ router.post('/building', function(req, res) {
         return;
     }
 
-    // receive JSON file
-    const building_file = req.body.building;
-
-    // check if it's a valid JSON file
-    // TODO
-
     // get the array of buildings
     buildingDB.insertFromFile(req.body.building, function(err, result) {
 

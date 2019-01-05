@@ -41,6 +41,7 @@ app.use(cors())
 
 app.use("/css",  express.static(__dirname + '/public/css'));
 app.use("/vendor", express.static(__dirname + '/public/vendor'));
+app.use("/images", express.static(__dirname + '/public/images'));
 
 // TO DELETE
 //app.use(session({secret: "mysecretkey"}));
