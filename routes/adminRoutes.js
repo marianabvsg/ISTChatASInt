@@ -91,7 +91,7 @@ router.post('/building/range', function(req, res) {
 router.get('/list/users', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;	
+    const secret = req.query.adminkey;	
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
         
@@ -118,7 +118,7 @@ router.get('/list/users', function(req, res) {
 router.get('/list/users/building/:building', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
         
@@ -154,7 +154,7 @@ router.get('/list/users/building/:building', function(req, res) {
 router.get('/list/logs', function(req, res) {
 	
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -174,7 +174,7 @@ router.get('/list/logs', function(req, res) {
 router.get('/list/logs/messages', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -194,7 +194,7 @@ router.get('/list/logs/messages', function(req, res) {
 router.get('/list/logs/movements', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -214,7 +214,7 @@ router.get('/list/logs/movements', function(req, res) {
 router.get('/list/logs/messages/building/:building', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -243,7 +243,7 @@ router.get('/list/logs/messages/building/:building', function(req, res) {
 router.get('/list/logs/movements/building/:building', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -271,7 +271,7 @@ router.get('/list/logs/movements/building/:building', function(req, res) {
 router.get('/list/logs/messages/user/:user', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -291,7 +291,7 @@ router.get('/list/logs/messages/user/:user', function(req, res) {
 router.get('/list/logs/movements/user/:user', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -311,7 +311,7 @@ router.get('/list/logs/movements/user/:user', function(req, res) {
 router.get('/list/logs/user/:user', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
@@ -331,7 +331,7 @@ router.get('/list/logs/user/:user', function(req, res) {
 router.get('/list/logs/building/:building', function(req, res) {
 
     // check if the secret is correct
-    const secret = req.body.adminkey;
+    const secret = req.query.adminkey;
 
     // validate secret
     if(secret == null || secret == {} || secret != adminkey) {
