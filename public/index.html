@@ -1,54 +1,75 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>IST Chat ASInt</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <!-- <script src="main.js"></script> -->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Vuejs import-->
-    <script src="https://unpkg.com/vue"></script>
+        <title>ISTChat</title>
 
-    <!-- Axios import -->
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-</head>
-<body>
-    <div id="app">
-        <h1>This is ASINT Project:</h1>
-        <p>{{message}}</p>
-        <button @click="login">Login</button>
+        <!-- Bootstrap core CSS -->
+        <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    </div>
+        <!-- Vuejs import-->
+        <script src="https://unpkg.com/vue"></script>
 
-    <script>
-		var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-store'}};
-        var vm = new Vue({
-            el: '#app',
-            data: {
-                message: 'Vue way!'
-            },
-            methods: {
-                login() {
+        <!-- Axios import -->
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-                    axios.get('/user/login')
-                        .then(function (response) {
+        <!-- Custom styles for this template -->
+        <link href="/css/index.css" rel="stylesheet">
 
-                            this.message = response.data.redirect;
-                            console.log(response.data.redirect);
+    </head>
 
-                            // redirect to fenix login
-                            window.location = response.data.redirect;
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+    <body id="LoginForm">
+        <div id="app">
+            <div class="container">
+                <div class="login-form">
+                    <div class="main-div">
+                        <div class="panel">
+                            <h1><strong>IST CHAT APP</strong></h1><br>
+                            <img src="/images/IST_Logo.png" alt="IST Logo"> <br>
+                            
+                            <p>Please click the button to Login!</p>
+                        </div>
+                            
+                        <button @click="login" class="btn btn-primary">Login</button>
 
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="/vendor/jquery/jquery.min.js"></script>
+        <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            var config = {	headers: {'Content-Type': 'application/json','Cache-Control' : 'no-store'}};
+            var vm = new Vue({
+                el: '#app',
+                data: {
+                    message: 'Vue way!'
+                },
+                methods: {
+                    login() {
+    
+                        axios.get('/user/login')
+                            .then(function (response) {
+    
+                                this.message = response.data.redirect;
+                                console.log(response.data.redirect);
+    
+                                // redirect to fenix login
+                                window.location = response.data.redirect;
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+    
+                    }
+    
                 }
+            })
+        </script>
 
-            }
-        })
-    </script>
-</body>
+    </body>
 </html>

@@ -27,7 +27,7 @@ router.get('/', function(req, res) {
             res.sendStatus(403);
         }
         else{
-            res.sendFile(path.join(__dirname + '/../public/newuser.html'));
+            res.sendFile(path.join(__dirname + '/../public/user.html'));
         }
     })
 })
@@ -335,7 +335,7 @@ router.get('/receive', function(req, res) {
   
 })
 
-//ger user_id
+//get user_id
 router.get('/id', function(req, res) {
 
     //check token
