@@ -54,12 +54,11 @@ module.exports = {
 						getUsersVector(destination, function (usersVector) {
 							//get the source building to add to the log
 							userDB.getBuilding(user, function(building) {
-								if(building != null) {
-									//log insert
-									logsDB.insertMessage(user, data, building, usersVector, function(err) {
-										if(err) {console.log("InserMessage in sockets: " + err)}
-									})
-								}
+								//if(building != null) {
+								//log insert
+								logsDB.insertMessage(user, data, building, usersVector, function(err) {
+									if(err) {console.log("InserMessage in sockets: " + err)}
+								})
 							})
 						});
 						
