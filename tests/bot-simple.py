@@ -1,7 +1,10 @@
 import requests
 
+# bot informatica III
+api_key = "ixlOuBZDTfDjJTQBLX3plvbC0TQLulYqBR2ilzdn"
+
 # bot Torre Norte
-api_key = "pNsKnnllXxnNveyqrRUeDyxIhyYDqsxLGKOlJtSF"
+#api_key = "pNsKnnllXxnNveyqrRUeDyxIhyYDqsxLGKOlJtSF"
 
 # bot Civil
 #api_key = "A4KrDgJjBXeaT0zREMkrwaZyB1oR9KZ14QpQbB6j"

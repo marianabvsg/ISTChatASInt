@@ -64,8 +64,14 @@ def listAll(secretKey):
 	#print(r)
 	#print only name - id
 	data = r.json()
+	if data is None:
+		return
+	
 	for i in data:
-		print("\n" + i['ist_id'] + " - " + i['name'] + " - " + i["building"])
+		if i["building"] is None:
+			print("\n" + i['ist_id'] + " - " + i['name'] + " - Not in any building")
+		else:
+			print("\n" + i['ist_id'] + " - " + i['name'] + " - " + i["building"])
 
 
 #list all move logs
@@ -81,6 +87,9 @@ def listAllMoves(secretKey):
 	r = requests.get(endpoint, params = payload)
 	#print only name - id
 	data = r.json()
+	if data is None:
+		return
+	
 	for i in data:
 		print(i)
 		print("\n")
@@ -97,6 +106,9 @@ def listAllMsgs(secretKey):
 	r = requests.get(endpoint, params = payload)
 	#print only name - id
 	data = r.json()
+	if data is None:
+		return
+	
 	for i in data:
 		print(i)
 		print("\n")
@@ -112,9 +124,11 @@ def listUsersByBuilding(secretKey):
 	endpoint = url + "admin/list/users/building/" + input("Insert building name: ") #update url with building selected
 	
 	r = requests.get(endpoint, params = payload)
-
+	
 	if	r.status_code == 200:
 		data = r.json()
+		if data is None:
+			return
 			
 		for i in data:
 			print("\n" + i['ist_id'])
@@ -132,6 +146,9 @@ def listAllLogs(secretKey):
 	
 	r = requests.get(endpoint, params = payload)
 	data = r.json()
+	if data is None:
+		return
+		
 	for i in data:
 		print(i)
 		print("\n")
@@ -142,21 +159,28 @@ def listLogsByUser(secretKey):
 	params = {}
 	payload['adminkey'] = secretKey
 	headers = {'Content-type': 'application/json'}
+	endpoint = ""
 	
 	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
-
-	endpoint = url + "admin/list/users/building/"
 	
-	kind = input("[1] - Messages\n[2] - Moves\nOption: ")
+	kind = input("[1] - Messages\n[2] - Moves\n[3] - All\nOption: ")
 	if (kind == '1'): #list messages
 		endpoint = url + "admin/list/logs/messages/user/"
-	if (kind == '2'): #list moves
+	elif (kind == '2'): #list moves
 		endpoint = url + "admin/list/logs/movements/user/"
+	elif (kind == '3'):
+		endpoint = url + "admin/list/logs/user/"
+	else:
+		print("Choose a valid option")
+		return
 	
 	endpoint = endpoint + input("Insert user id: ") #updated url with selected user
 	
 	r = requests.get(endpoint, params = payload)
 	data = r.json()
+	if data is None:
+		return
+		
 	for i in data:
 		print(i)
 		print("\n")
@@ -168,21 +192,32 @@ def listLogsByBuilding(secretKey):
 	params = {}
 	payload['adminkey'] = secretKey
 	headers = {'Content-type': 'application/json'}
+	endpoint = ""
 	
 	#url = "https://asint-chat.appspot.com/admin/list/users/building/"
-	kind = input("[1] - Messages\n[2] - Moves\nOption: ");
+	kind = input("[1] - Messages\n[2] - Moves\n[3] - All\nOption: ");
 	if (kind == '1'): #list messages
 		endpoint = url + "admin/list/logs/messages/building/"
-	if (kind == '2'): #list moves
+	elif (kind == '2'): #list moves
 		endpoint = url + "admin/list/logs/movements/building/"
-	
+	elif (kind == '3'): #list all
+		endpoint = url + "admin/list/logs/building/"
+	else:
+		print("Choose a valid option")
+		return
+		
 	endpoint = endpoint + input("Insert building name: ")
 	
 	r = requests.get(endpoint, params = payload)
-	data = r.json()
-	for i in data:
-		print(i)
-		print("\n")
+
+	if	r.status_code == 200:
+		data = r.json()
+		if data is None:
+			return
+		
+		for i in data:
+			print(i)
+			print("\n")
 	
 def createBot(secretKey):
 	payload = {}
